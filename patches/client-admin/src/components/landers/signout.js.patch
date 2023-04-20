@@ -1,0 +1,11 @@
+--- ./client-admin/src/components/landers/signout.js	2023-03-31 15:20:01.655798000 +0300
++++ ../patches/client-admin/src/components/landers/signout.js	2023-03-31 14:56:23.816170000 +0300
+@@ -11,7 +11,7 @@
+ @connect((state) => state.signout)
+ class SignOut extends React.Component {
+   componentDidMount() {
+-    this.props.dispatch(doSignout('/home'))
++    this.props.dispatch(doSignout('/signin')) // DF customization, due to WAF restrictions redirect back to /signin instead of /home
+   }
+ 
+   render() {

@@ -1,0 +1,32 @@
+--- ./client-participation/js/strings.js	2023-03-31 15:20:01.655798000 +0300
++++ ../patches/client-participation/js/strings.js	2023-03-31 14:57:09.327354000 +0300
+@@ -58,6 +58,12 @@
+   // Ukrainian
+   uk: require("./strings/uk.js"),
+ 
++  // Finnish
++  fi: require("./strings/fi.js"),
++
++  // Swedish
++  sv: require("./strings/sv.js"),
++
+   // Russian
+   ru: require("./strings/ru.js"),
+ };
+@@ -83,6 +89,16 @@
+     if (languageCode.match(/^en/)) {
+       _.extend(strings, translations.en_us);
+     }
++    else if (
++      languageCode.match(/^fi/) ||
++      languageCode.match(/^fi-FI/)) {
++      _.extend(strings, translations.fi);
++    }
++    else if (
++      languageCode.match(/^sv/) ||
++      languageCode.match(/^sv-SE/)) {
++      _.extend(strings, translations.sv);
++    }
+     else if (languageCode.match(/^ja/)) {
+       _.extend(strings, translations.ja);
+     }

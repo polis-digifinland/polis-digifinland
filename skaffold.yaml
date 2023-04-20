@@ -1,0 +1,30 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: polis
+build:
+  local:
+    useBuildkit: true
+    push: false
+  artifacts:
+  - image: docker.io/compdem/polis-file-server
+    context: ./polis
+    docker:
+      dockerfile: ./polis/file-server/Dockerfile
+  - image: docker.io/compdem/polis-math
+    context: ./polis/math
+    docker:
+      dockerfile: ./polis/math/Dockerfile
+  - image: docker.io/compdem/polis-server
+    context: ./polis/server
+    docker:
+      dockerfile: ./polis/server/Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - manifests/local/polis-server-secret-example.yaml
+    - manifests/local/polis-math-secret-example.yaml
+    - manifests/local/polis-file-server.yaml
+    - manifests/local/polis-math.yaml
+    - manifests/local/polis-server.yaml
+    - manifests/local/postgres.yaml

@@ -1,0 +1,10 @@
+--- ./server/src/email/senders.ts	2023-04-04 11:54:05.688655000 +0300
++++ ../patches/server/src/email/senders.ts	2023-03-31 14:34:43.490381000 +0300
+@@ -58,6 +58,7 @@
+           api_key: Config.mailgunApiKey || "unset-value",
+           domain: Config.mailgunDomain || "unset-value",
+         },
++        host: process.env.MAILGUN_ENDPOINT || "unset-value", // e.g. for EU region (DF customization)
+       };
+       return mg(mailgunAuth);
+     case "aws-ses":

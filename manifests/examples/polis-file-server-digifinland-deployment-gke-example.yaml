@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: polis-file-server
+data:
+  EMBED_SERVICE_HOSTNAME: "example.digifinland.dev"
+  FB_APP_ID: 
+  PORT: "8080"
+  REPORT_UPLOADER: "local"
+  # used only for dev:
+  REPORT_SERVICE_URL: "http://polis-server:5000"
+  S3_BUCKET_PREPROD: 
+  S3_BUCKET_PROD: 
+  SCP_SUBDIR_PREPROD: 
+  SCP_SUBDIR_PROD: 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polis-file-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: polis-file-server
+  template:
+    metadata:
+      labels:
+        app: polis-file-server
+    spec:
+      containers:
+        - image: europe-north1-docker.pkg.dev/project/repository/polis-file-server:test
+          imagePullPolicy: Always
+          name: polis-file-server
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polis-file-server
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  selector:
+    app: polis-file-server

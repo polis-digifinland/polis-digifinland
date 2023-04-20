@@ -1,0 +1,19 @@
+--- ./client-admin/src/components/landers/lander-footer.js	2023-03-31 15:20:01.655798000 +0300
++++ ../patches/client-admin/src/components/landers/lander-footer.js	2023-03-31 14:56:15.464687000 +0300
+@@ -18,8 +18,14 @@
+           {emoji('🇺🇸')}, with contributions from around the {emoji('🌍🌏🌎')}
+         </Box>
+         <Box sx={{ mb: [2, null, 3] }}>
+-          © {new Date().getFullYear()} The Authors <Link href="tos">TOS</Link>{' '}
+-          <Link href="privacy">Privacy</Link>
++          © {new Date().getFullYear()} The Authors 
++          {' '}
++
++          { // remove TOS and replace privacy link with external DigiFinland site privary policy page
++          // <Link href="tos">TOS</Link>                    
++          // <Link href="privacy">Privacy</Link>
++          }
++          <Link target="_blank" href="https://digifinland.fi/tietosuoja/">Privacy</Link>
+         </Box>
+       </Box>
+     )

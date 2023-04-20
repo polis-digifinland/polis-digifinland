@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: polis-math
+data:
+  WEBSERVER_USERNAME: "ws-user"
+  WEBSERVER_PASS: "ws-pass"
+  MATH_ENV: "dev"  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polis-math
+spec:
+  # set replicas=1, since math worker is not designed to scale horizontally yet.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polis-math
+  template:
+    metadata:
+      labels:
+        app: polis-math
+    spec:
+      containers:
+        - image: europe-north1-docker.pkg.dev/project/repository/polis-math:test
+          imagePullPolicy: Always
+          name: polis-math
+          envFrom:
+            # math container does not pick env variables (db url) from secrets somehow - have to use from configMap instead
+            # - secretRef:
+            #    name: polis-math-secret
+            - configMapRef:
+               name: polis-math
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polis-math-service
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5000
+  selector:
+    app: polis-math
+
+

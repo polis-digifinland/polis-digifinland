@@ -1,0 +1,35 @@
+--- ./server/src/server.ts	2023-04-04 11:54:05.698655000 +0300
++++ ../patches/server/src/server.ts	2023-03-31 14:31:08.657051000 +0300
+@@ -772,7 +772,7 @@
+     },
+     next: () => any
+   ) {
+-    let exempt = devMode;
++    let exempt = true; // DigiFinland customization: enable http-only health checks on GKE, no need to redirect https even on devMode=false since this is done on LB / nginx proxy.
+ 
+     // IE is picky, so use HTTP.
+     // TODO figure out IE situation, (proxy static files in worst-case)
+@@ -3432,15 +3432,15 @@
+     if (referer) {
+       info.referrer = referer;
+     }
+-    let x_forwarded_for = req?.headers?.["x-forwarded-for"];
++    //let x_forwarded_for = req?.headers?.["x-forwarded-for"]; // DigiFinland customization - comment out saving encrypted IP-addresses
+     let ip: string | null = null;
+-    if (x_forwarded_for) {
+-      let ips = x_forwarded_for;
+-      ips = ips && ips.split(", ");
+-      ip = ips.length && ips[0];
+-      info.encrypted_ip_address = encrypt(ip);
+-      info.encrypted_x_forwarded_for = encrypt(x_forwarded_for);
+-    }
++//    if (x_forwarded_for) {
++//      let ips = x_forwarded_for;
++//      ips = ips && ips.split(", ");
++//     ip = ips.length && ips[0];
++//      info.encrypted_ip_address = encrypt(ip);
++//      info.encrypted_x_forwarded_for = encrypt(x_forwarded_for);
++//    }
+     if (permanent_cookie) {
+       info.permanent_cookie = permanent_cookie;
+     }
