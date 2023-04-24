@@ -1,9 +1,2 @@
-keys/*
-embed-test-site
-embed-test-site/*
-.ktp-pipeline
-digifinland-dev.env
-docs
-docs/*
 .env
 
