@@ -86,3 +86,4 @@ ALTER TABLE public.worker_tasks OWNER TO polisdbu;
 ALTER TABLE public.xid_whitelist OWNER TO polisdbu;
 ALTER TABLE public.xids OWNER TO polisdbu;
 ALTER TABLE public.zinvites OWNER TO polisdbu;
+

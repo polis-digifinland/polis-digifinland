@@ -14,3 +14,4 @@ DELETE FROM conversations;
 DELETE FROM jianiuevyew;
 DELETE FROM pwreset_tokens;
 DELETE FROM users;
+
