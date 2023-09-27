@@ -1,0 +1,11 @@
+--- ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js	2023-09-27 09:04:42.574443175 +0300
++++ ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js	2023-09-20 09:44:38.033649900 +0300
+@@ -46,7 +46,7 @@
+   }
+ 
+   render() {
+-    const max = 100;
++    const max = 500;
+     return (
+       <div>
+         <div>

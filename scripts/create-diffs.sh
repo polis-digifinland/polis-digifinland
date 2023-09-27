@@ -74,3 +74,8 @@ diff -u ./client-participation/js/strings.js ../patches/client-participation/js/
 dos2unix -q ./client-admin/src/components/landers/signout.js
 diff -u ./client-admin/src/components/landers/signout.js ../patches/client-admin/src/components/landers/signout.js > ../patches/client-admin/src/components/landers/signout.js.patch
 
+# patch 10: change amount of unmoderated comments visible in admin moderate page
+dos2unix -q ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
+diff -u ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js > ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js.patch
+
+

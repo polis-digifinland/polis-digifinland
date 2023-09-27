@@ -77,3 +77,9 @@ patch ./client-participation/js/strings.js < ../patches/client-participation/js/
 # patch 9: redirect to /signin instead of /home after sign out
 dos2unix -q ./client-admin/src/components/landers/signout.js
 patch  ./client-admin/src/components/landers/signout.js < ../patches/client-admin/src/components/landers/signout.js.patch
+
+# patch 10: change amount of unmoderated comments visible in admin moderate page
+dos2unix -q ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
+patch  ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js < ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js.patch
+
+
