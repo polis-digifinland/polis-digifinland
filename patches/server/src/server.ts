@@ -11396,7 +11396,7 @@ Thanks for using Polis!
       // Cannot find name 'authorUid'. Did you mean 'authoruid'?ts(2552)
       // server.ts(12486, 7): 'authoruid' is declared here.
       // @ts-ignore
-      return "select " + Number(authorUid) + " as uid, 900 as priority";
+      return "select " + Number(authoruid) + " as uid, 900 as priority";
     });
     let authorsQuery: string | null =
       "(" + authorsQueryParts.join(" union ") + ")";
