@@ -1,0 +1,10 @@
+--- ./math/deps.edn	2023-10-02 08:18:37.620277060 +0300
++++ ../patches/math/deps.edn	2023-10-02 08:18:07.080277077 +0300
+@@ -70,6 +70,6 @@
+            {:extra-paths ["test"]
+             :main-opts ["-m" "test-runner"]}}
+  ;:jvm-opts ^:replace []
+- :jvm-opts ["-Xmx4g"]}
++ :jvm-opts ["-Xmx8g"]}
+  ;:mvn/repos {"twitter4j" {:url "https://twitter4j.org/maven2"}}}
+   

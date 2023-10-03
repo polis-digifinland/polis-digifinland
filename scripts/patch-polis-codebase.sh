@@ -82,4 +82,7 @@ patch  ./client-admin/src/components/landers/signout.js < ../patches/client-admi
 dos2unix -q ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
 patch  ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js < ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js.patch
 
+# patch 11: change max heap memory for math worker
+dos2unix -q ./math/deps.edn
+patch ./math/deps.edn < ../patches/math/deps.edn.patch
 
