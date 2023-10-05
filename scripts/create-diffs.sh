@@ -79,6 +79,6 @@ dos2unix -q ./client-admin/src/components/conversation-admin/comment-moderation/
 diff -u ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js > ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js.patch
 
 # patch 11: change max heap memory for math worker
-dos2unix -q ./math/deps.edn
-diff -u ./math/deps.edn ../patches/math/deps.edn > ../patches/math/deps.edn.patch
+dos2unix -q ./math/bin/run
+diff -u ./math/bin/run ../patches/math/bin/run > ../patches/math/bin/run.patch
 
