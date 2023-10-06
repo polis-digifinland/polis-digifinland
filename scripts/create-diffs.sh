@@ -82,3 +82,7 @@ diff -u ./client-admin/src/components/conversation-admin/comment-moderation/mode
 dos2unix -q ./math/bin/run
 diff -u ./math/bin/run ../patches/math/bin/run > ../patches/math/bin/run.patch
 
+# patch 12: Draw only isSelf icon
+dos2unix -q ./client-participation/vis2/components/graphParticipants.js
+diff -u ./client-participation/vis2/components/graphParticipants.js ../patches/client-participation/vis2/components/graphParticipants.js > ../patches/client-participation/vis2/components/graphParticipants.js.patch
+

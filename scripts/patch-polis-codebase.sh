@@ -86,3 +86,7 @@ patch  ./client-admin/src/components/conversation-admin/comment-moderation/moder
 dos2unix -q ./math/bin/run
 patch ./math/bin/run < ../patches/math/bin/run.patch
 
+# patch 12: Draw only isSelf icon
+dos2unix -q ./client-participation/vis2/components/graphParticipants.js
+patch ./client-participation/vis2/components/graphParticipants.js < ../patches/client-participation/vis2/components/graphParticipants.js.patch
+
