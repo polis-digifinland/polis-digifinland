@@ -1,0 +1,52 @@
+--- ./client-report/src/components/controls/controls.js	2023-11-06 18:48:25.607203950 +0200
++++ ../patches/client-report/src/components/controls/controls.js	2023-11-06 18:41:00.333527300 +0200
+@@ -5,7 +5,9 @@
+ import React from "react";
+ import settings from "../../settings";
+ 
+-class Controls extends React.Component {
++import { withTranslation } from 'react-i18next';
++
++class LegacyControls extends React.Component {
+ 
+   constructor(props) {
+     super(props);
+@@ -25,10 +27,19 @@
+   // }
+ 
+   render() {
++    const { t, i18n } = this.props;
++    document.documentElement.lang = i18n.language; //This is too slow for google translate
++    const changeLanguage = (lng) => {
++        i18n.changeLanguage(lng);
++        document.documentElement.lang = lng;
++    };
+     return (
+       <div>
++      <button style={{margin: "10px"}} type="button" onClick={() => changeLanguage('fi')}>FI</button>
++      <button style={{margin: "10px"}} type="button" onClick={() => changeLanguage('sv')}>SV</button>
++      <button style={{margin: "10px"}} type="button" onClick={() => changeLanguage('en')}>EN</button>
+       <Checkbox
+-        label= {"auto-refresh"}
++        label= {t('controls.auto_refresh')}
+         disabled={false}
+         ref={this.autoRefreshEnabledRef}
+         checked={ this.props.autoRefreshEnabled}
+@@ -37,7 +48,7 @@
+         labelWrapperColor={settings.darkerGray}
+         color={settings.polisBlue}/>
+       <Checkbox
+-        label= {"color blind mode"}
++        label= {t('controls.color_blind_mode')}
+         disabled={false}
+         ref={this.colorBlindModeRef}
+         checked={ this.props.colorBlindMode}
+@@ -52,4 +63,7 @@
+ }
+         // <Checkbox value="pineapple"/>
+ 
+-export default Controls;
++const Controls = withTranslation()(LegacyControls);
++
++//export default Controls;
++export default withTranslation()(Controls);

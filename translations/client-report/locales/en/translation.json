@@ -1,0 +1,26 @@
+{
+  "file_desc": "Translations in English",
+  "controls": {
+    "auto_refresh": "auto-refresh",
+    "color_blind_mode": "color blind mode"
+  },
+  "overview": {
+    "title": "Overview",
+    "text": "Polis is a real-time survey system that helps identify the different ways a large group of people think about a divisive or complicated topic. Here’s a basic breakdown of some terms you’ll need to know in order to understand this report.",
+    "term_participants_title": "Participants",
+    "term_participants_text": "These are the people who participated in the conversation by voting and writing statements. Based on how they voted, each participant is sorted into an opinion group.",
+    "term_statements_title": "statements",
+    "term_statements_text": "Participants may submit statements for other participants to vote on. Statements are assigned a number in the order they’re submitted.",
+    "term_opinion_groups_title": "Opinion groups",
+    "term_opinion_groups_text": "These are the people who participated in the conversation by voting and writing statements. Based on how they voted, each participant is sorted into an opinion group.",
+    "ownername_text": "This pol.is conversation was run by ",
+    "topic_text": "The topic was ",
+    "people_voted": "people voted",
+    "people_grouped": "people grouped",
+    "votes_cast": "votes were cast",
+    "statements_submitted": "statements were submitted",
+    "votes_per_voter_avg": "votes per voter on average",
+    "statements_per_author_avg": "statements per author on average"
+  }
+}
+

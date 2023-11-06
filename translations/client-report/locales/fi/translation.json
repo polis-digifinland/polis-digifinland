@@ -1,0 +1,26 @@
+{
+  "file_desc": "Käännökset suomeksi",
+  "controls": {
+    "auto_refresh": "Sivun automaattinen päivitys",
+    "color_blind_mode": "Värisokeus tila"
+  },
+  "overview": {
+    "title": "Yleiskatsaus",
+    "text": "Polis on reaaliaikainen kyselyjärjestelmä, joka auttaa tunnistamaan eri tavat, joilla suuri joukko ihmisiä ajattelee ajatuksia jakavasta tai monimutkaisesta aiheesta. Alla on perustavanlaatuinen selitys joistakin termeistä, jotka sinun tulee tietää, jotta ymmärrät tämän raportin.",
+    "term_participants_title": "Osallistujat",
+    "term_participants_text": "Nämä ovat ihmisiä, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Jokainen osallistuja on jaettu mielipideryhmään sen perusteella, miten he äänestivät.",
+    "term_statements_title": "Väittämät",
+    "term_statements_text": "Osallistujat voivat lähettää lausuntoja muiden osallistujien äänestämistä varten. Lausunnot saavat numeron niiden lähetysjärjestyksessä.",
+    "term_opinion_groups_title": "Mielipideryhmät",
+    "term_opinion_groups_text": "Nämä ovat ihmisiä, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Jokainen osallistuja on jaettu mielipideryhmään sen perusteella, miten he äänestivät.",
+    "ownername_text": "Keskustelun järjestäjä on ",
+    "topic_text": "Keskustelun otsikko on ",
+    "people_voted": "äänestäjää",
+    "people_grouped": "äänestäjää ryhmitelty",
+    "votes_cast": "äänestystä",
+    "statements_submitted": "kannanottoa lähetetty",
+    "votes_per_voter_avg": "keskimäärin ääniä äänestäjää kohden",
+    "statements_per_author_avg": "keskimäärin kannanottoja kirjoittajaa kohti"
+  }
+}
+

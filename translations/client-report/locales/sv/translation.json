@@ -1,0 +1,25 @@
+{
+  "file_desc": "Översättningar på svenska",
+  "controls": {
+    "auto_refresh": "auto-uppdatering",
+    "color_blind_mode": "färgblind läge"
+  },
+  "overview": {
+    "title": "Översikt",
+    "text": "Polis är ett realtidssurveysystem som hjälper till att identifiera de olika sätten som en stor grupp människor tänker på ett kontroversiellt eller komplicerat ämne. Här är en grundläggande förklaring av några termer du behöver känna till för att förstå denna rapport.",
+    "term_participants_title": "Deltagare",
+    "term_participants_text": "Detta är de personer som deltog i konversationen genom att rösta och skriva uttalanden. Baserat på hur de röstade sorteras varje deltagare i en åsiktsgrupp.",
+    "term_statements_title": "Uttalanden",
+    "term_statements_text": "Deltagare kan skicka in uttalanden för andra deltagare att rösta på. Uttalanden tilldelas ett nummer i den ordning de skickas in.",
+    "term_opinion_groups_title": "Åsiktsgrupper",
+    "term_opinion_groups_text": "Detta är de personer som deltog i konversationen genom att rösta och skriva uttalanden. Baserat på hur de röstade sorteras varje deltagare i en åsiktsgrupp.",
+    "ownername_text": "Denna pol.is-konversation drevs av ",
+    "topic_text": "Ämnet var ",
+    "people_voted": "personer röstade",
+    "people_grouped": "personer grupperades",
+    "votes_cast": "röster avgavs",
+    "statements_submitted": "uttalanden skickades in",
+    "votes_per_voter_avg": "röster per röstare i genomsnitt",
+    "statements_per_author_avg": "uttalanden per författare i genomsnitt"
+  }
+}

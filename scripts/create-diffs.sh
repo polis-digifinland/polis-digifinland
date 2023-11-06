@@ -68,7 +68,19 @@ diff -u ./client-participation/js/templates/participation.handlebars ../patches/
 
 # patch 8: add finnish and swedish translations
 dos2unix -q ./client-participation/js/strings.js
+dos2unix -q ./client-report/gulpfile.js
+dos2unix -q ./client-report/src/index.js
+dos2unix -q ./client-report/package.json
+dos2unix -q ./client-report/package-lock.json
+dos2unix -q ./client-report/src/components/overview.js
+dos2unix -q ./client-report/src/components/controls/controls.js
 diff -u ./client-participation/js/strings.js ../patches/client-participation/js/strings.js > ../patches/client-participation/js/strings.js.patch
+diff -u ./client-report/gulpfile.js ../patches/client-report/gulpfile.js > ../patches/client-report/gulpfile.js.patch
+diff -u ./client-report/src/index.js ../patches/client-report/src/index.js > ../patches/client-report/src/index.js.patch
+diff -u ./client-report/package.json ../patches/client-report/package.json > ../patches/client-report/package.json.patch
+diff -u ./client-report/package-lock.json ../patches/client-report/package-lock.json > ../patches/client-report/package-lock.json.patch
+diff -u ./client-report/src/components/overview.js ../patches/client-report/src/components/overview.js > ../patches/client-report/src/components/overview.js.patch
+diff -u ./client-report/src/components/controls/controls.js ../patches/client-report/src/components/controls/controls.js > ../patches/client-report/src/components/controls/controls.js.patch
 
 # patch 9: redirect to /signin instead of /home after sign out
 dos2unix -q ./client-admin/src/components/landers/signout.js

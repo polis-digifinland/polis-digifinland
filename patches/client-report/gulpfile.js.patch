@@ -1,0 +1,23 @@
+--- ./client-report/gulpfile.js	2023-11-06 18:21:12.144732261 +0200
++++ ../patches/client-report/gulpfile.js	2023-11-06 18:13:27.632604500 +0200
+@@ -193,6 +193,12 @@
+   fs.writeFileSync(indexDest, index);
+ });
+ 
++// Copy locales json files to build folder
++gulp.task('copy', () =>
++  gulp.src('locales/**/*.json*', {base:"./"})
++    .pipe(gulp.dest('build'))
++);
++
+ // GZip the bundle js file to the dist folder with a .gz extension.
+ gulp.task("scripts", function () {
+   const files = ["dist/report_bundle.js"];
+@@ -213,6 +219,7 @@
+     "cleanDist",
+     "bundle",
+     "index",
++    "copy",
+     "scripts",
+     callback
+   );

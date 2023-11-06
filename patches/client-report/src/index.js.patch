@@ -1,0 +1,12 @@
+--- ./client-report/src/index.js	2023-11-06 18:28:00.123039283 +0200
++++ ../patches/client-report/src/index.js	2023-11-06 17:37:27.227042000 +0200
+@@ -6,6 +6,9 @@
+ 
+ import App from "./components/app";
+ 
++// import i18n (needs to be bundled ;)) 
++import './i18n';
++
+ // const store = configureStore();
+ 
+ class Root extends React.Component {
