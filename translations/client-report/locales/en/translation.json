@@ -1,5 +1,10 @@
 {
   "file_desc": "Translations in English",
+  "app": {
+    "loading_error": "Error Loading",
+    "loading_nothing_to_show": "Nothing to show yet",
+    "loading": "Loading ..."
+  },
   "controls": {
     "auto_refresh": "auto-refresh",
     "color_blind_mode": "color blind mode"
@@ -21,6 +26,20 @@
     "statements_submitted": "statements were submitted",
     "votes_per_voter_avg": "votes per voter on average",
     "statements_per_author_avg": "statements per author on average"
+  },
+  "barChart": {
+    "voted": "voted",
+    "agreed": "agreed",
+    "disagreed": "disagreed",
+    "passed": "passed"
+  },
+  "beeswarm": {
+    "title": "How divisive was the conversation?",
+    "text": "Statements (here as little circles) to the left were voted on the same way—either everyone agreed or everyone disagreed. Statements to the right were divisive—participants were split between agreement and disagreement.",
+    "howto_strong": "How to use this:",
+    "howto": "Hover to see the statement text. Start on the far right to find out what the most divisive statement was.",
+    "consensus": "Consensus statements",
+    "divisive": "Divisive statements"
   }
 }
 

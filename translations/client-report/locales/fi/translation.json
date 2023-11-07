@@ -1,5 +1,10 @@
 {
   "file_desc": "Käännökset suomeksi",
+  "app": {
+    "loading_error": "Virhe latauksessa",
+    "loading_nothing_to_show": "Ei mitään näytettävää",
+    "loading": "Lataa ..."
+  },
   "controls": {
     "auto_refresh": "Sivun automaattinen päivitys",
     "color_blind_mode": "Värisokeus tila"
@@ -21,6 +26,20 @@
     "statements_submitted": "kannanottoa lähetetty",
     "votes_per_voter_avg": "keskimäärin ääniä äänestäjää kohden",
     "statements_per_author_avg": "keskimäärin kannanottoja kirjoittajaa kohti"
+  },
+  "barChart": {
+    "voted": "Äänesti",
+    "agreed": "Samaa mieltä",
+    "disagreed": "Eri mieltä",
+    "passed": "Ohitti"
+  },
+  "beeswarm": {
+    "title": "Kuinka erimielinen keskustelu oli?",
+    "text": "Vasemmanpuoleiset lausunnot (tässä pieninä ympyröinä) äänestettiin samalla tavalla – joko kaikki olivat samaa mieltä tai kaikki eri mieltä. Oikealla olevat lausunnot jakavat erimielisyyksiä – osallistujat jakautuivat yhtä mieltä ja eri mieltä.",
+    "howto_strong": "Kuinka tämä toimii:",
+    "howto": "Vie hiiri nähdäksesi lausunnon tekstin. Aloita äärioikealta selvittääksesi, mikä oli erimielisin lausunto.",
+    "consensus": "Samaa mieltä",
+    "divisive": "Eri mieltä"
   }
 }
 

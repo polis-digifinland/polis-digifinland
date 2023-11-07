@@ -1,0 +1,62 @@
+--- ./client-report/src/components/beeswarm/beeswarm.js	2023-11-07 15:03:16.428629717 +0200
++++ ../patches/client-report/src/components/beeswarm/beeswarm.js	2023-11-07 15:02:39.636263005 +0200
+@@ -4,6 +4,7 @@
+ import CommentList from "../lists/commentList";
+ import * as globals from "../globals";
+ import _ from "lodash";
++import { withTranslation } from 'react-i18next';
+ // import Flex from "../framework/flex"
+ 
+ // function type(d) {
+@@ -103,7 +104,7 @@
+   }
+ }
+ 
+-class Beeswarm extends React.Component {
++class BeeswarmTranslated extends React.Component {
+   constructor(props) {
+     super(props);
+ 
+@@ -179,14 +180,14 @@
+       })
+   }
+   render() {
++    const { t, i18n } = this.props;
+     return (
+       <div style={{width: this.svgWidth}}>
+-        <p style={globals.primaryHeading}> How divisive was the conversation? </p>
+-        <p style={globals.paragraph}>
+-          Statements (here as little circles) to the left were voted on the same way—either everyone agreed or everyone disagreed. Statements to the right were divisive—participants were split between agreement and disagreement.
+-        </p>
+-        <p style={globals.paragraph}>
+-          <strong>How to use this:</strong> Hover to see the statement text. Start on the far right to find out what the most divisive statement was.
++        <p style={globals.primaryHeading}> {t('beeswarm.title')} </p>
++        <p style={globals.paragraph}> {t('beeswarm.text')} </p>
++        <p style={globals.paragraph}> 
++        <strong>{t('beeswarm.howto_strong')} </strong>
++        {t('beeswarm.howto')} 
+         </p>
+         <svg width={this.svgWidth} height={this.svgHeight}>
+           <g id="beeswarmAxisAttachPointD3" transform={"translate(" + this.margin.left + "," + this.margin.top + ")"}>
+@@ -203,8 +204,8 @@
+           <line x1="0" y1={this.svgHeight - 10} x2={this.svgWidth} y2={this.svgHeight - 10} strokeWidth="1" stroke="black"/>
+         </svg>
+         <div style={{display: "flex", justifyContent: "space-between", margin: 0}}>
+-          <p style={{margin: 0}}> Consensus statements </p>
+-          <p style={{margin: 0}}> Divisive statements</p>
++          <p style={{margin: 0}}> {t('beeswarm.consensus')} </p>
++          <p style={{margin: 0}}> {t('beeswarm.divisive')} </p>
+         </div>
+         {/*<ProbabilityLegend/>*/}
+ 
+@@ -227,7 +228,9 @@
+   }
+ }
+ 
+-export default Beeswarm;
++//export default Beeswarm;
++const Beeswarm = withTranslation()(BeeswarmTranslated);
++export default withTranslation()(Beeswarm);
+ 
+ // <text
+ //   style={{textAnchor: "middle"}}

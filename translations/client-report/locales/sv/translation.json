@@ -1,5 +1,10 @@
 {
   "file_desc": "Översättningar på svenska",
+  "app": {
+    "loading_error": "Problem att ladda",
+    "loading_nothing_to_show": "Inget att visa än",
+    "loading": "Läser in ..."
+  },
   "controls": {
     "auto_refresh": "auto-uppdatering",
     "color_blind_mode": "färgblind läge"
@@ -21,5 +26,20 @@
     "statements_submitted": "uttalanden skickades in",
     "votes_per_voter_avg": "röster per röstare i genomsnitt",
     "statements_per_author_avg": "uttalanden per författare i genomsnitt"
+  },
+  "barChart": {
+    "voted": "Äänesti",
+    "agreed": "Samaa mieltä",
+    "disagreed": "Eri mieltä",
+    "passed": "Ohitti"
+  },
+  "beeswarm": {
+    "title": "Hur splittrande var konversationen?",
+    "text": "Uttalanden (här som små cirklar) till vänster röstades på samma sätt - antingen var alla överens eller alla oeniga. Uttalanden till höger var splittrande - deltagarna var oeniga om godkännande och oenighet.",
+    "howto_strong": "Hur man använder detta:",
+    "howto": "Hovra över för att se uttalandets text. Börja längst till höger för att ta reda på vilket det mest splittrande uttalandet var.",
+    "consensus": "Konsensusuttalanden",
+    "divisive": "Splittrande uttalanden"
   }
 }
+

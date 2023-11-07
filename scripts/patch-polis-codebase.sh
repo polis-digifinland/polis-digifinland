@@ -82,12 +82,14 @@ dos2unix -q ./client-report/package.json
 dos2unix -q ./client-report/package-lock.json
 dos2unix -q ./client-report/src/components/overview.js
 dos2unix -q ./client-report/src/components/controls/controls.js
+dos2unix -q ./client-report/src/components/beeswarm/beeswarm.js
 patch ./client-report/gulpfile.js < ../patches/client-report/gulpfile.js.patch
 patch ./client-report/src/index.js < ../patches/client-report/src/index.js.patch
 patch ./client-report/package.json < ../patches/client-report/package.json.patch
 patch ./client-report/package-lock.json < ../patches/client-report/package-lock.json.patch
 patch ./client-report/src/components/overview.js < ../patches/client-report/src/components/overview.js.patch
 patch ./client-report/src/components/controls/controls.js < ../patches/client-report/src/components/controls/controls.js.patch
+patch ./client-report/src/components/beeswarm/beeswarm.js < ../patches/client-report/src/components/beeswarm/beeswarm.js.patch
 
 # patch 9: redirect to /signin instead of /home after sign out
 dos2unix -q ./client-admin/src/components/landers/signout.js
