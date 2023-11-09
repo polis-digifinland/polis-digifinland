@@ -129,6 +129,7 @@ services:
       - TAG
     depends_on:
       - "server"
+    restart: unless-stopped
     networks:
       - "polis-net"
     ports:
