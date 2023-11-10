@@ -83,6 +83,16 @@ dos2unix -q ./client-report/package-lock.json
 dos2unix -q ./client-report/src/components/overview.js
 dos2unix -q ./client-report/src/components/controls/controls.js
 dos2unix -q ./client-report/src/components/beeswarm/beeswarm.js
+dos2unix -q ./client-report/src/components/framework/heading.js
+dos2unix -q ./client-report/src/components/framework/legend.js
+dos2unix -q ./client-report/src/components/lists/allCommentsModeratedIn.js
+dos2unix -q ./client-report/src/components/lists/commentList.js
+dos2unix -q ./client-report/src/components/lists/majorityStrict.js
+dos2unix -q ./client-report/src/components/lists/metadata.js
+dos2unix -q ./client-report/src/components/lists/participantGroup.js
+dos2unix -q ./client-report/src/components/lists/participantGroups.js
+dos2unix -q ./client-report/src/components/lists/uncertainty.js
+dos2unix -q ./client-report/src/components/participantsGraph/participantsGraph.js
 patch ./client-report/gulpfile.js < ../patches/client-report/gulpfile.js.patch
 patch ./client-report/src/index.js < ../patches/client-report/src/index.js.patch
 patch ./client-report/package.json < ../patches/client-report/package.json.patch
@@ -90,6 +100,16 @@ patch ./client-report/package-lock.json < ../patches/client-report/package-lock.
 patch ./client-report/src/components/overview.js < ../patches/client-report/src/components/overview.js.patch
 patch ./client-report/src/components/controls/controls.js < ../patches/client-report/src/components/controls/controls.js.patch
 patch ./client-report/src/components/beeswarm/beeswarm.js < ../patches/client-report/src/components/beeswarm/beeswarm.js.patch
+patch ./client-report/src/components/framework/heading.js < ../patches/client-report/src/components/framework/heading.js.patch
+patch ./client-report/src/components/framework/legend.js < ../patches/client-report/src/components/framework/legend.js.patch
+patch ./client-report/src/components/lists/allCommentsModeratedIn.js < ../patches/client-report/src/components/lists/allCommentsModeratedIn.js.patch
+patch ./client-report/src/components/lists/commentList.js < ../patches/client-report/src/components/lists/commentList.js.patch
+patch ./client-report/src/components/lists/majorityStrict.js < ../patches/client-report/src/components/lists/majorityStrict.js.patch
+patch ./client-report/src/components/lists/metadata.js < ../patches/client-report/src/components/lists/metadata.js.patch
+patch ./client-report/src/components/lists/participantGroup.js < ../patches/client-report/src/components/lists/participantGroup.js.patch
+patch ./client-report/src/components/lists/participantGroups.js < ../patches/client-report/src/components/lists/participantGroups.js.patch
+patch ./client-report/src/components/lists/uncertainty.js < ../patches/client-report/src/components/lists/uncertainty.js.patch
+patch ./client-report/src/components/participantsGraph/participantsGraph.js < ../patches/client-report/src/components/participantsGraph/participantsGraph.js.patch
 
 # patch 9: redirect to /signin instead of /home after sign out
 dos2unix -q ./client-admin/src/components/landers/signout.js

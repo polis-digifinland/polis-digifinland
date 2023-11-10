@@ -5,6 +5,9 @@
     "loading_nothing_to_show": "Nothing to show yet",
     "loading": "Loading ..."
   },
+  "heading": {
+    "title": "Report"
+  },
   "controls": {
     "auto_refresh": "auto-refresh",
     "color_blind_mode": "color blind mode"
@@ -40,6 +43,64 @@
     "howto": "Hover to see the statement text. Start on the far right to find out what the most divisive statement was.",
     "consensus": "Consensus statements",
     "divisive": "Divisive statements"
+  },
+  "legend": {
+    "agreed": "Agreed",
+    "disagreed": "Disagreed",
+    "passed": "Passed",
+    "didnotvote": "Didn&apos;t vote"
+  },
+  "all_comments": {
+    "title": "All statements",
+    "text": "Group votes across all statements, excluding those statements which were moderated out.",
+    "sortby": "Sort by: ",
+    "tid": "Statement Id",
+    "consensus": "Group-informed Consensus",
+    "numvotes": "Number of votes",
+    "agreed": "Agreed",
+    "disagreed": "Disagreed",
+    "passed": "Passed"
+  },
+  "comment_list": {
+    "agreed": "Agreed",
+    "disagreed": "Disagreed",
+    "passed": "Passed",
+    "respondents": " Respondents",
+    "overall": "Overall",
+    "statement": "STATEMENT"
+  },
+  "majority": {
+    "title": "Majority",
+    "text": "Here's what most people agreed with.",
+    "desc": "60% or more of all participants voted one way or the other, regardless of whether large amounts of certain minority opinion groups voted the other way."
+  },
+  "participant_groups": {
+    "title": "Opinion Groups",
+    "text": "Across {{param1}} total participants, {{param2}} opinion groups emerged. There are two factors that define an opinion group. First, each opinion group is made up of a number of participants who tended to vote similarly on multiple statements. Second, each group of participants who voted similarly will have also voted distinctly differently from other groups.",
+    "group": "Group",
+    "participants": " participants",
+    "grp_desc": "Statements which make this group unique, by their votes: "
+  },
+  "metadata": {
+    "title": "Metadata",
+    "text": "The demographic breakdown of each group, as self reported by agreeing and disagreeing on statements marked 'metadata' by moderators."
+  },
+  "uncertainty": {
+    "title": "Areas of uncertainty",
+    "text": "Across all {{param1}} participants, there was uncertainty about the following statements. Greater than 30% of participants who saw these statements 'passed'.",
+    "desc": "Areas of uncertainty can provide avenues to educate and open dialogue with your community."
+  },
+  "graph": {
+    "title": "Graph",
+    "text": "Which statements were voted on similarly? How do participants relate to each other?",
+    "desc": "In this graph, statements are positioned more closely to statements which were voted on similarly. Participants, in turn, are positioned more closely to statements on which they agreed, and further from statements on which they disagreed. This means participants who voted similarly are closer together.",
+    "axes": "Axes",
+    "radial_axes": "Radial axes",
+    "statements": "Statements",
+    "participants_bucketized": "Participants (bucketized)",
+    "group_outline": "Group outline",
+    "group_labels": "Group labels",
+    "click_text": "Click a statement, identified by its number, to explore regions of the graph."
   }
 }
 

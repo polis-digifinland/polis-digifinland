@@ -41,7 +41,7 @@ const Overview = ({
   //stats,
   computedStats,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
     <div >
       <p style={globals.primaryHeading}>{t('overview.title')}</p>

@@ -1,0 +1,116 @@
+--- ./client-report/src/components/participantsGraph/participantsGraph.js	2023-11-10 19:13:30.057260771 +0200
++++ ../patches/client-report/src/components/participantsGraph/participantsGraph.js	2023-11-10 19:13:11.376026137 +0200
+@@ -11,6 +11,7 @@
+ import Comments from "../commentsGraph/comments";
+ import Hull from "./hull";
+ import CommentList from "../lists/commentList";
++import { withTranslation } from 'react-i18next';
+ 
+ const pointsPerSquarePixelMax = 0.0017; /* choose dynamically ? */
+ const contourBandwidth = 20;
+@@ -68,7 +69,7 @@
+   );
+ };
+ 
+-class ParticipantsGraph extends React.Component {
++class ParticipantsGraphTranslated extends React.Component {
+   constructor(props) {
+     super(props);
+     this.Viewer = null;
+@@ -128,20 +129,13 @@
+       .size([globals.side, globals.side])
+       // .bandwidth(10)(baseClustersScaled)
+       .bandwidth(contourBandwidth)(baseClustersScaled);
+-
++    const { t } = this.props;
+     return (
+       <div style={{ position: "relative" }}>
+         <div>
+-          <p style={globals.primaryHeading}> Graph </p>
+-          <p style={globals.paragraph}>
+-            Which statements were voted on similarly? How do participants relate to each other?
+-          </p>
+-          <p style={globals.paragraph}>
+-            In this graph, statements are positioned more closely to statements which were voted on
+-            similarly. Participants, in turn, are positioned more closely to statements on which
+-            they agreed, and further from statements on which they disagreed. This means
+-            participants who voted similarly are closer together.
+-          </p>
++          <p style={globals.primaryHeading}>{t('graph.title')}</p>
++          <p style={globals.paragraph}>{t('graph.text')}</p>
++          <p style={globals.paragraph}>{t('graph.desc')}</p>
+         </div>
+         <div>
+           {
+@@ -177,7 +171,7 @@
+               this.setState({ showAxes: !this.state.showAxes });
+             }}
+           >
+-            Axes
++            {t('graph.axes')}
+           </button>
+           <button
+             style={{
+@@ -195,7 +189,7 @@
+               });
+             }}
+           >
+-            Radial axes
++            {t('graph.radial_axes')}
+           </button>
+           {/* <button
+             style={{
+@@ -227,7 +221,7 @@
+               this.setState({ showComments: !this.state.showComments });
+             }}
+           >
+-            Statements
++            {t('graph.statements')}
+           </button>
+           <button
+             style={{
+@@ -243,7 +237,7 @@
+               this.setState({ showParticipants: !this.state.showParticipants });
+             }}
+           >
+-            Participants (bucketized)
++            {t('graph.participants_bucketized')}
+           </button>
+           <button
+             style={{
+@@ -259,7 +253,7 @@
+               this.setState({ showGroupOutline: !this.state.showGroupOutline });
+             }}
+           >
+-            Group outline
++            {t('graph.group_outline')}
+           </button>
+           <button
+             style={{
+@@ -275,7 +269,7 @@
+               this.setState({ showGroupLabels: !this.state.showGroupLabels });
+             }}
+           >
+-            Group labels
++            {t('graph.group_labels')}
+           </button>
+         </div>
+ 
+@@ -291,7 +285,7 @@
+               voteColors={this.props.voteColors}
+             />
+           ) : (
+-            <p>Click a statement, identified by its number, to explore regions of the graph.</p>
++            <p>{t('graph.click_text')}</p>
+           )}
+         </div>
+ 
+@@ -448,4 +442,6 @@
+   }
+ }
+ 
+-export default ParticipantsGraph;
++//export default ParticipantsGraph;
++const ParticipantsGraph = withTranslation()(ParticipantsGraphTranslated);
++export default withTranslation()(ParticipantsGraph);
+\ No newline at end of file

@@ -75,6 +75,16 @@ dos2unix -q ./client-report/package-lock.json
 dos2unix -q ./client-report/src/components/overview.js
 dos2unix -q ./client-report/src/components/controls/controls.js
 dos2unix -q ./client-report/src/components/beeswarm/beeswarm.js
+dos2unix -q ./client-report/src/components/framework/heading.js
+dos2unix -q ./client-report/src/components/framework/legend.js
+dos2unix -q ./client-report/src/components/lists/allCommentsModeratedIn.js
+dos2unix -q ./client-report/src/components/lists/commentList.js
+dos2unix -q ./client-report/src/components/lists/majorityStrict.js
+dos2unix -q ./client-report/src/components/lists/metadata.js
+dos2unix -q ./client-report/src/components/lists/participantGroup.js
+dos2unix -q ./client-report/src/components/lists/participantGroups.js
+dos2unix -q ./client-report/src/components/lists/uncertainty.js
+dos2unix -q ./client-report/src/components/participantsGraph/participantsGraph.js
 diff -u ./client-participation/js/strings.js ../patches/client-participation/js/strings.js > ../patches/client-participation/js/strings.js.patch
 diff -u ./client-report/gulpfile.js ../patches/client-report/gulpfile.js > ../patches/client-report/gulpfile.js.patch
 diff -u ./client-report/src/index.js ../patches/client-report/src/index.js > ../patches/client-report/src/index.js.patch
@@ -83,7 +93,18 @@ diff -u ./client-report/package-lock.json ../patches/client-report/package-lock.
 diff -u ./client-report/src/components/overview.js ../patches/client-report/src/components/overview.js > ../patches/client-report/src/components/overview.js.patch
 diff -u ./client-report/src/components/controls/controls.js ../patches/client-report/src/components/controls/controls.js > ../patches/client-report/src/components/controls/controls.js.patch
 diff -u ./client-report/src/components/beeswarm/beeswarm.js ../patches/client-report/src/components/beeswarm/beeswarm.js > ../patches/client-report/src/components/beeswarm/beeswarm.js.patch
+diff -u ./client-report/src/components/framework/heading.js ../patches/client-report/src/components/framework/heading.js > ../patches/client-report/src/components/framework/heading.js.patch
+diff -u ./client-report/src/components/framework/legend.js ../patches/client-report/src/components/framework/legend.js > ../patches/client-report/src/components/framework/legend.js.patch
+diff -u ./client-report/src/components/lists/allCommentsModeratedIn.js ../patches/client-report/src/components/lists/allCommentsModeratedIn.js > ../patches/client-report/src/components/lists/allCommentsModeratedIn.js.patch
+diff -u ./client-report/src/components/lists/commentList.js ../patches/client-report/src/components/lists/commentList.js > ../patches/client-report/src/components/lists/commentList.js.patch
+diff -u ./client-report/src/components/lists/majorityStrict.js ../patches/client-report/src/components/lists/majorityStrict.js > ../patches/client-report/src/components/lists/majorityStrict.js.patch
+diff -u ./client-report/src/components/lists/metadata.js ../patches/client-report/src/components/lists/metadata.js > ../patches/client-report/src/components/lists/metadata.js.patch
+diff -u ./client-report/src/components/lists/participantGroup.js ../patches/client-report/src/components/lists/participantGroup.js > ../patches/client-report/src/components/lists/participantGroup.js.patch
+diff -u ./client-report/src/components/lists/participantGroups.js ../patches/client-report/src/components/lists/participantGroups.js > ../patches/client-report/src/components/lists/participantGroups.js.patch
+diff -u ./client-report/src/components/lists/uncertainty.js ../patches/client-report/src/components/lists/uncertainty.js > ../patches/client-report/src/components/lists/uncertainty.js.patch
+diff -u ./client-report/src/components/participantsGraph/participantsGraph.js ../patches/client-report/src/components/participantsGraph/participantsGraph.js > ../patches/client-report/src/components/participantsGraph/participantsGraph.js.patch
 
+dos2unix -q ../patches/client-report/src/components/participantsGraph/participantsGraph.js
 # patch 9: redirect to /signin instead of /home after sign out
 dos2unix -q ./client-admin/src/components/landers/signout.js
 diff -u ./client-admin/src/components/landers/signout.js ../patches/client-admin/src/components/landers/signout.js > ../patches/client-admin/src/components/landers/signout.js.patch

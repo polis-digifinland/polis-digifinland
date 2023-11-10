@@ -21,7 +21,7 @@
        })
    }
    render() {
-+    const { t, i18n } = this.props;
++    const { t } = this.props;
      return (
        <div style={{width: this.svgWidth}}>
 -        <p style={globals.primaryHeading}> How divisive was the conversation? </p>

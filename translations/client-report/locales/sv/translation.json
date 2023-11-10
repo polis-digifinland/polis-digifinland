@@ -5,6 +5,9 @@
     "loading_nothing_to_show": "Inget att visa än",
     "loading": "Läser in ..."
   },
+  "heading": {
+    "title": "Rapportera"
+  },
   "controls": {
     "auto_refresh": "auto-uppdatering",
     "color_blind_mode": "färgblind läge"
@@ -40,6 +43,64 @@
     "howto": "Hovra över för att se uttalandets text. Börja längst till höger för att ta reda på vilket det mest splittrande uttalandet var.",
     "consensus": "Konsensusuttalanden",
     "divisive": "Splittrande uttalanden"
+  },
+  "legend": {
+    "agreed": "Överens",
+    "disagreed": "Inte överens",
+    "passed": "Godkänd",
+    "didnotvote": "Röstade inte"
+  },
+  "all_comments": {
+    "title": "Alla uttalanden",
+    "text": "Gruppera röster över alla uttalanden, utom de uttalanden som modererades bort.",
+    "sortby": "Sortera efter: ",
+    "tid": "Uttalande-ID",
+    "consensus": "Gruppinformerad konsensus",
+    "numvotes": "Antal röster",
+    "agreed": "Enig",
+    "disagreed": "Oenig",
+    "passed": "Godkänd"
+  },
+  "comment_list": {
+    "agreed": "Enig",
+    "disagreed": "Oenig",
+    "passed": "Godkänd",
+    "respondents": " Respondenter",
+    "overall": "Övergripande",
+    "statement": "PÅSTÅENDE"
+  },
+  "majority": {
+    "title": "Majoritet",
+    "text": "Här är vad de flesta personerna var överens om.",
+    "desc": "60% eller fler av alla deltagare röstade på ett eller annat sätt, oavsett om stora mängder av vissa minoritetsåsiktsgrupper röstade på det andra sättet."
+  },
+  "participant_groups": {
+    "title": "Åsiktsgrupper",
+    "text": "Över {{param1}} totala deltagare uppstod {{param2}} åsiktsgrupper. Det finns två faktorer som definierar en åsiktsgrupp. För det första består varje åsiktsgrupp av ett antal deltagare som tenderade att rösta liknande på flera uttalanden. För det andra kommer varje grupp av deltagare som röstade liknande också ha röstat väsentligt annorlunda jämfört med andra grupper.",
+    "group": "Grupp",
+    "participants": " deltagare",
+    "grp_desc": "Uttalanden som gör denna grupp unik, genom sina röster: "
+  },
+  "metadata": {
+    "title": "Metadata",
+    "text": "Den demografiska uppdelningen av varje grupp, som självrapporterades genom att hålla med eller inte hålla med om uttalanden markerade som 'metadata' av moderatorer."
+  },
+  "uncertainty": {
+    "title": "Områden av osäkerhet",
+    "text": "Över alla {{param1}} deltagare fanns det osäkerhet kring följande uttalanden. Mer än 30% av deltagarna som såg dessa uttalanden ansåg dem som 'godkända'.",
+    "desc": "Områden av osäkerhet kan erbjuda möjligheter att utbilda och öppna dialog med din gemenskap."
+  },
+  "graph": {
+    "title": "Graf",
+    "text": "Vilka uttalanden röstades på liknande sätt? Hur relaterar deltagarna till varandra?",
+    "desc": "I denna graf är uttalanden placerade närmare uttalanden som röstades på liknande sätt. Deltagare är i sin tur placerade närmare uttalanden som de höll med om, och längre bort från uttalanden som de inte höll med om. Detta innebär att deltagare som röstade på liknande sätt är närmare varandra.",
+    "axes": "Axlar",
+    "radial_axes": "Radiella axlar",
+    "statements": "Uttalanden",
+    "participants_bucketized": "Deltagare (grupperade)",
+    "group_outline": "Gruppens kontur",
+    "group_labels": "Gruppförklaringar",
+    "click_text": "Klicka på ett uttalande, identifierat med dess nummer, för att utforska olika regioner av grafen."
   }
 }
 

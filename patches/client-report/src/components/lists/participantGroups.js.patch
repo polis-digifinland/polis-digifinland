@@ -1,0 +1,44 @@
+--- ./client-report/src/components/lists/participantGroups.js	2023-11-10 18:21:30.383722540 +0200
++++ ../patches/client-report/src/components/lists/participantGroups.js	2023-11-10 18:22:02.646412250 +0200
+@@ -6,8 +6,9 @@
+ // import style from "../../util/style";
+ import * as globals from "../globals";
+ import Metadata from "./metadata";
++import { withTranslation } from 'react-i18next';
+ 
+-class ParticipantGroups extends React.Component {
++class ParticipantGroupsTranslated extends React.Component {
+   constructor(props) {
+     super(props);
+     this.state = {
+@@ -26,6 +27,9 @@
+     if (!this.props.conversation) {
+       return <div>Loading Groups</div>;
+     }
++    const { t } = this.props;
++    const ptptCount=this.props.ptptCount;
++    const groups=this.props.math["group-votes"].length;
+     return (
+       <div style={Object.assign(
+         {},
+@@ -33,10 +37,8 @@
+         this.props.style
+       )}>
+       <div>
+-        <p style={globals.primaryHeading}> Opinion Groups </p>
+-        <p style={globals.paragraph}>
+-          Across {this.props.ptptCount} total participants, {this.props.math["group-votes"].length} opinion groups emerged. There are two factors that define an opinion group. First, each opinion group is made up of a number of participants who tended to vote similarly on multiple statements. Second, each group of participants who voted similarly will have also voted distinctly differently from other groups.
+-        </p>
++        <p style={globals.primaryHeading}>{t('participant_groups.title')}</p>
++        <p style={globals.paragraph}>{t('participant_groups.text', { param1: ptptCount, param2: groups })}</p>
+       <Metadata
+         math={this.props.math}
+         comments={this.props.comments}
+@@ -105,4 +107,6 @@
+   }
+ }
+ 
+-export default ParticipantGroups;
++//export default ParticipantGroups;
++const ParticipantGroups = withTranslation()(ParticipantGroupsTranslated);
++export default withTranslation()(ParticipantGroups);

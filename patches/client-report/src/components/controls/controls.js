@@ -7,7 +7,7 @@ import settings from "../../settings";
 
 import { withTranslation } from 'react-i18next';
 
-class LegacyControls extends React.Component {
+class ControlsTranslated extends React.Component {
 
   constructor(props) {
     super(props);
@@ -63,7 +63,7 @@ class LegacyControls extends React.Component {
 }
         // <Checkbox value="pineapple"/>
 
-const Controls = withTranslation()(LegacyControls);
+const Controls = withTranslation()(ControlsTranslated);
 
 //export default Controls;
 export default withTranslation()(Controls);

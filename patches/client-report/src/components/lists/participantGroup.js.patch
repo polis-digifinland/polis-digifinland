@@ -1,0 +1,36 @@
+--- ./client-report/src/components/lists/participantGroup.js	2023-11-10 18:21:27.553831171 +0200
++++ ../patches/client-report/src/components/lists/participantGroup.js	2023-11-10 18:20:35.043497995 +0200
+@@ -6,6 +6,8 @@
+ // import style from "../../util/style";
+ import CommentList from "./commentList";
+ 
++import { useTranslation } from 'react-i18next';
++
+ const ParticipantGroup = ({
+   gid,
+   groupComments,
+@@ -21,10 +23,10 @@
+   math,
+   voteColors,
+ }) => {
+-
++  const { t } = useTranslation();
+   let groupLabel = groupName;
+   if (typeof groupLabel === "undefined") {
+-    groupLabel = "Group " + globals.groupLabels[gid];
++    groupLabel = t('participant_groups.group')+' '+ globals.groupLabels[gid];
+   }
+ 
+   return (
+@@ -33,9 +35,9 @@
+         width: "100%",
+       }}>
+       <p style={globals.secondaryHeading}>
+-        {groupLabel}: {groupVotesForThisGroup["n-members"]} participants
++        {groupLabel}: {groupVotesForThisGroup["n-members"]} {t('participant_groups.participants')}
+       </p>
+-      <p style={globals.paragraph}> Statements which make this group unique, by their votes: </p>
++      <p style={globals.paragraph}>{t('participant_groups.grp_desc')}</p>
+       <CommentList
+         conversation={conversation}
+         ptptCount={ptptCount}

@@ -5,6 +5,9 @@
     "loading_nothing_to_show": "Ei mitään näytettävää",
     "loading": "Lataa ..."
   },
+  "heading": {
+    "title": "Raportti"
+  },
   "controls": {
     "auto_refresh": "Sivun automaattinen päivitys",
     "color_blind_mode": "Värisokeus tila"
@@ -40,6 +43,64 @@
     "howto": "Vie hiiri nähdäksesi lausunnon tekstin. Aloita äärioikealta selvittääksesi, mikä oli erimielisin lausunto.",
     "consensus": "Samaa mieltä",
     "divisive": "Eri mieltä"
+  },
+  "legend": {
+    "agreed": "Samaa mieltä",
+    "disagreed": "Eri mieltä",
+    "passed": "Ohitti",
+    "didnotvote": "Ei äänestänyt"
+  },
+  "all_comments": {
+    "title": "Kaikki kannanotot",
+    "text": "Äänestykset kaikista kannanotoista, lukuun ottamatta niitä kannanottoja, jotka on moderoitu.",
+    "sortby": "Järjestä: ",
+    "tid": "Järjestysnumero",
+    "consensus": "Ryhmän samanmielisyys",
+    "numvotes": "Äänien määrä",
+    "agreed": "Samaa mieltä",
+    "disagreed": "Eri mieltä",
+    "passed": "Ohitti"
+  },
+  "comment_list": {
+    "agreed": "Samaa mieltä",
+    "disagreed": "Eri mieltä",
+    "passed": "Ohitti",
+    "respondents": " Vastaajaa",
+    "overall": "YHTEENSÄ",
+    "statement": "KANNANOTTO"
+  },
+  "majority": {
+    "title": "Enemmistön mielipide",
+    "text": "Tässä on se, mistä useimmat ihmiset olivat samaa mieltä.",
+    "desc": "Kaikista osallistujista 60 % tai enemmän äänesti suuntaan tai toiseen, riippumatta siitä, äänestikö suuri määrä tiettyjä vähemmistöryhmiä toisin."
+  },
+  "participant_groups": {
+    "title": "Mielipideryhmät",
+    "text": "Yhteensä {{param1}} osallistujasta syntyi {{param2}} mielipideryhmää. Mielipideryhmän määrittelee kaksi tekijää. Ensinnäkin jokainen mielipideryhmä koostuu useista osallistujista, joilla oli tapana äänestää samalla tavalla useista lausunnoista. Toiseksi jokainen osallistujaryhmä, joka äänesti samalla tavalla, on myös äänestänyt selvästi eri tavalla kuin muut ryhmät.",
+    "group": "Ryhmä",
+    "participants": " osallistujaa",
+    "grp_desc": "Kannanotot, jotka tekevät tästä ryhmästä ainutlaatuisen ääniensä perusteella: "
+  },
+  "metadata": {
+    "title": "Metadata",
+    "text": "Kunkin ryhmän demografinen jakautuminen, sellaisena kuin se on itse raportoitu hyväksymällä ja eri mieltä väittämistä, jotka moderaattorit ovat merkinneet 'metadata'."
+  },
+  "uncertainty": {
+    "title": "Epävarmuus",
+    "text": "Kaikkien {{param1}} osallistujan kesken, seuraavien lausuntojen suhteen oli epävarmuutta. Yli 30 % osallistujista, jotka näkivät nämä lausunnot 'ohittivat' ne.",
+    "desc": "Epävarmuusalueet voivat tarjota keinoja kouluttaa ja käydä avointa vuoropuhelua yhteisösi kanssa."
+  },
+  "graph": {
+    "title": "Kaavio",
+    "text": "Mistä lausunnoista äänestettiin samalla tavalla? Miten osallistujat suhtautuvat toisiinsa?",
+    "desc": "Tässä kaaviossa lausunnot on sijoitettu lähemmäksi lausuntoja, joista äänestettiin samalla tavalla. Osallistujat puolestaan sijoittuvat lähemmäksi lausuntoja, joista he olivat samaa mieltä, ja kauempana lausunnoista, joista he olivat eri mieltä. Tämä tarkoittaa, että samalla tavalla äänestäneet osallistujat ovat lähempänä toisiaan.",
+    "axes": "Akselit",
+    "radial_axes": "Radiaaliset akselit",
+    "statements": "Kannanotot",
+    "participants_bucketized": "Osallistujat (rajattu)",
+    "group_outline": "Ryhmän hahmotelma",
+    "group_labels": "Ryhmän selitteet",
+    "click_text": "Napsauta lauseketta, joka tunnistetaan sen numerolla, tutkiaksesi kaavion alueita."
   }
 }
 

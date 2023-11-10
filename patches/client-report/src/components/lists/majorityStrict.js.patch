@@ -1,0 +1,31 @@
+--- ./client-report/src/components/lists/majorityStrict.js	2023-11-10 13:52:41.892296800 +0200
++++ ../patches/client-report/src/components/lists/majorityStrict.js	2023-11-10 13:51:50.841011580 +0200
+@@ -5,6 +5,8 @@
+ import CommentList from "./commentList";
+ import Legend from "../framework/legend";
+ 
++import { useTranslation } from 'react-i18next';
++
+ const MajorityStrict = ({
+   conversation,
+   comments,
+@@ -26,15 +28,12 @@
+   consensus.disagree.forEach((c) => {
+     _consensusTids.push(c.tid);
+   });
+-
++  const { t } = useTranslation();
+   return (
+     <div>
+-      <p style={globals.primaryHeading}> Majority </p>
+-      <p style={globals.paragraph}>Here&apos;s what most people agreed with.</p>
+-      <p style={globals.paragraph}>
+-        60% or more of all participants voted one way or the other, regardless of whether large
+-        amounts of certain minority opinion groups voted the other way.
+-      </p>
++      <p style={globals.primaryHeading}>{t('majority.title')}</p>
++      <p style={globals.paragraph}>{t('majority.text')}</p>
++      <p style={globals.paragraph}>{t('majority.desc')}</p>
+       <Legend voteColors={voteColors} />
+       <div style={{ marginTop: 20 }}>
+         <CommentList

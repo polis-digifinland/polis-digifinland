@@ -7,7 +7,7 @@
 -class Controls extends React.Component {
 +import { withTranslation } from 'react-i18next';
 +
-+class LegacyControls extends React.Component {
++class ControlsTranslated extends React.Component {
  
    constructor(props) {
      super(props);
@@ -46,7 +46,6 @@
          // <Checkbox value="pineapple"/>
  
 -export default Controls;
-+const Controls = withTranslation()(LegacyControls);
-+
 +//export default Controls;
++const Controls = withTranslation()(ControlsTranslated);
 +export default withTranslation()(Controls);
