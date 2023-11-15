@@ -48,4 +48,5 @@
 -export default Controls;
 +//export default Controls;
 +const Controls = withTranslation()(ControlsTranslated);
++
 +export default withTranslation()(Controls);

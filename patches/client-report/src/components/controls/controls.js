@@ -63,7 +63,7 @@ class ControlsTranslated extends React.Component {
 }
         // <Checkbox value="pineapple"/>
 
+//export default Controls;
 const Controls = withTranslation()(ControlsTranslated);
 
-//export default Controls;
 export default withTranslation()(Controls);
