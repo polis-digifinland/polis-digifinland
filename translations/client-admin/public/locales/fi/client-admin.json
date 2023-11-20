@@ -1,0 +1,15 @@
+{
+  "file_desc": "Käännökset suomeksi",
+  "app": {
+    "nav": {
+      "conversations": "Keskustelut",
+      "integrate": "Upotus",
+      "account": "Tili"
+    },
+    "loading": "Lataa ..."
+  },
+  "header": {
+    "signout": "Kirjaudu ulos"
+  }
+}
+

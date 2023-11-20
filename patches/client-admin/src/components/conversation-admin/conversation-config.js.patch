@@ -1,5 +1,5 @@
---- ./client-admin/src/components/conversation-admin/conversation-config.js	2023-03-31 15:20:01.645798000 +0300
-+++ ../patches/client-admin/src/components/conversation-admin/conversation-config.js	2023-03-31 14:51:24.849895000 +0300
+--- ./client-admin/src/components/conversation-admin/conversation-config.js
++++ ../patches/client-admin/src/components/conversation-admin/conversation-config.js
 @@ -156,23 +156,32 @@
            Show explanation text above voting and visualization
          </CheckboxField>

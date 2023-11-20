@@ -1,5 +1,5 @@
---- ./client-report/src/components/lists/participantGroup.js	2023-11-10 18:21:27.553831171 +0200
-+++ ../patches/client-report/src/components/lists/participantGroup.js	2023-11-10 18:20:35.043497995 +0200
+--- ./client-report/src/components/lists/participantGroup.js
++++ ../patches/client-report/src/components/lists/participantGroup.js
 @@ -6,6 +6,8 @@
  // import style from "../../util/style";
  import CommentList from "./commentList";

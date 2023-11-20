@@ -1,5 +1,5 @@
---- ./client-report/src/components/controls/controls.js	2023-11-06 18:48:25.607203950 +0200
-+++ ../patches/client-report/src/components/controls/controls.js	2023-11-06 18:41:00.333527300 +0200
+--- ./client-report/src/components/controls/controls.js
++++ ../patches/client-report/src/components/controls/controls.js
 @@ -5,7 +5,9 @@
  import React from "react";
  import settings from "../../settings";

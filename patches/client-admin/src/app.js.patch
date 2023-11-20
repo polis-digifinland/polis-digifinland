@@ -1,0 +1,66 @@
+--- ./client-admin/src/app.js
++++ ../patches/client-admin/src/app.js
+@@ -29,6 +29,8 @@
+ import Account from './components/conversations-and-account/account'
+ import Integrate from './components/conversations-and-account/integrate'
+ 
++import { withTranslation } from 'react-i18next';
++
+ import InteriorHeader from './components/interior-header'
+ 
+ const PrivateRoute = ({ component: Component, isLoading, authed, ...rest }) => {
+@@ -61,7 +63,7 @@
+ @connect((state) => {
+   return state.user
+ })
+-class App extends React.Component {
++class AppTranslated extends React.Component {
+   constructor(props) {
+     super(props)
+     this.state = {
+@@ -128,6 +130,7 @@
+ 
+   render() {
+     const { location } = this.props
++    const { t } = this.props;
+     return (
+       <>
+         <Switch>
+@@ -177,17 +180,17 @@
+                     <Box sx={{ mr: [5], p: [4], flex: '0 0 auto' }}>
+                       <Box sx={{ mb: [3] }}>
+                         <Link sx={{ variant: 'links.nav' }} to={`/`}>
+-                          Conversations
++                          {t('app.nav.conversations')}
+                         </Link>
+                       </Box>
+                       <Box sx={{ mb: [3] }}>
+                         <Link sx={{ variant: 'links.nav' }} to={`/integrate`}>
+-                          Integrate
++                          {t('app.nav.integrate')}
+                         </Link>
+                       </Box>
+                       <Box sx={{ mb: [3] }}>
+                         <Link sx={{ variant: 'links.nav' }} to={`/account`}>
+-                          Account
++                          {t('app.nav.account')}
+                         </Link>
+                       </Box>
+                     </Box>
+@@ -245,7 +248,7 @@
+   }
+ }
+ 
+-App.propTypes = {
++AppTranslated.propTypes = {
+   dispatch: PropTypes.func,
+   isLoggedIn: PropTypes.bool,
+   location: PropTypes.shape({
+@@ -259,4 +262,6 @@
+   })
+ }
+ 
+-export default App
++//export default App
++const App = withTranslation()(AppTranslated);
++export default withTranslation()(App);

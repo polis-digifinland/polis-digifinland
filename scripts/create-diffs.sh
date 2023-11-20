@@ -32,92 +32,57 @@ git clean -fdx
 
 # Create selected patches
 
-# patch 1: enable sending with mailgun EU endpoint
-dos2unix -q ./server/src/email/senders.ts
-diff -u ./server/src/email/senders.ts ../patches/server/src/email/senders.ts > ../patches/server/src/email/senders.ts.patch
+# Array of files
+FILES=(
+math/bin/run # patch1 change max heap memory for math worker
+server/src/email/senders.ts # patch2 enable sending with mailgun EU endpoint
+server/src/server.ts # patch3 1 comment out block that saves encrypted IPs to database when x-forwarded-for header is set in request | 2 force exempt=true to disable http->https redirect to enable working internal LB health checks and Pod readiness probes on GKE
+server/src/utils/constants.ts # patch4 hide social media opt in settings for conversation setup and set opt-in defaults as false
+client-admin/src/components/conversation-admin/conversation-config.js # patch4 hide social media opt in settings for conversation setup and set opt-in defaults as false
+client-admin/src/components/landers/signin.js # patch5 1 hide facebook login/user creation on admin signin page | 2 add dev env warning before login form
+client-admin/src/components/landers/lander-footer.js # patch6 hide TOS link and replace privacy policy link on admin page footer
+client-participation/js/templates/participation.handlebars # patch7 hide footer (logo with pol.is link and other links to privacy policy & terms pages)
+client-participation/js/strings.js # patch8 add finnish and swedish translations
+client-report/gulpfile.js # patch8 add finnish and swedish translations
+client-report/src/index.js # patch8 add finnish and swedish translations
+client-report/package.json # patch8 add finnish and swedish translations
+client-report/package-lock.json # patch8 add finnish and swedish translations
+client-report/src/components/overview.js # patch8 add finnish and swedish translations
+client-report/src/components/controls/controls.js # patch8 add finnish and swedish translations
+client-report/src/components/beeswarm/beeswarm.js # patch8 add finnish and swedish translations
+client-report/src/components/framework/heading.js # patch8 add finnish and swedish translations
+client-report/src/components/framework/legend.js # patch8 add finnish and swedish translations
+client-report/src/components/lists/allCommentsModeratedIn.js # patch8 add finnish and swedish translations
+client-report/src/components/lists/commentList.js # patch8 add finnish and swedish translations
+client-report/src/components/lists/majorityStrict.js # patch8 add finnish and swedish translations
+client-report/src/components/lists/metadata.js # patch8 add finnish and swedish translations
+client-report/src/components/lists/participantGroup.js # patch8 add finnish and swedish translations
+client-report/src/components/lists/participantGroups.js # patch8 add finnish and swedish translations
+client-report/src/components/lists/uncertainty.js # patch8 add finnish and swedish translations
+client-report/src/components/participantsGraph/participantsGraph.js # patch8 add finnish and swedish translations
+client-admin/src/index.js # patch8 add finnish and swedish translations
+client-admin/src/app.js # patch8 add finnish and swedish translations
+client-admin/src/components/interior-header.js # patch8 add finnish and swedish translations
+client-admin/package.json # patch8 add finnish and swedish translations
+client-admin/package-lock.json # patch8 add finnish and swedish translations
+client-admin/src/components/landers/signout.js # patch9 redirect to /signin instead of /home after sign out
+client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js # patch10 change amount of unmoderated comments visible in admin moderate page
+client-participation/vis2/components/graphParticipants.js # patch12 Draw only isSelf icon
+)
 
-# patch 2: fix client-report urls, this was replaced with a new env variable
-#dos2unix -q ./client-report/src/util/url.js
-#patch ./client-report/src/util/url.js <  ../client-report/src/util/url.js.patch
+for f in "${FILES[@]}"
+do
+    #echo "$f"
 
-# patch 3: 
-#  - comment out block that saves encrypted IPs to database when x-forwarded-for header is set in request
-#  - force exempt=true to disable http->https redirect to enable working internal LB health checks and Pod readiness probes on GKE
-dos2unix -q ./server/src/server.ts
-diff -u ./server/src/server.ts ../patches/server/src/server.ts > ../patches/server/src/server.ts.patch
+    # Make sure all files are Unix LF
+    # This is needed for patching to function correctly
+    dos2unix -q "./$f"
+    dos2unix -q "../patches/$f"
+    dos2unix -q "../patches/$f.patch"
 
-# patch 4: hide social media opt in settings for conversation setup and set opt-in defaults as false
-dos2unix -q ./server/src/utils/constants.ts
-diff -u ./server/src/utils/constants.ts ../patches/server/src/utils/constants.ts > ../patches/server/src/utils/constants.ts.patch
-dos2unix -q ./client-admin/src/components/conversation-admin/conversation-config.js
-diff -u ./client-admin/src/components/conversation-admin/conversation-config.js ../patches/client-admin/src/components/conversation-admin/conversation-config.js > ../patches/client-admin/src/components/conversation-admin/conversation-config.js.patch
+    # Create patch diffs for each file in FILES array
+    # Using label to drop the timestamps, easier to rerun this script and not have all patch-files modified in git
+    diff -u --label "./$f" --label "../patches/$f" "./$f" "../patches/$f" > "../patches/$f.patch"
 
-# patch 5:
-# - hide facebook login/user creation on admin signin page
-# - add dev env warning before login form
-dos2unix -q ./client-admin/src/components/landers/signin.js
-diff -u ./client-admin/src/components/landers/signin.js ../patches/client-admin/src/components/landers/signin.js > ../patches/client-admin/src/components/landers/signin.js.patch
-
-# patch 6: hide TOS link and replace privacy policy link on admin page footer
-dos2unix -q ./client-admin/src/components/landers/lander-footer.js
-diff -u ./client-admin/src/components/landers/lander-footer.js ../patches/client-admin/src/components/landers/lander-footer.js > ../patches/client-admin/src/components/landers/lander-footer.js.patch
-
-# patch 7: hide footer (logo with pol.is link and other links to privacy policy & terms pages)
-dos2unix -q ./client-participation/js/templates/participation.handlebars
-diff -u ./client-participation/js/templates/participation.handlebars ../patches/client-participation/js/templates/participation.handlebars > ../patches/client-participation/js/templates/participation.handlebars.patch
-
-# patch 8: add finnish and swedish translations
-dos2unix -q ./client-participation/js/strings.js
-dos2unix -q ./client-report/gulpfile.js
-dos2unix -q ./client-report/src/index.js
-dos2unix -q ./client-report/package.json
-dos2unix -q ./client-report/package-lock.json
-dos2unix -q ./client-report/src/components/overview.js
-dos2unix -q ./client-report/src/components/controls/controls.js
-dos2unix -q ./client-report/src/components/beeswarm/beeswarm.js
-dos2unix -q ./client-report/src/components/framework/heading.js
-dos2unix -q ./client-report/src/components/framework/legend.js
-dos2unix -q ./client-report/src/components/lists/allCommentsModeratedIn.js
-dos2unix -q ./client-report/src/components/lists/commentList.js
-dos2unix -q ./client-report/src/components/lists/majorityStrict.js
-dos2unix -q ./client-report/src/components/lists/metadata.js
-dos2unix -q ./client-report/src/components/lists/participantGroup.js
-dos2unix -q ./client-report/src/components/lists/participantGroups.js
-dos2unix -q ./client-report/src/components/lists/uncertainty.js
-dos2unix -q ./client-report/src/components/participantsGraph/participantsGraph.js
-diff -u ./client-participation/js/strings.js ../patches/client-participation/js/strings.js > ../patches/client-participation/js/strings.js.patch
-diff -u ./client-report/gulpfile.js ../patches/client-report/gulpfile.js > ../patches/client-report/gulpfile.js.patch
-diff -u ./client-report/src/index.js ../patches/client-report/src/index.js > ../patches/client-report/src/index.js.patch
-diff -u ./client-report/package.json ../patches/client-report/package.json > ../patches/client-report/package.json.patch
-diff -u ./client-report/package-lock.json ../patches/client-report/package-lock.json > ../patches/client-report/package-lock.json.patch
-diff -u ./client-report/src/components/overview.js ../patches/client-report/src/components/overview.js > ../patches/client-report/src/components/overview.js.patch
-diff -u ./client-report/src/components/controls/controls.js ../patches/client-report/src/components/controls/controls.js > ../patches/client-report/src/components/controls/controls.js.patch
-diff -u ./client-report/src/components/beeswarm/beeswarm.js ../patches/client-report/src/components/beeswarm/beeswarm.js > ../patches/client-report/src/components/beeswarm/beeswarm.js.patch
-diff -u ./client-report/src/components/framework/heading.js ../patches/client-report/src/components/framework/heading.js > ../patches/client-report/src/components/framework/heading.js.patch
-diff -u ./client-report/src/components/framework/legend.js ../patches/client-report/src/components/framework/legend.js > ../patches/client-report/src/components/framework/legend.js.patch
-diff -u ./client-report/src/components/lists/allCommentsModeratedIn.js ../patches/client-report/src/components/lists/allCommentsModeratedIn.js > ../patches/client-report/src/components/lists/allCommentsModeratedIn.js.patch
-diff -u ./client-report/src/components/lists/commentList.js ../patches/client-report/src/components/lists/commentList.js > ../patches/client-report/src/components/lists/commentList.js.patch
-diff -u ./client-report/src/components/lists/majorityStrict.js ../patches/client-report/src/components/lists/majorityStrict.js > ../patches/client-report/src/components/lists/majorityStrict.js.patch
-diff -u ./client-report/src/components/lists/metadata.js ../patches/client-report/src/components/lists/metadata.js > ../patches/client-report/src/components/lists/metadata.js.patch
-diff -u ./client-report/src/components/lists/participantGroup.js ../patches/client-report/src/components/lists/participantGroup.js > ../patches/client-report/src/components/lists/participantGroup.js.patch
-diff -u ./client-report/src/components/lists/participantGroups.js ../patches/client-report/src/components/lists/participantGroups.js > ../patches/client-report/src/components/lists/participantGroups.js.patch
-diff -u ./client-report/src/components/lists/uncertainty.js ../patches/client-report/src/components/lists/uncertainty.js > ../patches/client-report/src/components/lists/uncertainty.js.patch
-diff -u ./client-report/src/components/participantsGraph/participantsGraph.js ../patches/client-report/src/components/participantsGraph/participantsGraph.js > ../patches/client-report/src/components/participantsGraph/participantsGraph.js.patch
-
-dos2unix -q ../patches/client-report/src/components/participantsGraph/participantsGraph.js
-# patch 9: redirect to /signin instead of /home after sign out
-dos2unix -q ./client-admin/src/components/landers/signout.js
-diff -u ./client-admin/src/components/landers/signout.js ../patches/client-admin/src/components/landers/signout.js > ../patches/client-admin/src/components/landers/signout.js.patch
-
-# patch 10: change amount of unmoderated comments visible in admin moderate page
-dos2unix -q ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
-diff -u ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js > ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js.patch
-
-# patch 11: change max heap memory for math worker
-dos2unix -q ./math/bin/run
-diff -u ./math/bin/run ../patches/math/bin/run > ../patches/math/bin/run.patch
-
-# patch 12: Draw only isSelf icon
-dos2unix -q ./client-participation/vis2/components/graphParticipants.js
-diff -u ./client-participation/vis2/components/graphParticipants.js ../patches/client-participation/vis2/components/graphParticipants.js > ../patches/client-participation/vis2/components/graphParticipants.js.patch
+done
 

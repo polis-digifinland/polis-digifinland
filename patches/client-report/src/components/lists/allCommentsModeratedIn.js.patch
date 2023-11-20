@@ -1,5 +1,5 @@
---- ./client-report/src/components/lists/allCommentsModeratedIn.js	2023-11-10 11:37:06.277287062 +0200
-+++ ../patches/client-report/src/components/lists/allCommentsModeratedIn.js	2023-11-10 11:37:03.127287011 +0200
+--- ./client-report/src/components/lists/allCommentsModeratedIn.js
++++ ../patches/client-report/src/components/lists/allCommentsModeratedIn.js
 @@ -5,6 +5,7 @@
  import CommentList from "./commentList";
  import * as globals from "../globals";

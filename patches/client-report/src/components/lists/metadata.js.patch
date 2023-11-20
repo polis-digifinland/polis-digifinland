@@ -1,5 +1,5 @@
---- ./client-report/src/components/lists/metadata.js	2023-11-10 18:43:48.974178748 +0200
-+++ ../patches/client-report/src/components/lists/metadata.js	2023-11-10 18:41:13.876132800 +0200
+--- ./client-report/src/components/lists/metadata.js
++++ ../patches/client-report/src/components/lists/metadata.js
 @@ -3,6 +3,7 @@
  import React from "react";
  import CommentList from "./commentList";

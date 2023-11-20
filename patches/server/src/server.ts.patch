@@ -1,5 +1,5 @@
---- ./server/src/server.ts	2023-09-27 12:24:31.430266554 +0300
-+++ ../patches/server/src/server.ts	2023-09-27 12:23:42.988023827 +0300
+--- ./server/src/server.ts
++++ ../patches/server/src/server.ts
 @@ -772,7 +772,7 @@
      },
      next: () => any

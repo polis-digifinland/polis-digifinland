@@ -1,5 +1,5 @@
---- ./client-report/gulpfile.js	2023-11-06 18:21:12.144732261 +0200
-+++ ../patches/client-report/gulpfile.js	2023-11-06 18:13:27.632604500 +0200
+--- ./client-report/gulpfile.js
++++ ../patches/client-report/gulpfile.js
 @@ -193,6 +193,12 @@
    fs.writeFileSync(indexDest, index);
  });

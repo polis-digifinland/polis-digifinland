@@ -1,5 +1,5 @@
---- ./client-participation/js/templates/participation.handlebars	2023-04-12 10:45:38.163588000 +0300
-+++ ../patches/client-participation/js/templates/participation.handlebars	2023-04-13 10:25:22.256440000 +0300
+--- ./client-participation/js/templates/participation.handlebars
++++ ../patches/client-participation/js/templates/participation.handlebars
 @@ -187,7 +187,7 @@
           position: relative;
           top: -5px;

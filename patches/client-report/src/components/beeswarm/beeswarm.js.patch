@@ -1,5 +1,5 @@
---- ./client-report/src/components/beeswarm/beeswarm.js	2023-11-07 15:03:16.428629717 +0200
-+++ ../patches/client-report/src/components/beeswarm/beeswarm.js	2023-11-07 15:02:39.636263005 +0200
+--- ./client-report/src/components/beeswarm/beeswarm.js
++++ ../patches/client-report/src/components/beeswarm/beeswarm.js
 @@ -4,6 +4,7 @@
  import CommentList from "../lists/commentList";
  import * as globals from "../globals";

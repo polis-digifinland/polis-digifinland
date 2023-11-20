@@ -1,5 +1,5 @@
---- ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js	2023-09-27 09:04:42.574443175 +0300
-+++ ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js	2023-09-20 09:44:38.033649900 +0300
+--- ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
++++ ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
 @@ -46,7 +46,7 @@
    }
  

@@ -26,7 +26,7 @@ i18n
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
-    ns: 'client-report' // Use the namespace to separate translation files by UI it belongs to
+    ns: 'client-admin' // Use the namespace to separate translation files by UI it belongs to
   });
 
 

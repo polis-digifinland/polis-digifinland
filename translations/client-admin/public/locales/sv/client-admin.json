@@ -1,0 +1,15 @@
+{
+  "file_desc": "Översättningar på svenska",
+  "app": {
+    "nav": {
+      "conversations": "Samtal",
+      "integrate": "Integrera",
+      "account": "Konto"
+    },
+    "loading": "Laddar ..."
+  },
+  "header": {
+    "signout": "Logga ut"
+  }
+}
+

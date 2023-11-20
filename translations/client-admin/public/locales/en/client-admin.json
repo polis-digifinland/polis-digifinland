@@ -1,0 +1,14 @@
+{
+  "file_desc": "Translations in English",
+  "app": {
+    "nav": {
+      "conversations": "Conversations",
+      "integrate": "Integrate",
+      "account": "Account"
+    },
+    "loading": "Loading ..."
+  },
+  "header": {
+    "signout": "Sign out"
+  }
+}

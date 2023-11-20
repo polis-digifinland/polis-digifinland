@@ -1,5 +1,5 @@
---- ./client-report/src/components/lists/uncertainty.js	2023-11-10 18:35:57.628264848 +0200
-+++ ../patches/client-report/src/components/lists/uncertainty.js	2023-11-10 18:34:12.884579400 +0200
+--- ./client-report/src/components/lists/uncertainty.js
++++ ../patches/client-report/src/components/lists/uncertainty.js
 @@ -4,22 +4,19 @@
  import CommentList from "./commentList";
  import * as globals from "../globals";

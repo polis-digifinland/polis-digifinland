@@ -1,5 +1,5 @@
---- ./server/src/utils/constants.ts	2023-04-04 11:54:05.698655000 +0300
-+++ ../patches/server/src/utils/constants.ts	2023-03-31 14:37:21.383348000 +0300
+--- ./server/src/utils/constants.ts
++++ ../patches/server/src/utils/constants.ts
 @@ -1,9 +1,9 @@
  const DEFAULTS = {
    auth_needed_to_vote: false,

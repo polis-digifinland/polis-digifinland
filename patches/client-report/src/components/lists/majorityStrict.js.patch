@@ -1,5 +1,5 @@
---- ./client-report/src/components/lists/majorityStrict.js	2023-11-10 13:52:41.892296800 +0200
-+++ ../patches/client-report/src/components/lists/majorityStrict.js	2023-11-10 13:51:50.841011580 +0200
+--- ./client-report/src/components/lists/majorityStrict.js
++++ ../patches/client-report/src/components/lists/majorityStrict.js
 @@ -5,6 +5,8 @@
  import CommentList from "./commentList";
  import Legend from "../framework/legend";

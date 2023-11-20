@@ -1,5 +1,5 @@
---- ./client-report/src/components/lists/commentList.js	2023-11-10 13:33:55.806468209 +0200
-+++ ../patches/client-report/src/components/lists/commentList.js	2023-11-10 13:35:00.398762248 +0200
+--- ./client-report/src/components/lists/commentList.js
++++ ../patches/client-report/src/components/lists/commentList.js
 @@ -4,6 +4,8 @@
  import _ from "lodash";
  import * as globals from "../globals";

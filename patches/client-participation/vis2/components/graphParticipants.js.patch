@@ -1,5 +1,5 @@
---- ./client-participation/vis2/components/graphParticipants.js	2023-10-06 13:33:47.720679579 +0300
-+++ ../patches/client-participation/vis2/components/graphParticipants.js	2023-10-06 13:33:42.510681613 +0300
+--- ./client-participation/vis2/components/graphParticipants.js
++++ ../patches/client-participation/vis2/components/graphParticipants.js
 @@ -4,6 +4,7 @@
  import {VictoryAnimation} from "victory-core";
  

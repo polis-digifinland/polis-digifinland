@@ -1,5 +1,5 @@
---- ./client-report/src/components/lists/participantGroups.js	2023-11-10 18:21:30.383722540 +0200
-+++ ../patches/client-report/src/components/lists/participantGroups.js	2023-11-10 18:22:02.646412250 +0200
+--- ./client-report/src/components/lists/participantGroups.js
++++ ../patches/client-report/src/components/lists/participantGroups.js
 @@ -6,8 +6,9 @@
  // import style from "../../util/style";
  import * as globals from "../globals";

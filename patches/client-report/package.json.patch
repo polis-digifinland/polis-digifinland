@@ -1,5 +1,5 @@
---- ./client-report/package.json	2023-11-06 18:34:07.234793149 +0200
-+++ ../patches/client-report/package.json	2023-11-06 18:34:28.836261445 +0200
+--- ./client-report/package.json
++++ ../patches/client-report/package.json
 @@ -45,6 +45,9 @@
      "d3-contour": "~1.1.2",
      "d3-scale-chromatic": "~1.1.1",
