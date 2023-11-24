@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: ./path_to_this_script 
+# usage: ./scripts/reset-polis-codebase.sh
 
 # First reset polis submodule to official stable OR edge branch, or at certain commit usable for DigiFinland version.
 

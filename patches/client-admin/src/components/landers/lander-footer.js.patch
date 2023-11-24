@@ -1,19 +1,71 @@
 --- ./client-admin/src/components/landers/lander-footer.js
 +++ ../patches/client-admin/src/components/landers/lander-footer.js
-@@ -18,8 +18,14 @@
-           {emoji('🇺🇸')}, with contributions from around the {emoji('🌍🌏🌎')}
+@@ -1,29 +1,52 @@
+ /** @jsx jsx */
+ import { Component } from 'react'
+-import { Box, Link, Heading, jsx } from 'theme-ui'
++import PropTypes from 'prop-types'
++import { Box, Link, jsx } from 'theme-ui'
+ 
+-import emoji from 'react-easy-emoji'
++import { withTranslation } from 'react-i18next';
++
++class FooterTranslated extends Component {
++
++    componentDidMount() {
++        document.documentElement.style.backgroundColor = "#003d6d"; // Change HTML-elements background color to fit the footer color
++    }
+ 
+-class Header extends Component {
+   render() {
++    const { t } = this.props;
+     return (
+-      <Box sx={{ mt: [3, null, 4] }}>
+-        <Heading
+-          as="h3"
+-          sx={{ fontSize: [4], lineHeight: 'body', my: [2, null, 3] }}>
+-          Legal
+-        </Heading>
+-        <Box sx={{ mb: [2, null, 3], maxWidth: '30em' }}>
+-          Polis is built for the public with {emoji('❤️')} in Seattle{' '}
+-          {emoji('🇺🇸')}, with contributions from around the {emoji('🌍🌏🌎')}
++    <footer sx={{ position: 'absolute', left: '0'}}>
++      <Box sx={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', backgroundColor: '#003d6d', color: '#fff', fontSize: '0.875rem', position: 'relative', bottom: '0', py: '20px' }}>
++        <Box sx={{ width: '30%', minWidth: '300px', display: 'flex', flexDirection: 'column', ml: '4'}}>
++            <h3>{t('footer.whatis')}</h3>
++            <p>{t('footer.desc')}</p>
++        </Box>
++        <Box sx={{ width: '30%', minWidth: '300px', display: 'flex',flexDirection: 'column', alignItems: 'center'}}>
++            <ul sx={{ display: 'flex',flexDirection: 'column', listStyle: 'none',}}>
++                <li sx={{ m: '10px'}}><Link target="_blank" sx={{ color: '#FFF', border: 0 }} href="https://digifinland.fi/tietosuoja/">{t('footer.links.privacy')} 🡥</Link></li>
++                <li sx={{ m: '10px'}}><Link target="_blank" sx={{ color: '#FFF', border: 0 }} href="https://digifinland.fi/toimintamme/polis-kansalaiskeskustelualusta/">{t('footer.links.info')} 🡥</Link></li>
++                <li sx={{ m: '10px'}}><Link target="_blank" sx={{ color: '#FFF', border: 0 }} href="https://compdemocracy.org/Welcome/">The Computational Democracy Project 🡥</Link></li>
++                <li sx={{ m: '10px'}}><Link target="_blank" sx={{ color: '#FFF', border: 0 }} href="https://github.com/compdemocracy/polis">{t('footer.links.source')} 🡥</Link></li>
++            </ul>
          </Box>
-         <Box sx={{ mb: [2, null, 3] }}>
+-        <Box sx={{ mb: [2, null, 3] }}>
 -          © {new Date().getFullYear()} The Authors <Link href="tos">TOS</Link>{' '}
 -          <Link href="privacy">Privacy</Link>
-+          © {new Date().getFullYear()} The Authors 
-+          {' '}
-+
-+          { // remove TOS and replace privacy link with external DigiFinland site privary policy page
-+          // <Link href="tos">TOS</Link>                    
-+          // <Link href="privacy">Privacy</Link>
-+          }
-+          <Link target="_blank" href="https://digifinland.fi/tietosuoja/">Privacy</Link>
++        <Box sx={{ width: '30%', minWidth: '300px', display: 'flex', flexDirection: 'column'}}>
++            <ul sx={{ display: 'flex',flexDirection: 'column', listStyle: 'none',}}>
++                <li><h3 sx={{ m: 0}}>{t('footer.provider')}</h3></li>
++                <li><p sx={{ m: 0}}>DigiFinland Oy</p></li>
++                <li><p sx={{ m: 0}}>Kuntatalo, Toinen linja 14</p></li>
++                <li><p sx={{ m: 0}}>00180 Helsinki</p></li>
++            </ul>
          </Box>
        </Box>
++    </footer>
      )
+   }
+ }
+ 
+-export default Header
++FooterTranslated.propTypes = {
++  t: PropTypes.func.isRequired
++}
++
++// export default Footer
++const Footer = withTranslation()(FooterTranslated);
++export default withTranslation()(Footer);
++

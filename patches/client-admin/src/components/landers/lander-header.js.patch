@@ -1,0 +1,54 @@
+--- ./client-admin/src/components/landers/lander-header.js
++++ ../patches/client-admin/src/components/landers/lander-header.js
+@@ -1,12 +1,21 @@
+ /** @jsx jsx */
+ import { Component } from 'react'
++import PropTypes from 'prop-types'
+ import { Flex, Box, jsx } from 'theme-ui'
+ 
+ import { Link } from 'react-router-dom'
+ import Logomark from '../framework/logomark'
+ 
+-class Header extends Component {
++import { withTranslation } from 'react-i18next';
++
++class HeaderTranslated extends Component {
+   render() {
++    const { t, i18n } = this.props;
++    document.documentElement.lang = i18n.language; // This is too slow for google translate
++    const changeLanguage = (lng) => {
++        i18n.changeLanguage(lng);
++        document.documentElement.lang = lng;
++    };
+     return (
+       <Box>
+         <Flex
+@@ -26,9 +35,14 @@
+               Polis
+             </Link>
+           </Box>
++          <div>
++          <button style={{margin: "10px"}} type="button" onClick={() => changeLanguage('fi')}>FI</button>
++          <button style={{margin: "10px"}} type="button" onClick={() => changeLanguage('sv')}>SV</button>
++          <button style={{margin: "10px"}} type="button" onClick={() => changeLanguage('en')}>EN</button>
++          </div>
+           <Box>
+             <Link sx={{ variant: 'links.nav' }} to="/signin">
+-              Sign in
++              {t('header.signin')}
+             </Link>
+           </Box>
+         </Flex>
+@@ -37,4 +51,11 @@
+   }
+ }
+ 
+-export default Header
++HeaderTranslated.propTypes = {
++  t: PropTypes.func.isRequired,
++  i18n: PropTypes.func.isRequired
++}
++
++// export default Header
++const Header = withTranslation()(HeaderTranslated);
++export default withTranslation()(Header);

@@ -10,7 +10,7 @@
 +class InteriorHeaderTranslated extends React.Component {
    render() {
 +    const { t, i18n } = this.props;
-+    document.documentElement.lang = i18n.language; //This is too slow for google translate
++    document.documentElement.lang = i18n.language; // This is too slow for google translate
 +    const changeLanguage = (lng) => {
 +        i18n.changeLanguage(lng);
 +        document.documentElement.lang = lng;
@@ -41,7 +41,7 @@
  }
  
 -export default InteriorHeader
-+//export default InteriorHeader
++// export default InteriorHeader
 +const InteriorHeader = withTranslation()(InteriorHeaderTranslated);
 +export default withTranslation()(InteriorHeader);
 +

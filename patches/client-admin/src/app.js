@@ -262,6 +262,6 @@ AppTranslated.propTypes = {
   })
 }
 
-//export default App
+// export default App
 const App = withTranslation()(AppTranslated);
 export default withTranslation()(App);

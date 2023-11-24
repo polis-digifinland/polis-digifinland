@@ -9,7 +9,30 @@
     "loading": "Laddar ..."
   },
   "header": {
+    "signin": "Logga in",
     "signout": "Logga ut"
+  },
+  "footer": {
+    "whatis": "Vad är Polis?",
+    "desc": "DigiFinland och Sitra har introducerat Polis-plattformen i Finland, som baseras på öppen källkod. Syftet med Polis är att möjliggöra konstruktivt utbyte av åsikter inom stora grupper, baserat på ett valt ämne.",
+    "provider": "Tjänsteleverantör",
+    "links": {
+      "privacy": "Integritetspolicy",
+      "info": "Information",
+      "source": "Källkod"
+    }
+  },
+  "signout": {
+    "signingout": "Loggar ut"
+  },
+  "signin": {
+    "signin": "Logga in",
+    "signingin": "Loggar in...",
+    "test_warning_title": "TESTMILJÖ",
+    "test_warning_text": "Använd endast för tester, dela inte länkar.",
+    "email": "e-post",
+    "password": "lösenord",
+    "forgot": "Glömt ditt lösenord?",
+    "reset": "Återställ lösenordet"
   }
 }
-

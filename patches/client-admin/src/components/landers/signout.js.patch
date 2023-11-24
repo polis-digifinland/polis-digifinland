@@ -1,11 +1,40 @@
 --- ./client-admin/src/components/landers/signout.js
 +++ ../patches/client-admin/src/components/landers/signout.js
-@@ -11,7 +11,7 @@
+@@ -8,25 +8,31 @@
+ 
+ import { doSignout } from '../../actions'
+ 
++import { withTranslation } from 'react-i18next';
++
  @connect((state) => state.signout)
- class SignOut extends React.Component {
+-class SignOut extends React.Component {
++class SignOutTranslated extends React.Component {
    componentDidMount() {
 -    this.props.dispatch(doSignout('/home'))
 +    this.props.dispatch(doSignout('/signin')) // DF customization, due to WAF restrictions redirect back to /signin instead of /home
    }
  
    render() {
++    const { t } = this.props;
+     return (
+       <StaticLayout>
+         <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [6, null, 7] }}>
+-          Signing Out
++          {t('signout.signingout')}
+         </Heading>
+       </StaticLayout>
+     )
+   }
+ }
+ 
+-SignOut.propTypes = {
+-  dispatch: PropTypes.func
++SignOutTranslated.propTypes = {
++  dispatch: PropTypes.func,
++  t: PropTypes.func.isRequired
+ }
+ 
+-export default SignOut
++// export default SignOut
++const SignOut = withTranslation()(SignOutTranslated);
++export default withTranslation()(SignOut);

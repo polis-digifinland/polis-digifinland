@@ -10,10 +10,12 @@ import StaticLayout from './lander-layout'
 
 import strings from '../../strings/strings'
 
+import { withTranslation } from 'react-i18next';
+
 const fbAppId = process.env.FB_APP_ID
 
 @connect((state) => state.signin)
-class SignIn extends React.Component {
+class SignInTranslated extends React.Component {
   // eslint-disable-next-line node/handle-callback-err
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -73,6 +75,7 @@ class SignIn extends React.Component {
   }
 
   drawLoginForm() {
+    const { t } = this.props;
     return (
       <Box>
         <form>
@@ -89,7 +92,7 @@ class SignIn extends React.Component {
               }}
               id="signinEmailInput"
               ref={(c) => (this.email = c)}
-              placeholder="email"
+              placeholder= {t('signin.email')}
               type="email"
             />
           </Box>
@@ -106,7 +109,7 @@ class SignIn extends React.Component {
               }}
               id="signinPasswordInput"
               ref={(c) => (this.password = c)}
-              placeholder="password"
+              placeholder={t('signin.password')}
               type="password"
             />
           </Box>
@@ -115,11 +118,11 @@ class SignIn extends React.Component {
             sx={{ my: [2] }}
             id="signinButton"
             onClick={this.handleLoginClicked.bind(this)}>
-            {this.props.pending ? 'Signing in...' : 'Sign In'}
+            {this.props.pending ? t('signin.signingin') : t('signin.signin')}
           </Button>
           <Text sx={{ my: 4 }}>
-            {'Forgot your password? '}
-            <Link to={'/pwresetinit'}>Reset Password</Link>
+            {t('signin.forgot')}
+            <Link to={'/pwresetinit'}> {t('signin.reset')}</Link>
           </Text>
         </form>
         {fbAppId && (
@@ -166,13 +169,14 @@ class SignIn extends React.Component {
   }
 
   drawTestEnvWarning() {
+    const { t } = this.props;
     return (
       <span>
       <Heading as="h2" sx={{ my: [4, null, 5], fontSize: [4, null, 5] }}>
-        TESTIYMPÄRISTÖ
+        {t('signin.test_warning_title')}
       </Heading>      
       <Heading as="h3" sx={{ my: [4, null, 5], fontSize: [3, null, 4] }}>
-        Käytä vain testaukseen. Älä jaa linkkejä.  
+        {t('signin.test_warning_text')} 
       </Heading>      
       </span>
     )
@@ -182,6 +186,7 @@ class SignIn extends React.Component {
 
   render() {
     const { signInSuccessful, authed } = this.props
+    const { t } = this.props;
 
     if (signInSuccessful || authed) {
       return <Redirect to={'/'} />
@@ -190,7 +195,7 @@ class SignIn extends React.Component {
     return (
       <StaticLayout>
         <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [6, null, 7] }}>
-          Sign In
+          {t('signin.signin')}
         </Heading>
         { (window.location.hostname.includes('test') || window.location.hostname.includes('local'))
           ? this.drawTestEnvWarning() 
@@ -203,4 +208,6 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn
+// export default SignIn
+const SignIn = withTranslation()(SignInTranslated);
+export default withTranslation()(SignIn);
