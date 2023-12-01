@@ -1,0 +1,35 @@
+--- ./client-admin/src/components/conversation-admin/stats/voters.js
++++ ../patches/client-admin/src/components/conversation-admin/stats/voters.js
+@@ -7,11 +7,14 @@
+ import { VictoryChart, VictoryArea } from 'victory'
+ import victoryTheme from './victoryTheme'
+ 
+-class Voters extends React.Component {
++import { withTranslation } from 'react-i18next';
++
++class VotersTranslated extends React.Component {
+   render() {
+     const { size, firstVoteTimes } = this.props
+     if (firstVoteTimes.length <= 1)
+       return null /* no area chart with 1 data point */
++    const { t } = this.props;
+     return (
+       <Box sx={{ mt: [5] }}>
+         <Heading
+@@ -21,7 +24,7 @@
+             lineHeight: 'body',
+             my: [2]
+           }}>
+-          Voters over time, by time of first vote
++          {t('stats.voters')}
+         </Heading>
+         <VictoryChart
+           theme={victoryTheme}
+@@ -41,4 +44,6 @@
+   }
+ }
+ 
+-export default Voters
++// export default Voters
++const Voters = withTranslation()(VotersTranslated);
++export default withTranslation()(Voters);

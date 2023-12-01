@@ -1,0 +1,62 @@
+--- ./client-admin/src/components/conversation-admin/seed-comment.js
++++ ../patches/client-admin/src/components/conversation-admin/seed-comment.js
+@@ -8,8 +8,10 @@
+ import strings from '../../strings/strings'
+ import { Box, Text, Button, jsx, Link } from 'theme-ui'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.seed_comments)
+-class ModerateCommentsSeed extends React.Component {
++class ModerateCommentsSeedTranslated extends React.Component {
+   constructor(props) {
+     super(props)
+     this.state = {
+@@ -34,29 +36,31 @@
+   }
+ 
+   getButtonText() {
+-    let text = 'Submit'
++    const { t } = this.props;
++    let text = t('seed.submit')
+ 
+     if (this.props.success) {
+-      text = 'Success!'
++      text = t('seed.success')
+     }
+ 
+     if (this.props.loading) {
+-      text = 'Saving...'
++      text = t('seed.saving')
+     }
+ 
+     return text
+   }
+ 
+   render() {
++    const { t } = this.props;
+     const { seedText } = this.props
+     return (
+       <Box sx={{ mb: [4] }}>
+         <Text sx={{ mb: [2] }}>
+-          Add{' '}
++          {t('seed.add')}{' '}
+           <Link target="_blank" href="https://compdemocracy.org/seed-comments">
+-            seed comments
++            {t('seed.comments')}
+           </Link>{' '}
+-          for participants to vote on:
++          {t('seed.to_vote_on')}
+         </Text>
+         <Box sx={{ mb: [2] }}>
+           <textarea
+@@ -89,6 +93,8 @@
+   }
+ }
+ 
+-export default ModerateCommentsSeed
++// export default ModerateCommentsSeed
++const ModerateCommentsSeed = withTranslation()(ModerateCommentsSeedTranslated);
++export default withTranslation()(ModerateCommentsSeed);
+ 
+ // value={this.props.seedText}

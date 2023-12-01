@@ -34,5 +34,115 @@
     "password": "Salasana",
     "forgot": "Unohditko salasanasi?",
     "reset": "Resetoi salasanasi"
+  },
+  "password": {
+    "title": "Salasanan vaihto",
+    "reset_check_email_link": "Tarkista linkki sähköpostista",
+    "send_email": "Lähetä salasanan vaihto sähköposti",
+    "email": "Sähköpostiosoite",
+    "new": "uusi salasana",
+    "new_repeat": "toista uusi salasana",
+    "new_set": "Aseta uusi salasana"
+  },
+  "createuser": {
+    "title": "Luo tili",
+    "name": "tunnus",
+    "email": "sähköpostiosoite",
+    "password": "salasana",
+    "password_repeat": "toista salasana",
+    "agree": "Hyväksyn",
+    "agree_tos": "pol.is ehdot",
+    "agree_and": "ja",
+    "agree_privacy": "tietosuojaselosteen",
+    "create": "Luo tili",
+    "creating": "Luodaan tiliä...",
+    "already_have_account": "Onko sinulla jo tili?",
+    "signin": "Kirjaudu sisään"
+  },
+  "account": {
+    "title": "Tili",
+    "welcome": "Hei"
+  },
+  "conversations": {
+    "title": "Kaikki keskustelut",
+    "create_new": "Luo uusi keskustelu",
+    "loading": "Ladataan keskusteluja...",
+    "loading_error": "Virhe keskustelujen lataamisessa: ",
+    "participants": "osallistujaa"
+  },
+  "integrate": {
+    "title": "Upotuskoodi",
+    "text1": "Kopioi ja liitä tämä koodi sisällönhallintamalliisi. Jokainen sivu (artikkeli, viesti) vaatii yksilöllisen merkkijonon PAGE_ID-kentässä. Tämän tulee olla johdonmukainen ajan mittaan ja yksilöllinen jokaiselle sivullesi (kuten artikkelin otsikko).",
+    "text2": "Kun tämä upotuskoodi latautuu verkkosivustollesi, se joko luo uuden keskustelun (jos sellaista ei ole jo liitetty sivulle PAGE_ID siirrettyyn merkkijonoon) tai lataa olemassa olevan keskustelun.",
+    "text3": "Tämä upotuskoodi seuraa, mitkä keskustelut kuuluvat millekin sivulle data-page_id HTML-attribuutin avulla.",
+    "text4": "Vaihda vain 'PAGE_ID' joko manuaalisesti tai malleissasi luodaksesi uusia keskusteluja ja ladataksesi olemassa olevat oikeaan paikkaan."
+  },
+  "reports": {
+    "loading": "Ladataan raportteja...",
+    "title": "Raportit",
+    "create_new": "Luo uusi raportti osoite"
+  },
+  "moderate": {
+    "title": "Moderointi",
+    "unmoderated": "Moderoimattomat",
+    "accepted": "Hyväksytyt",
+    "rejected": "Hylätyt",
+    "display_max": "Listaa maksimissaan {{param1}} kommenttia",
+    "accept": "hyväksy",
+    "reject": "hylkää",
+    "metadata": "metatieto",
+    "loading_unmoderated": "Ladataan käsittelemättömiä kommentteja...",
+    "loading_accepted": "Ladataan hyväksyttyjä kommentteja...",
+    "loading_rejected": "Ladataan hylättyjä kommentteja..."
+  },
+  "configure": {
+    "title": "Asetukset",
+    "saving": "Tallentaa",
+    "up_to_date": "Ajan tasalla",
+    "error": "Virhe tallennuksessa",
+    "conversation_open": "Keskustelu on auki. Valinnan poistaminen sulkee äänestyksen ja uusien väittämien kirjoittamisen.",
+    "topic": "Aihe",
+    "description": "Kuvaus",
+    "seed_comments": "Aloitus väittämät",
+    "customize_ui": "Muokkaa käyttöliittymää",
+    "vis_type": "Osallistujat näkevät visuaalisaation",
+    "write_type": "Osallistujat voivat lähettää väittämiä",
+    "help_type": "Näytä äänestyksen ja visuaalisaation yhteydessä kuvaus.",
+    "schemes": "Järjestelmä",
+    "strict_moderation": "Väittämiä ei näytetä äänestäjille ilman moderoinnin hyväksyntää."
+  },
+  "conv_nav": {
+    "all": "Keskustelut",
+    "configure": "Asetukset",
+    "distribute": "Jakelu",
+    "moderate": "Moderointi",
+    "monitor": "Statistiikka",
+    "report": "Raportit"
+  },
+  "seed": {
+    "submit": "Lähetä",
+    "success": "Onnistui!",
+    "saving": "Tallentaa...",
+    "add": "Lisää",
+    "comments": "väittämiä",
+    "to_vote_on": "äänestettäväksi:"
+  },
+  "distribute": {
+    "title": "Jakelu",
+    "share": "Jakaminen",
+    "embed": "Upotuskoodi",
+    "desc": "Tämä koodi toimii vain yhden keskustelun upottamiseen.",
+    "link": "Haluan liittää pol.is koko sivustolleni."
+  },
+  "stats": {
+    "title": "Statistiikka",
+    "loading": "Lataa...",
+    "voted": "osallistujaa äänesti",
+    "votes": "annettua ääntä",
+    "average_votes": "keskimäärin ääniä äänestäjää kohden",
+    "commented": "kannanottojen lähettäjiä",
+    "comments_submitted": "kannanottoa lähetetty",
+    "commenters": "Kommentoijia ajan kuluessa, alkaen ensimmäisestä kommentista",
+    "voters": "Äänestäjiä ajan kuluessa, alkaen ensimmäisestä äänestä"
   }
 }

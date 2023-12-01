@@ -4,7 +4,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
-  changeCommentStatusToAccepted,
   changeCommentStatusToRejected,
   changeCommentCommentIsMeta
 } from '../../../actions'
@@ -12,12 +11,8 @@ import Comment from './comment'
 
 import { withTranslation } from 'react-i18next';
 
-@connect((state) => state.mod_comments_unmoderated)
-class ModerateCommentsTodoTranslated extends React.Component {
-  onCommentAccepted(comment) {
-    this.props.dispatch(changeCommentStatusToAccepted(comment))
-  }
-
+@connect((state) => state.mod_comments_accepted)
+class ModerateCommentsAcceptedTranslated extends React.Component {
   onCommentRejected(comment) {
     this.props.dispatch(changeCommentStatusToRejected(comment))
   }
@@ -26,18 +21,14 @@ class ModerateCommentsTodoTranslated extends React.Component {
     this.props.dispatch(changeCommentCommentIsMeta(comment, is_meta))
   }
 
-  createCommentMarkup(max) {
-
-    return this.props.unmoderated_comments.slice(0,max).map((comment, i) => {
+  createCommentMarkup() {
+    const comments = this.props.accepted_comments.map((comment, i) => {
       const { t } = this.props;
       return (
         <Comment
           key={i}
-          acceptButton
           rejectButton
-          acceptClickHandler={this.onCommentAccepted.bind(this)}
           rejectClickHandler={this.onCommentRejected.bind(this)}
-          acceptButtonText={t('moderate.accept')}
           rejectButtonText={t('moderate.reject')}
           isMetaCheckbox
           toggleIsMetaHandler={this.toggleIsMetaHandler.bind(this)}
@@ -45,31 +36,27 @@ class ModerateCommentsTodoTranslated extends React.Component {
         />
       )
     })
-    
+    return comments
   }
 
   render() {
     const { t } = this.props;
-    const max = 500;
     return (
       <div>
-        <div>
-          <p> Displays maximum {max} comments </p> 
-          {this.props.unmoderated_comments !== null
-            ? this.createCommentMarkup(max)
-            : t('moderate.loading_unmoderated')}
-        </div>
+        {this.props.accepted_comments !== null
+          ? this.createCommentMarkup()
+          : t('moderate.loading_accepted')}
       </div>
     )
   }
 }
 
-ModerateCommentsTodoTranslated.propTypes = {
+ModerateCommentsAcceptedTranslated.propTypes = {
   dispatch: PropTypes.func,
   t: PropTypes.func.isRequired,
-  unmoderated_comments: PropTypes.arrayOf(PropTypes.object)
+  accepted_comments: PropTypes.arrayOf(PropTypes.object)
 }
 
-// export default ModerateCommentsTodo
-const ModerateCommentsTodo = withTranslation()(ModerateCommentsTodoTranslated);
-export default withTranslation()(ModerateCommentsTodo);
+// export default ModerateCommentsAccepted
+const ModerateCommentsAccepted = withTranslation()(ModerateCommentsAcceptedTranslated);
+export default withTranslation()(ModerateCommentsAccepted);

@@ -1,11 +1,65 @@
 --- ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
 +++ ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-todo.js
-@@ -46,7 +46,7 @@
+@@ -10,8 +10,10 @@
+ } from '../../../actions'
+ import Comment from './comment'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.mod_comments_unmoderated)
+-class ModerateCommentsTodo extends React.Component {
++class ModerateCommentsTodoTranslated extends React.Component {
+   onCommentAccepted(comment) {
+     this.props.dispatch(changeCommentStatusToAccepted(comment))
+   }
+@@ -27,6 +29,7 @@
+   createCommentMarkup(max) {
+ 
+     return this.props.unmoderated_comments.slice(0,max).map((comment, i) => {
++      const { t } = this.props;
+       return (
+         <Comment
+           key={i}
+@@ -34,8 +37,8 @@
+           rejectButton
+           acceptClickHandler={this.onCommentAccepted.bind(this)}
+           rejectClickHandler={this.onCommentRejected.bind(this)}
+-          acceptButtonText="accept"
+-          rejectButtonText="reject"
++          acceptButtonText={t('moderate.accept')}
++          rejectButtonText={t('moderate.reject')}
+           isMetaCheckbox
+           toggleIsMetaHandler={this.toggleIsMetaHandler.bind(this)}
+           comment={comment}
+@@ -46,23 +49,27 @@
    }
  
    render() {
 -    const max = 100;
++    const { t } = this.props;
 +    const max = 500;
      return (
        <div>
          <div>
+           <p> Displays maximum {max} comments </p> 
+           {this.props.unmoderated_comments !== null
+             ? this.createCommentMarkup(max)
+-            : 'Loading unmoderated comments...'}
++            : t('moderate.loading_unmoderated')}
+         </div>
+       </div>
+     )
+   }
+ }
+ 
+-ModerateCommentsTodo.propTypes = {
++ModerateCommentsTodoTranslated.propTypes = {
+   dispatch: PropTypes.func,
++  t: PropTypes.func.isRequired,
+   unmoderated_comments: PropTypes.arrayOf(PropTypes.object)
+ }
+ 
+-export default ModerateCommentsTodo
++// export default ModerateCommentsTodo
++const ModerateCommentsTodo = withTranslation()(ModerateCommentsTodoTranslated);
++export default withTranslation()(ModerateCommentsTodo);

@@ -1,0 +1,56 @@
+--- ./client-admin/src/components/conversations-and-account/account.js
++++ ../patches/client-admin/src/components/conversations-and-account/account.js
+@@ -7,9 +7,13 @@
+ 
+ import Spinner from '../framework/spinner'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.user)
+-class Account extends React.Component {
++class AccountTranslated extends React.Component {
++  
+   buildAccountMarkup() {
++    const { t } = this.props;
+     return (
+       <>
+         <Box>
+@@ -20,14 +24,14 @@
+               lineHeight: 'body',
+               mb: [3, null, 4]
+             }}>
+-            Account
++            {t('account.title')}
+           </Heading>
+-          <p>Hi {this.props.user.hname.split(' ')[0]}!</p>
++          <p>{t('account.welcome')} {this.props.user.hname.split(' ')[0]}!</p>
+           <Box>
+             <p>{this.props.user.hname}</p>
+             <p>{this.props.user.email}</p>
+-            <p>Social:</p>
+-            <p>{this.props.user.hasFacebook ? 'Facebook is connected' : ''} </p>
++            <p>{this.props.user.hasFacebook || this.props.user.hasTwitter ? 'Social:' : ''}</p>
++            <p>{this.props.user.hasFacebook ? 'Facebook is connected' : ''}</p>
+             <p>{this.props.user.hasTwitter ? 'Twitter is connected' : ''}</p>
+           </Box>
+         </Box>
+@@ -44,13 +48,16 @@
+   }
+ }
+ 
+-Account.propTypes = {
++AccountTranslated.propTypes = {
+   user: PropTypes.shape({
+     hname: PropTypes.string,
+     email: PropTypes.string,
+     hasFacebook: PropTypes.bool,
+     hasTwitter: PropTypes.bool
+-  })
++  }),
++  t: PropTypes.func.isRequired
+ }
+ 
+-export default Account
++// export default Account
++const Account = withTranslation()(AccountTranslated);
++export default withTranslation()(Account);

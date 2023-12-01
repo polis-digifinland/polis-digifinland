@@ -1,0 +1,73 @@
+--- ./client-admin/src/components/conversation-admin/comment-moderation/index.js
++++ ../patches/client-admin/src/components/conversation-admin/comment-moderation/index.js
+@@ -15,6 +15,8 @@
+ 
+ import { Switch, Route, Link } from 'react-router-dom'
+ 
++import { withTranslation } from 'react-i18next';
++
+ const mapStateToProps = (state, ownProps) => {
+   return {
+     unmoderated: state.mod_comments_unmoderated,
+@@ -28,7 +30,7 @@
+ 
+ @connect((state) => state.zid_metadata)
+ @connect(mapStateToProps)
+-class CommentModeration extends React.Component {
++class CommentModerationTranslated extends React.Component {
+   loadComments() {
+     const { match } = this.props
+     this.props.dispatch(populateAllCommentStores(match.params.conversation_id))
+@@ -55,6 +57,8 @@
+     const { match, location } = this.props
+ 
+     const url = location.pathname.split('/')[4]
++    
++    const { t } = this.props;
+ 
+     return (
+       <Box>
+@@ -65,7 +69,7 @@
+             lineHeight: 'body',
+             mb: [3, null, 4]
+           }}>
+-          Moderate
++          {t('moderate.title')}
+         </Heading>
+         <Flex sx={{ mb: [4] }}>
+           <Link
+@@ -74,7 +78,7 @@
+               variant: url ? 'links.nav' : 'links.activeNav'
+             }}
+             to={`${match.url}`}>
+-            Unmoderated{' '}
++            {t('moderate.unmoderated')}{' '}
+             {this.props.unmoderated.unmoderated_comments
+               ? this.props.unmoderated.unmoderated_comments.length
+               : null}
+@@ -85,7 +89,7 @@
+               variant: url === 'accepted' ? 'links.activeNav' : 'links.nav'
+             }}
+             to={`${match.url}/accepted`}>
+-            Accepted{' '}
++            {t('moderate.accepted')}{' '}
+             {this.props.accepted.accepted_comments
+               ? this.props.accepted.accepted_comments.length
+               : null}
+@@ -96,7 +100,7 @@
+               variant: url === 'rejected' ? 'links.activeNav' : 'links.nav'
+             }}
+             to={`${match.url}/rejected`}>
+-            Rejected{' '}
++            {t('moderate.rejected')}{' '}
+             {this.props.rejected.rejected_comments
+               ? this.props.rejected.rejected_comments.length
+               : null}
+@@ -126,4 +130,6 @@
+   }
+ }
+ 
+-export default CommentModeration
++// export default CommentModeration
++const CommentModeration = withTranslation()(CommentModerationTranslated);
++export default withTranslation()(CommentModeration);

@@ -14,7 +14,7 @@
   },
   "footer": {
     "whatis": "Vad är Polis?",
-    "desc": "DigiFinland och Sitra har introducerat Polis-plattformen i Finland, som baseras på öppen källkod. Syftet med Polis är att möjliggöra konstruktivt utbyte av åsikter inom stora grupper, baserat på ett valt ämne.",
+    "desc": "DigiFinland och Sitra har introducerat Polis-webbplattformen baserad på öppen källkod till Finland. Polis syftar till att möjliggöra konstruktivt utbyte av åsikter för stora grupper runt ett valt ämne.",
     "provider": "Tjänsteleverantör",
     "links": {
       "privacy": "Integritetspolicy",
@@ -29,10 +29,120 @@
     "signin": "Logga in",
     "signingin": "Loggar in...",
     "test_warning_title": "TESTMILJÖ",
-    "test_warning_text": "Använd endast för tester, dela inte länkar.",
+    "test_warning_text": "Använd endast för testning, dela inte länkar.",
     "email": "e-post",
     "password": "lösenord",
     "forgot": "Glömt ditt lösenord?",
-    "reset": "Återställ lösenordet"
+    "reset": "Återställ lösenord"
+  },
+  "password": {
+    "title": "Återställ lösenord",
+    "reset_check_email_link": "Kontrollera din e-post för en länk för att återställa lösenordet",
+    "send_email": "Skicka återställnings-e-post",
+    "email": "e-post",
+    "new": "nytt lösenord",
+    "new_repeat": "upprepa nya lösenordet",
+    "new_set": "Ange nytt lösenord"
+  },
+  "createuser": {
+    "title": "Skapa konto",
+    "name": "namn",
+    "email": "e-post",
+    "password": "lösenord",
+    "password_repeat": "upprepa lösenord",
+    "agree": "Jag godkänner",
+    "agree_tos": "policy för pol.is",
+    "agree_and": "och",
+    "agree_privacy": "sekretessavtalet",
+    "create": "Skapa konto",
+    "creating": "Skapar konto...",
+    "already_have_account": "Har redan ett konto?",
+    "signin": "Logga in"
+  },
+  "account": {
+    "title": "Konto",
+    "welcome": "Hej"
+  },
+  "conversations": {
+    "title": "Alla Samtal",
+    "create_new": "Skapa nytt samtal",
+    "loading": "Laddar samtal...",
+    "loading_error": "Fel vid laddning av samtal: ",
+    "participants": "deltagare"
+  },
+  "integrate": {
+    "title": "Integrera",
+    "text1": "Kopiera och klistra in denna kod i din innehållshantering mall. Varje sida (artikel, inlägg) kräver en unik sträng i fältet 'PAGE_ID'. Detta bör vara konsekvent över tiden och unikt för var och en av dina sidor (som artikelns titel).",
+    "text2": "När denna inbäddningskod laddas på din webbplats kommer den antingen att skapa en ny konversation (om det inte redan finns en kopplad till strängen som skickas till PAGE_ID) eller ladda en befintlig konversation.",
+    "text3": "Denna inbäddningskod kommer att hålla reda på vilka samtal som hör till vilka sidor via attributet data-page_id i HTML.",
+    "text4": "Byt helt enkelt ut 'PAGE_ID', antingen manuellt eller i dina mallar, för att skapa nya samtal och ladda befintliga samtal på rätt plats."
+  },
+  "reports": {
+    "loading": "Laddar rapporter...",
+    "title": "Rapport",
+    "create_new": "Skapa rapport-url"
+  },
+  "moderate": {
+    "title": "Modererad",
+    "unmoderated": "Omodererad",
+    "accepted": "Accepterad",
+    "rejected": "Avfärdad",
+    "display_max": "Visar maximalt {{param1}} kommentarer",
+    "accept": "acceptera",
+    "reject": "avvisa",
+    "metadata": "metadata",
+    "loading_unmoderated": "Laddar omodererade kommentarer...",
+    "loading_accepted": "Laddar accepterade kommentarer...",
+    "loading_rejected": "Laddar avvisade kommentarer..."
+  },
+  "configure": {
+    "title": "Konfigurera",
+    "saving": "Sparar",
+    "up_to_date": "Uppdaterad",
+    "error": "Fel vid sparning",
+    "conversation_open": "Samtalet är öppet. Om du avmarkerar kan varken röstande eller kommentarer användas.",
+    "topic": "Ämne",
+    "description": "Beskrivning",
+    "seed_comments": "Fördefinierade kommentarer",
+    "customize_ui": "Anpassa användargränssnittet",
+    "vis_type": "Deltagare kan se visualiseringen",
+    "write_type": "Deltagare kan skicka kommentarer",
+    "help_type": "Visa förklaringstext över röstning och visualisering",
+    "schemes": "Scheman",
+    "strict_moderation": "Inga kommentarer visas utan moderatorns godkännande"
+  },
+  "conv_nav": {
+    "all": "Alla samtal",
+    "configure": "Konfigurera",
+    "distribute": "Distribuera",
+    "moderate": "Moderera",
+    "monitor": "Följ",
+    "report": "Rapportera"
+  },
+  "seed": {
+    "submit": "Skicka",
+    "success": "Lyckades!",
+    "saving": "Sparar...",
+    "add": "Lägg till",
+    "comments": "fördefinierade kommentarer",
+    "to_vote_on": "för deltagarna att rösta på:"
+  },
+  "distribute": {
+    "title": "Distribuera",
+    "share": "Dela",
+    "embed": "Bädda in",
+    "desc": "Denna inbäddningskod kan bara användas för att bädda in ett enskilt samtal.",
+    "link": "Jag vill integrera pol.is på hela min webbplats."
+  },
+  "stats": {
+    "title": "Följ",
+    "loading": "Laddar...",
+    "voted": "deltagare röstade",
+    "votes": "röster avgavs",
+    "average_votes": "röster per deltagare i genomsnitt",
+    "commented": "kommenterade",
+    "comments_submitted": "skickade kommentarer",
+    "commenters": "Kommenterare över tid, efter tidpunkt för första kommentaren",
+    "voters": "Röstare över tid, efter tidpunkt för första röstningen"
   }
 }

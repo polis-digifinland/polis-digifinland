@@ -1,0 +1,56 @@
+--- ./client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-accepted.js
++++ ../patches/client-admin/src/components/conversation-admin/comment-moderation/moderate-comments-accepted.js
+@@ -9,8 +9,10 @@
+ } from '../../../actions'
+ import Comment from './comment'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.mod_comments_accepted)
+-class ModerateCommentsAccepted extends React.Component {
++class ModerateCommentsAcceptedTranslated extends React.Component {
+   onCommentRejected(comment) {
+     this.props.dispatch(changeCommentStatusToRejected(comment))
+   }
+@@ -21,12 +23,13 @@
+ 
+   createCommentMarkup() {
+     const comments = this.props.accepted_comments.map((comment, i) => {
++      const { t } = this.props;
+       return (
+         <Comment
+           key={i}
+           rejectButton
+           rejectClickHandler={this.onCommentRejected.bind(this)}
+-          rejectButtonText="reject"
++          rejectButtonText={t('moderate.reject')}
+           isMetaCheckbox
+           toggleIsMetaHandler={this.toggleIsMetaHandler.bind(this)}
+           comment={comment}
+@@ -37,19 +40,23 @@
+   }
+ 
+   render() {
++    const { t } = this.props;
+     return (
+       <div>
+         {this.props.accepted_comments !== null
+           ? this.createCommentMarkup()
+-          : 'Loading accepted comments...'}
++          : t('moderate.loading_accepted')}
+       </div>
+     )
+   }
+ }
+ 
+-ModerateCommentsAccepted.propTypes = {
++ModerateCommentsAcceptedTranslated.propTypes = {
+   dispatch: PropTypes.func,
++  t: PropTypes.func.isRequired,
+   accepted_comments: PropTypes.arrayOf(PropTypes.object)
+ }
+ 
+-export default ModerateCommentsAccepted
++// export default ModerateCommentsAccepted
++const ModerateCommentsAccepted = withTranslation()(ModerateCommentsAcceptedTranslated);
++export default withTranslation()(ModerateCommentsAccepted);

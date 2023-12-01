@@ -1,0 +1,67 @@
+--- ./client-admin/src/components/conversations-and-account/conversations.js
++++ ../patches/client-admin/src/components/conversations-and-account/conversations.js
+@@ -12,8 +12,10 @@
+ import { Box, Heading, Button, Text } from 'theme-ui'
+ import Conversation from './conversation'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.conversations)
+-class Conversations extends React.Component {
++class ConversationsTranslated extends React.Component {
+   constructor(props) {
+     super(props)
+     this.state = {
+@@ -72,6 +74,7 @@
+   }
+ 
+   render() {
++    const { t } = this.props;
+     const err = this.props.error
+     const { conversations } = this.props
+ 
+@@ -84,20 +87,20 @@
+             lineHeight: 'body',
+             mb: [3, null, 4]
+           }}>
+-          All Conversations
++          {t('conversations.title')}
+         </Heading>
+         <Box sx={{ mb: [3, null, 4] }}>
+           <Button onClick={this.onNewClicked.bind(this)}>
+-            Create new conversation
++            {t('conversations.create_new')}
+           </Button>
+         </Box>
+         <Box>
+           <Box sx={{ mb: [3] }}>
+-            {this.props.loading ? 'Loading conversations...' : null}
++            {this.props.loading ? t('conversations.loading') : null}
+           </Box>
+           {err ? (
+             <Text>
+-              {'Error loading conversations: ' +
++              {t('conversations.loading_error') +
+                 err.status +
+                 ' ' +
+                 err.statusText}
+@@ -121,8 +124,9 @@
+   }
+ }
+ 
+-Conversations.propTypes = {
++ConversationsTranslated.propTypes = {
+   dispatch: PropTypes.func,
++  t: PropTypes.func.isRequired,
+   error: PropTypes.shape({
+     status: PropTypes.number,
+     statusText: PropTypes.string
+@@ -139,4 +143,7 @@
+   })
+ }
+ 
+-export default Conversations
++// export default Conversations
++const Conversations = withTranslation()(ConversationsTranslated);
++export default withTranslation()(Conversations);
++

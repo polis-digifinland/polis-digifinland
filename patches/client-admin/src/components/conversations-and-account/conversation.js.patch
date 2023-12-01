@@ -1,0 +1,22 @@
+--- ./client-admin/src/components/conversations-and-account/conversation.js
++++ ../patches/client-admin/src/components/conversations-and-account/conversation.js
+@@ -2,7 +2,10 @@
+ import { jsx, Text, Card } from 'theme-ui'
+ import PropTypes from 'prop-types'
+ 
++import { useTranslation } from 'react-i18next';
++
+ function Conversation({ c, i, goToConversation }) {
++  const { t } = useTranslation();
+   return (
+     <Card
+       onClick={goToConversation}
+@@ -13,7 +16,7 @@
+       <Text data-test-id="embed-page">
+         {c.parent_url ? `Embedded on ${c.parent_url}` : null}
+       </Text>
+-      <Text sx={{ mt: [2] }}>{c.participant_count} participants</Text>
++      <Text sx={{ mt: [2] }}>{c.participant_count} {t('conversations.participants')}</Text>
+     </Card>
+   )
+ }

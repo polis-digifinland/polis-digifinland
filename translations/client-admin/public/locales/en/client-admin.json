@@ -34,5 +34,115 @@
     "password": "password",
     "forgot": "Forgot your password?",
     "reset": "Reset Password"
+  },
+  "password": {
+    "title": "Password Reset",
+    "reset_check_email_link": "Check your email for a password reset link",
+    "send_email": "Send password reset email",
+    "email": "email",
+    "new": "new password",
+    "new_repeat": "repeat new password",
+    "new_set": "Set new password"
+  },
+  "createuser": {
+    "title": "Create Account",
+    "name": "name",
+    "email": "email",
+    "password": "password",
+    "password_repeat": "repeat password",
+    "agree": "I agree to the",
+    "agree_tos": "pol.is terms",
+    "agree_and": "and",
+    "agree_privacy": "privacy agreement",
+    "create": "Create Account",
+    "creating": "Creating Account...",
+    "already_have_account": "Already have an account?",
+    "signin": "Sign in"
+  },
+  "account": {
+    "title": "Account",
+    "welcome": "Hi"
+  },
+  "conversations": {
+    "title": "All Conversations",
+    "create_new": "Create new conversation",
+    "loading": "Loading conversations...",
+    "loading_error": "Error loading conversations: ",
+    "participants": "participants"
+  },
+  "integrate": {
+    "title": "Integrate",
+    "text1": "Copy and paste this code into your content management template. Each page (article, post) requires a unique string in the 'PAGE_ID' field. This should be consistent over time and unique to each of your pages (like the article title).",
+    "text2": "When this embed code loads on your website, it will either create a new conversation (if one is not already associated with the string passed into PAGE_ID) or load an existing conversation.",
+    "text3": "This embed code will keep track of what conversations belongs on what pages via the data-page_id HTML attribute.",
+    "text4": "Simply replace 'PAGE_ID', either manually or in your templates, to create new conversations and load existing ones in the right place."
+  },
+  "reports": {
+    "loading": "Loading Reports...",
+    "title": "Report",
+    "create_new": "Create report url"
+  },
+  "moderate": {
+    "title": "Moderate",
+    "unmoderated": "Unmoderated",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "display_max": "Displays maximum {{param1}} comments",
+    "accept": "accept",
+    "reject": "reject",
+    "metadata": "metadata",
+    "loading_unmoderated": "Loading unmoderated comments...",
+    "loading_accepted": "Loading accepted comments...",
+    "loading_rejected": "Loading rejected comments..."
+  },
+  "configure": {
+    "title": "Configure",
+    "saving": "Saving",
+    "up_to_date": "Up to date",
+    "error": "Error Saving",
+    "conversation_open": "Conversation is open. Unchecking disables both voting and commenting.",
+    "topic": "Topic",
+    "description": "Description",
+    "seed_comments": "Seed Comments",
+    "customize_ui": "Customize the user interface",
+    "vis_type": "Participants can see the visualization",
+    "write_type": "Participants can submit comments",
+    "help_type": "Show explanation text above voting and visualization",
+    "schemes": "Schemes",
+    "strict_moderation": "No comments shown without moderator approval"
+  },
+  "conv_nav": {
+    "all": "All conversations",
+    "configure": "Configure",
+    "distribute": "Distribute",
+    "moderate": "Moderate",
+    "monitor": "Monitor",
+    "report": "Report"
+  },
+  "seed": {
+    "submit": "Submit",
+    "success": "Success!",
+    "saving": "Saving...",
+    "add": "Add",
+    "comments": "seed comments",
+    "to_vote_on": "for participants to vote on:"
+  },
+  "distribute": {
+    "title": "Distribute",
+    "share": "Share",
+    "embed": "Embed",
+    "desc": "This embed code can only be used to embed a single conversation.",
+    "link": "I want to integrate pol.is on my entire site."
+  },
+  "stats": {
+    "title": "Monitor",
+    "loading": "Loading...",
+    "voted": "participants voted",
+    "votes": "votes were cast",
+    "average_votes": "votes per participant on average",
+    "commented": "commented",
+    "comments_submitted": "comments submitted",
+    "commenters": "Commenters over time, by time of first comment",
+    "voters": "Voters over time, by time of first vote"
   }
 }

@@ -1,0 +1,34 @@
+--- ./client-admin/src/components/conversation-admin/stats/commenters.js
++++ ../patches/client-admin/src/components/conversation-admin/stats/commenters.js
+@@ -7,10 +7,13 @@
+ import { VictoryChart, VictoryArea } from 'victory'
+ import victoryTheme from './victoryTheme'
+ 
+-class Commenters extends React.Component {
++import { withTranslation } from 'react-i18next';
++
++class CommentersTranslated extends React.Component {
+   render() {
+     const { size, firstCommentTimes } = this.props
+     if (firstCommentTimes.length <= 1) return null /* handle seed commenter */
++    const { t } = this.props;
+     return (
+       <Box sx={{ mt: [5] }}>
+         <Heading
+@@ -20,7 +23,7 @@
+             lineHeight: 'body',
+             my: [2]
+           }}>
+-          Commenters over time, by time of first comment
++          {t('stats.commenters')}
+         </Heading>
+         <VictoryChart
+           theme={victoryTheme}
+@@ -40,4 +43,6 @@
+   }
+ }
+ 
+-export default Commenters
++// export default Commenters
++const Commenters = withTranslation()(CommentersTranslated);
++export default withTranslation()(Commenters);

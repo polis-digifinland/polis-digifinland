@@ -17,9 +17,11 @@ import { CheckboxField } from './CheckboxField'
 import ModerateCommentsSeed from './seed-comment'
 // import ModerateCommentsSeedTweet from "./seed-tweet";
 
+import { withTranslation } from 'react-i18next';
+
 @connect((state) => state.user)
 @connect((state) => state.zid_metadata)
-class ConversationConfig extends React.Component {
+class ConversationConfigTranslated extends React.Component {
   handleStringValueChange(field) {
     return () => {
       let val = this[field].value
@@ -50,6 +52,8 @@ class ConversationConfig extends React.Component {
     if (ComponentHelpers.shouldShowPermissionsError(this.props)) {
       return <NoPermission />
     }
+    
+    const { t } = this.props;
 
     return (
       <Box>
@@ -60,23 +64,23 @@ class ConversationConfig extends React.Component {
             lineHeight: 'body',
             mb: [3, null, 4]
           }}>
-          Configure
+          {t('configure.title')}
         </Heading>
         <Box sx={{ mb: [4] }}>
           {this.props.loading ? (
-            <Text>{emoji('💾')} Saving</Text>
+            <Text>{emoji('💾')} {t('configure.saving')}</Text>
           ) : (
-            <Text>{emoji('⚡')} Up to date</Text>
+            <Text>{emoji('⚡')} {t('configure.up_to_date')}</Text>
           )}
-          {this.props.error ? <Text>Error Saving</Text> : null}
+          {this.props.error ? <Text>{t('configure.error')}</Text> : null}
         </Box>
 
         <CheckboxField field="is_active" label="Conversation Is Open">
-          Conversation is open. Unchecking disables both voting and commenting.
+        {t('configure.conversation_open')}
         </CheckboxField>
 
         <Box sx={{ mb: [3] }}>
-          <Text sx={{ mb: [2] }}>Topic</Text>
+          <Text sx={{ mb: [2] }}>{t('configure.topic')}</Text>
           <input
             ref={(c) => (this.topic = c)}
             sx={{
@@ -96,7 +100,7 @@ class ConversationConfig extends React.Component {
         </Box>
 
         <Box sx={{ mb: [3] }}>
-          <Text sx={{ mb: [2] }}>Description</Text>
+          <Text sx={{ mb: [2] }}>{t('configure.description')}</Text>
           <textarea
             ref={(c) => (this.description = c)}
             sx={{
@@ -124,7 +128,7 @@ class ConversationConfig extends React.Component {
             lineHeight: 'body',
             my: [3, null, 4]
           }}>
-          Seed Comments
+          {t('configure.seed_comments')}
         </Heading>
         <ModerateCommentsSeed
           params={{ conversation_id: this.props.zid_metadata.conversation_id }}
@@ -141,19 +145,19 @@ class ConversationConfig extends React.Component {
             lineHeight: 'body',
             my: [3, null, 4]
           }}>
-          Customize the user interface
+          {t('configure.customize_ui')}
         </Heading>
 
         <CheckboxField field="vis_type" label="Visualization" isIntegerBool>
-          Participants can see the visualization
+          {t('configure.vis_type')}
         </CheckboxField>
 
         <CheckboxField field="write_type" label="Comment form" isIntegerBool>
-          Participants can submit comments
+          {t('configure.write_type')}
         </CheckboxField>
 
         <CheckboxField field="help_type" label="Help text" isIntegerBool>
-          Show explanation text above voting and visualization
+          {t('configure.help_type')}
         </CheckboxField>
 
 
@@ -190,11 +194,11 @@ class ConversationConfig extends React.Component {
             lineHeight: 'body',
             my: [3, null, 4]
           }}>
-          Schemes
+          {t('configure.schemes')}
         </Heading>
 
         <CheckboxField field="strict_moderation">
-          No comments shown without moderator approval
+          {t('configure.strict_moderation')}
         </CheckboxField>
 
         {
@@ -219,7 +223,11 @@ class ConversationConfig extends React.Component {
   }
 }
 
-export default ConversationConfig
+// export default ConversationConfig
+const ConversationConfig = withTranslation()(ConversationConfigTranslated);
+export default withTranslation()(ConversationConfig);
+
+
 
 // checked={this.props.zid_metadata.is_data_open}
 // Comments, votes, and group data can be exported by any user

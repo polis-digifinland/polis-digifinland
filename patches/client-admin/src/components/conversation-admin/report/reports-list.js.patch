@@ -1,0 +1,59 @@
+--- ./client-admin/src/components/conversation-admin/report/reports-list.js
++++ ../patches/client-admin/src/components/conversation-admin/report/reports-list.js
+@@ -9,8 +9,10 @@
+ import ComponentHelpers from '../../../util/component-helpers'
+ import NoPermission from '../no-permission'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.zid_metadata)
+-class ReportsList extends React.Component {
++class ReportsListTranslated extends React.Component {
+   constructor(props) {
+     super(props)
+     this.state = {
+@@ -53,9 +55,11 @@
+     if (ComponentHelpers.shouldShowPermissionsError(this.props)) {
+       return <NoPermission />
+     }
++    
++    const { t } = this.props;
+ 
+     if (this.state.loading) {
+-      return <div>Loading Reports...</div>
++      return <div>{t('reports.loading')}</div>
+     }
+     return (
+       <Box>
+@@ -66,11 +70,11 @@
+             lineHeight: 'body',
+             mb: [3, null, 4]
+           }}>
+-          Report
++          {t('reports.title')}
+         </Heading>
+         <Box sx={{ mb: [3, null, 4] }}>
+           <Button onClick={this.createReportClicked.bind(this)}>
+-            Create report url
++            {t('reports.create_new')}
+           </Button>
+         </Box>
+         {this.state.reports.map((report) => {
+@@ -90,7 +94,8 @@
+   }
+ }
+ 
+-ReportsList.propTypes = {
++ReportsListTranslated.propTypes = {
++  t: PropTypes.func.isRequired,
+   match: PropTypes.shape({
+     params: PropTypes.shape({
+       conversation_id: PropTypes.string
+@@ -101,4 +106,6 @@
+   })
+ }
+ 
+-export default ReportsList
++// export default ReportsList
++const ReportsList = withTranslation()(ReportsListTranslated);
++export default withTranslation()(ReportsList);

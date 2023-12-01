@@ -1,0 +1,84 @@
+--- ./client-admin/src/components/conversation-admin/share-and-embed.js
++++ ../patches/client-admin/src/components/conversation-admin/share-and-embed.js
+@@ -10,8 +10,10 @@
+ import ComponentHelpers from '../../util/component-helpers'
+ import NoPermission from './no-permission'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.zid_metadata)
+-class ShareAndEmbed extends React.Component {
++class ShareAndEmbedTranslated extends React.Component {
+   constructEmbeddedOnMarkup() {
+     return (
+       <p data-test-id="embed-page">
+@@ -30,6 +32,8 @@
+     if (ComponentHelpers.shouldShowPermissionsError(this.props)) {
+       return <NoPermission />
+     }
++    
++    const { t } = this.props;
+ 
+     const { match } = this.props
+     return (
+@@ -41,14 +45,14 @@
+             lineHeight: 'body',
+             mb: [3, null, 4]
+           }}>
+-          Distribute
++          {t('distribute.title')}
+         </Heading>
+         <ConversationHasCommentsCheck
+           conversation_id={match.params.conversation_id}
+           strict_moderation={this.props.zid_metadata.strict_moderation}
+         />
+         <div>
+-          <p> Share </p>
++          <p>{t('distribute.share')}</p>
+           <p>
+             <a
+               target="blank"
+@@ -58,7 +62,7 @@
+           </p>
+         </div>
+         <div>
+-          <p> Embed</p>
++          <p>{t('distribute.embed')}</p>
+           <div>
+             <pre>
+               {'<div'}
+@@ -69,9 +73,10 @@
+             </pre>
+           </div>
+           <p>
+-            This embed code can only be used to embed a single conversation.{' '}
++            
++            {t('distribute.desc')}{' '}
+             <Link to="/integrate">
+-              I want to integrate pol.is on my entire site.
++              {t('distribute.link')}
+             </Link>
+           </p>
+           <div>
+@@ -85,16 +90,19 @@
+   }
+ }
+ 
+-ShareAndEmbed.propTypes = {
++ShareAndEmbedTranslated.propTypes = {
+   match: PropTypes.shape({
+     params: PropTypes.shape({
+       conversation_id: PropTypes.string
+     })
+   }),
++  t: PropTypes.func.isRequired,
+   zid_metadata: PropTypes.shape({
+     parent_url: PropTypes.string,
+     strict_moderation: PropTypes.bool
+   })
+ }
+ 
+-export default ShareAndEmbed
++// export default ShareAndEmbed
++const ShareAndEmbed = withTranslation()(ShareAndEmbedTranslated);
++export default withTranslation()(ShareAndEmbed);

@@ -1,0 +1,75 @@
+--- ./client-admin/src/components/conversations-and-account/integrate.js
++++ ../patches/client-admin/src/components/conversations-and-account/integrate.js
+@@ -6,12 +6,16 @@
+ import { Box, Heading, Text } from 'theme-ui'
+ import Url from '../../util/url'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.user)
+-class Integrate extends React.Component {
++class IntegrateTranslated extends React.Component {
+   render() {
+     const userSiteId = this.props.user === null
+      ? '__loading, try refreshing__'
+      : this.props.user.site_ids[0];
++     
++    const { t } = this.props;
+ 
+     return (
+       <Box>
+@@ -23,31 +27,17 @@
+               lineHeight: 'body',
+               mb: [3, null, 4]
+             }}>
+-            Integrate
++            {t('integrate.title')}
+           </Heading>
+           <Text>
+-            Copy and paste this code into your content management template. Each
+-            page (article, post) requires a unique string in the
+-            &quot;PAGE_ID&quot; field. This should be consistent over time and
+-            unique to each of your pages (like the article title).
++          {t('integrate.text1')}
+           </Text>
+           <ul>
+-            <li>
+-              When this embed code loads on your website, it will either create
+-              a new conversation (if one is not already associated with the
+-              string passed into PAGE_ID) or load an existing conversation.
+-            </li>
+-            <li>
+-              This embed code will keep track of what conversations belongs on
+-              what pages via the data-page_id HTML attribute.
+-            </li>
+-            <li>
+-              Simply replace &quot;PAGE_ID&quot;, either manually or in your
+-              templates, to create new conversations and load existing ones in
+-              the right place.
+-            </li>
++            <li>{t('integrate.text2')}</li>
++            <li>{t('integrate.text3')}</li>
++            <li>{t('integrate.text4')}</li>
+           </ul>
+-          <Box>
++          <Box sx={{bg:'#BBB'}}>
+             <pre>
+               {`
+ <div
+@@ -65,10 +55,13 @@
+   }
+ }
+ 
+-Integrate.propTypes = {
++IntegrateTranslated.propTypes = {
++  t: PropTypes.func.isRequired,
+   user: PropTypes.shape({
+     site_ids: PropTypes.arrayOf(PropTypes.string)
+   })
+ }
+ 
+-export default Integrate
++// export default Integrate
++const Integrate = withTranslation()(IntegrateTranslated);
++export default withTranslation()(Integrate);
+\ No newline at end of file

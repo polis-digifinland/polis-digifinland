@@ -1,0 +1,83 @@
+--- ./client-admin/src/components/conversation-admin/index.js
++++ ../patches/client-admin/src/components/conversation-admin/index.js
+@@ -17,8 +17,10 @@
+ 
+ import Reports from './report/reports'
+ 
++import { withTranslation } from 'react-i18next';
++
+ @connect((state) => state.zid_metadata)
+-class ConversationAdminContainer extends React.Component {
++class ConversationAdminContainerTranslated extends React.Component {
+   loadZidMetadata() {
+     this.props.dispatch(
+       populateZidMetadataStore(this.props.match.params.conversation_id)
+@@ -45,20 +47,22 @@
+     const { match, location } = this.props
+ 
+     const url = location.pathname.split('/')[3]
++    
++    const { t } = this.props;
+ 
+     return (
+       <Flex>
+         <Box sx={{ mr: [5], p: [4], flex: '0 0 275' }}>
+           <Box sx={{ mb: [3] }}>
+             <Link sx={{ variant: 'links.nav' }} to={`/`}>
+-              All
++              {t('conv_nav.all')}
+             </Link>
+           </Box>
+           <Box sx={{ mb: [3] }}>
+             <Link
+               sx={{ variant: url ? 'links.nav' : 'links.activeNav' }}
+               to={`${match.url}`}>
+-              Configure
++              {t('conv_nav.configure')}
+             </Link>
+           </Box>
+           <Box sx={{ mb: [3] }}>
+@@ -67,7 +71,7 @@
+                 variant: url === 'share' ? 'links.activeNav' : 'links.nav'
+               }}
+               to={`${match.url}/share`}>
+-              Distribute
++              {t('conv_nav.distribute')}
+             </Link>
+           </Box>
+           <Box sx={{ mb: [3] }}>
+@@ -76,7 +80,7 @@
+                 variant: url === 'comments' ? 'links.activeNav' : 'links.nav'
+               }}
+               to={`${match.url}/comments`}>
+-              Moderate
++              {t('conv_nav.moderate')}
+             </Link>
+           </Box>
+           <Box sx={{ mb: [3] }}>
+@@ -85,7 +89,7 @@
+                 variant: url === 'stats' ? 'links.activeNav' : 'links.nav'
+               }}
+               to={`${match.url}/stats`}>
+-              Monitor
++              {t('conv_nav.monitor')}
+             </Link>
+           </Box>
+           <Box sx={{ mb: [3] }}>
+@@ -94,7 +98,7 @@
+                 variant: url === 'reports' ? 'links.activeNav' : 'links.nav'
+               }}
+               to={`${match.url}/reports`}>
+-              Report
++              {t('conv_nav.report')}
+             </Link>
+           </Box>
+         </Box>
+@@ -128,4 +132,6 @@
+   }
+ }
+ 
+-export default ConversationAdminContainer
++// export default ConversationAdminContainer
++const ConversationAdminContainer = withTranslation()(ConversationAdminContainerTranslated);
++export default withTranslation()(ConversationAdminContainer);

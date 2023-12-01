@@ -1,0 +1,120 @@
+--- ./client-admin/src/components/landers/createuser.js
++++ ../patches/client-admin/src/components/landers/createuser.js
+@@ -10,10 +10,12 @@
+ import StaticLayout from './lander-layout'
+ import strings from '../../strings/strings'
+ 
++import { withTranslation } from 'react-i18next';
++
+ const fbAppId = process.env.FB_APP_ID
+ 
+ @connect((state) => state.signin)
+-class Createuser extends React.Component {
++class CreateuserTranslated extends React.Component {
+   getDest() {
+     return this.props.location.pathname.slice('/createuser'.length)
+   }
+@@ -60,6 +62,7 @@
+   }
+ 
+   drawForm() {
++    const { t } = this.props;
+     return (
+       <Box>
+         <form sx={{ mb: [4] }}>
+@@ -76,7 +79,7 @@
+               }}
+               id="createUserNameInput"
+               ref={(c) => (this.hname = c)}
+-              placeholder="name"
++              placeholder={t('createuser.name')}
+               type="text"
+             />
+           </Box>
+@@ -93,7 +96,7 @@
+               }}
+               id="createUserEmailInput"
+               ref={(c) => (this.email = c)}
+-              placeholder="email"
++              placeholder={t('createuser.email')}
+               type="email"
+             />
+           </Box>
+@@ -110,7 +113,7 @@
+               }}
+               id="createUserPasswordInput"
+               ref={(c) => (this.password = c)}
+-              placeholder="password"
++              placeholder={t('createuser.password')}
+               type="password"
+             />
+           </Box>
+@@ -127,21 +130,21 @@
+               }}
+               id="createUserPasswordRepeatInput"
+               ref={(c) => (this.password2 = c)}
+-              placeholder="repeat password"
++              placeholder={t('createuser.password_repeat')}
+               type="password"
+             />
+           </Box>
+           {this.maybeErrorMessage()}
+ 
+           <Box>
+-            I agree to the{' '}
++            {t('createuser.agree')}{' '}
+             <a href="https://pol.is/tos" tabIndex="110">
+-              pol.is terms
++              {t('createuser.agree_tos')}
+             </a>{' '}
+-            and{' '}
++            {t('createuser.agree_and')}{' '}
+             <a href="https://pol.is/privacy" tabIndex="111">
+               {' '}
+-              privacy agreement
++              {t('createuser.agree_privacy')}
+             </a>
+             .
+           </Box>
+@@ -149,16 +152,16 @@
+             sx={{ my: [2] }}
+             id="createUserButton"
+             onClick={this.handleLoginClicked.bind(this)}>
+-            {this.props.pending ? 'Creating Account...' : 'Create Account'}
++            {this.props.pending ? t('createuser.creating') : t('createuser.create')} 
+           </Button>
+         </form>
+         <Box sx={{ mb: [4] }}>
+-          Already have an account?{' '}
++          {t('createuser.already_have_account')}{' '}
+           <Link
+             tabIndex="6"
+             to={'/signin' + this.getDest()}
+             data-section="signup-select">
+-            Sign in
++            {t('createuser.signin')}
+           </Link>
+         </Box>
+ 
+@@ -206,11 +209,12 @@
+   }
+ 
+   render() {
++    const { t } = this.props;
+     return (
+       <StaticLayout>
+         <div>
+           <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [6, null, 7] }}>
+-            Create Account
++            {t('createuser.title')}
+           </Heading>
+           {this.props.facebookError !== 'polis_err_user_with_this_email_exists'
+             ? this.drawForm()
+@@ -221,4 +225,6 @@
+   }
+ }
+ 
+-export default Createuser
++// export default Createuser
++const Createuser = withTranslation()(CreateuserTranslated);
++export default withTranslation()(Createuser);
