@@ -32,6 +32,7 @@ import Integrate from './components/conversations-and-account/integrate'
 import { withTranslation } from 'react-i18next';
 
 import InteriorHeader from './components/interior-header'
+import Footer from './components/landers/lander-footer'
 
 const PrivateRoute = ({ component: Component, isLoading, authed, ...rest }) => {
   if (isLoading) {
@@ -243,6 +244,7 @@ class AppTranslated extends React.Component {
             />
           </InteriorHeader>
         </Switch>
+        <Footer />
       </>
     )
   }
