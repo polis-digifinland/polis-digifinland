@@ -1,0 +1,55 @@
+--- ./client-participation/js/templates/footer.handlebars
++++ ../patches/client-participation/js/templates/footer.handlebars
+@@ -1,2 +1,51 @@
+-{{!-- Copyright (C) 2012-present, The Authors. This program is free software: you can redistribute it and/or  modify it under the terms of the GNU Affero General Public License, version 3, as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details. You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>. --}}
++{{!-- Copyright (C) 2012-present, The Authors. This program is free software: you can redistribute it and/or modify it
++under the terms of the GNU Affero General Public License, version 3, as published by the Free Software Foundation. This
++program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
++of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. You
++should have received a copy of the GNU Affero General Public License along with this program. If not, see
++<http: //www.gnu.org/licenses />. --}}
+ 
++<footer class="css-mxl0c">
++    <div class="css-1oqccy5">
++        <div class="css-1l5tfyw">
++            <h3>{{s.footer_whatis}}</h3>
++            <p>{{s.footer_desc}}</p>
++        </div>
++        <div class="css-1236x0c">
++            <ul class="css-u7hqrd">
++                <li class="css-eaeacs">
++                    <a target="_blank" href="https://digifinland.fi/tietosuoja/"
++                        class="css-121oj52">{{s.footer_links_privacy}} 🡥</a>
++                </li>
++                <li class="css-eaeacs">
++                    <a target="_blank" href="https://digifinland.fi/toimintamme/polis-kansalaiskeskustelualusta/"
++                        class="css-121oj52">{{s.footer_links_info}} 🡥</a>
++                </li>
++                <li class="css-eaeacs">
++                    <a target="_blank" href="https://compdemocracy.org/Welcome/" class="css-121oj52">The Computational
++                        Democracy Project 🡥</a>
++                </li>
++                <li class="css-eaeacs">
++                    <a target="_blank" href="https://github.com/compdemocracy/polis"
++                        class="css-121oj52">{{s.footer_links_source}} 🡥</a>
++                </li>
++            </ul>
++        </div>
++        <div class="css-v3dnd6">
++            <ul class="css-u7hqrd">
++                <li>
++                    <h3 class="css-1uk1gs8">{{s.footer_provider}}</h3>
++                </li>
++                <li>
++                    <p class="css-1uk1gs8">DigiFinland Oy</p>
++                </li>
++                <li>
++                    <p class="css-1uk1gs8">Kuntatalo, Toinen linja 14</p>
++                </li>
++                <li>
++                    <p class="css-1uk1gs8">00180 Helsinki</p>
++                </li>
++            </ul>
++        </div>
++    </div>
++</footer>

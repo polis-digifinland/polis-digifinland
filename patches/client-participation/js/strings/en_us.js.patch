@@ -1,0 +1,14 @@
+--- ./client-participation/js/strings/en_us.js
++++ ../patches/client-participation/js/strings/en_us.js
+@@ -123,5 +123,11 @@
+ s.topic_bad_02 = "what are our launch blockers?";
+ s.topic_bad_02_reason = "";
+ 
++s.footer_whatis = "What is Polis?";
++s.footer_desc = "DigiFinland ja Sitra ovat tuoneet Suomeen avoimeen lähdekoodiin perustuvan Polis-verkkoalustan. Poliksen tarkoituksena on mahdollistaa suurien ryhmien osallistuminen rakentavaan mielipiteiden vaihtoon, valitun aihepiirin ympärillä.";
++s.footer_provider = "Service provider";
++s.footer_links_privacy = "Privacy policy";
++s.footer_links_info = "Information";
++s.footer_links_source = "Sourcecode";
+ 
+ module.exports = s;
