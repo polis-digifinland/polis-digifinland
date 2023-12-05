@@ -17,6 +17,7 @@ client-report/src/components/overview.js # patch8 add finnish and swedish transl
 client-report/src/components/controls/controls.js # patch8 add finnish and swedish translations
 client-report/src/components/beeswarm/beeswarm.js # patch8 add finnish and swedish translations
 client-report/src/components/framework/heading.js # patch8 add finnish and swedish translations
+client-report/src/components/framework/Footer.js # patch7 custom footer | patch8 add finnish and swedish translations
 client-report/src/components/framework/legend.js # patch8 add finnish and swedish translations
 client-report/src/components/lists/allCommentsModeratedIn.js # patch8 add finnish and swedish translations
 client-report/src/components/lists/commentList.js # patch8 add finnish and swedish translations
