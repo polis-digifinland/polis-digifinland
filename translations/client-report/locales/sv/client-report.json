@@ -6,7 +6,7 @@
     "loading": "Läser in ..."
   },
   "heading": {
-    "title": "Rapportera"
+    "title": "Rapport"
   },
   "footer": {
     "whatis": "Vad är Polis?",
@@ -19,62 +19,62 @@
     }
   },
   "controls": {
-    "auto_refresh": "auto-uppdatering",
-    "color_blind_mode": "färgblind läge"
+    "auto_refresh": "automatisk uppdatering",
+    "color_blind_mode": "färgblint läge"
   },
   "overview": {
     "title": "Översikt",
-    "text": "Polis är ett realtidssurveysystem som hjälper till att identifiera de olika sätten som en stor grupp människor tänker på ett kontroversiellt eller komplicerat ämne. Här är en grundläggande förklaring av några termer du behöver känna till för att förstå denna rapport.",
+    "text": "Polis är ett undersökningssystem i realtid som hjälper till att identifiera de olika sätten som en stor grupp människor tänker på ett kontroversiellt eller komplicerat ämne. Här följer grundläggande förklaringar av några termer du behöver känna till för att förstå denna rapport.",
     "term_participants_title": "Deltagare",
-    "term_participants_text": "Detta är de personer som deltog i konversationen genom att rösta och skriva uttalanden. Baserat på hur de röstade sorteras varje deltagare i en åsiktsgrupp.",
-    "term_statements_title": "Uttalanden",
-    "term_statements_text": "Deltagare kan skicka in uttalanden för andra deltagare att rösta på. Uttalanden tilldelas ett nummer i den ordning de skickas in.",
+    "term_participants_text": "Dessa är personerna som deltog i konversationen genom att rösta och skriva påståenden. Varje deltagare placeras i en åsiktsgrupp enligt hur de röstade.",
+    "term_statements_title": "påståenden",
+    "term_statements_text": "Deltagarna kan skicka in påståenden som andra deltagare kan rösta på. Påståendena tilldelas ett nummer i den ordning de skickas in.",
     "term_opinion_groups_title": "Åsiktsgrupper",
-    "term_opinion_groups_text": "Detta är de personer som deltog i konversationen genom att rösta och skriva uttalanden. Baserat på hur de röstade sorteras varje deltagare i en åsiktsgrupp.",
-    "ownername_text": "Denna pol.is-konversation drevs av ",
+    "term_opinion_groups_text": "Dessa är personerna som deltog i konversationen genom att rösta och skriva påståenden. Varje deltagare placeras i en åsiktsgrupp enligt hur de röstade.",
+    "ownername_text": "Denna pol.is-konversation hölls av ",
     "topic_text": "Ämnet var ",
-    "people_voted": "personer röstade",
-    "people_grouped": "personer grupperades",
-    "votes_cast": "röster avgavs",
-    "statements_submitted": "uttalanden skickades in",
-    "votes_per_voter_avg": "röster per röstare i genomsnitt",
-    "statements_per_author_avg": "uttalanden per författare i genomsnitt"
+    "people_voted": "människorna röstade",
+    "people_grouped": "människorna grupperades",
+    "votes_cast": "röster avlades",
+    "statements_submitted": "påståenden skickades in",
+    "votes_per_voter_avg": "röster per röstande i genomsnitt",
+    "statements_per_author_avg": "påståenden per skribent i genomsnitt"
   },
   "barChart": {
-    "voted": "Äänesti",
-    "agreed": "Samaa mieltä",
-    "disagreed": "Eri mieltä",
-    "passed": "Ohitti"
+    "voted": "röstade",
+    "agreed": "av samma åsikt",
+    "disagreed": "av olika åsikt",
+    "passed": "passade"
   },
   "beeswarm": {
     "title": "Hur splittrande var konversationen?",
-    "text": "Uttalanden (här som små cirklar) till vänster röstades på samma sätt - antingen var alla överens eller alla oeniga. Uttalanden till höger var splittrande - deltagarna var oeniga om godkännande och oenighet.",
+    "text": "På påståendena (här som små cirklar) till vänster röstade man på samma sätt - antingen var alla av samma åsikt eller alla av olika åsikt. Påståenden till höger var splittrande - deltagarnas åsikter var delade mellan enighet och oenighet.",
     "howto_strong": "Hur man använder detta:",
-    "howto": "Hovra över för att se uttalandets text. Börja längst till höger för att ta reda på vilket det mest splittrande uttalandet var.",
+    "howto": "För kursorn över för att se texten i påståendet. Börja längst till höger för att ta reda på vilket det mest splittrande påståendet var.",
     "consensus": "Konsensusuttalanden",
     "divisive": "Splittrande uttalanden"
   },
   "legend": {
-    "agreed": "Överens",
-    "disagreed": "Inte överens",
-    "passed": "Godkänd",
+    "agreed": "Av samma åsikt",
+    "disagreed": "Inte av samma åsikt",
+    "passed": "Passade",
     "didnotvote": "Röstade inte"
   },
   "all_comments": {
-    "title": "Alla uttalanden",
-    "text": "Gruppera röster över alla uttalanden, utom de uttalanden som modererades bort.",
-    "sortby": "Sortera efter: ",
+    "title": "Alla påståenden",
+    "text": "Gruppera röster över alla påståenden utom de påståendena som togs bort.",
+    "sortby": "Sortera enligt: ",
     "tid": "Uttalande-ID",
     "consensus": "Gruppinformerad konsensus",
     "numvotes": "Antal röster",
-    "agreed": "Enig",
-    "disagreed": "Oenig",
-    "passed": "Godkänd"
+    "agreed": "Av samma åsikt",
+    "disagreed": "Av olika åsikt",
+    "passed": "Passade"
   },
   "comment_list": {
-    "agreed": "Enig",
-    "disagreed": "Oenig",
-    "passed": "Godkänd",
+    "agreed": "Av samma åsikt",
+    "disagreed": "Av olika åsikt",
+    "passed": "Passade",
     "respondents": " Respondenter",
     "overall": "Övergripande",
     "statement": "PÅSTÅENDE"
@@ -82,35 +82,35 @@
   "majority": {
     "title": "Majoritet",
     "text": "Här är vad de flesta personerna var överens om.",
-    "desc": "60% eller fler av alla deltagare röstade på ett eller annat sätt, oavsett om stora mängder av vissa minoritetsåsiktsgrupper röstade på det andra sättet."
+    "desc": "60% eller fler av alla deltagare röstade på ett eller annat sätt oavsett om stora mängder av vissa minoritetsåsiktsgrupper röstade på det andra sättet."
   },
   "participant_groups": {
     "title": "Åsiktsgrupper",
-    "text": "Över {{param1}} totala deltagare uppstod {{param2}} åsiktsgrupper. Det finns två faktorer som definierar en åsiktsgrupp. För det första består varje åsiktsgrupp av ett antal deltagare som tenderade att rösta liknande på flera uttalanden. För det andra kommer varje grupp av deltagare som röstade liknande också ha röstat väsentligt annorlunda jämfört med andra grupper.",
+    "text": "Mellan {{param1}} totala deltagare uppstod {{param2}} åsiktsgrupper. Det finns två faktorer som definierar en åsiktsgrupp. För det första består varje åsiktsgrupp av ett antal deltagare som tenderade att rösta liknande på flera påståenden. För det andra har varje grupp av deltagare som röstade liknande också röstat väldigt annorlunda jämfört med andra grupper.",
     "group": "Grupp",
     "participants": " deltagare",
-    "grp_desc": "Uttalanden som gör denna grupp unik, genom sina röster: "
+    "grp_desc": "Påståenden som gör denna grupp unik på grund av sina röster: "
   },
   "metadata": {
     "title": "Metadata",
-    "text": "Den demografiska uppdelningen av varje grupp, som självrapporterades genom att hålla med eller inte hålla med om uttalanden markerade som 'metadata' av moderatorer."
+    "text": "Den demografiska uppdelningen av varje grupp som självrapporterades genom att vara av samma åsikt eller att vara av olika åsikt om påståendena markerade som 'metadata' av moderatorer."
   },
   "uncertainty": {
-    "title": "Områden av osäkerhet",
-    "text": "Över alla {{param1}} deltagare fanns det osäkerhet kring följande uttalanden. Mer än 30% av deltagarna som såg dessa uttalanden ansåg dem som 'godkända'.",
-    "desc": "Områden av osäkerhet kan erbjuda möjligheter att utbilda och öppna dialog med din gemenskap."
+    "title": "Osäkerhetsområden",
+    "text": "Mellan alla {{param1}} deltagare fanns det osäkerhet kring följande påståenden. Mer än 30% av deltagarna som såg dessa påståenden 'passade' på dem.",
+    "desc": "Osäkerhetsområden kan erbjuda möjligheter att utbilda och öppna dialog med din gemenskap."
   },
   "graph": {
     "title": "Graf",
-    "text": "Vilka uttalanden röstades på liknande sätt? Hur relaterar deltagarna till varandra?",
-    "desc": "I denna graf är uttalanden placerade närmare uttalanden som röstades på liknande sätt. Deltagare är i sin tur placerade närmare uttalanden som de höll med om, och längre bort från uttalanden som de inte höll med om. Detta innebär att deltagare som röstade på liknande sätt är närmare varandra.",
+    "text": "Vilka påståenden röstade man om på liknande sätt? Hur relaterar deltagarna till varandra?",
+    "desc": "I denna graf är påståendena placerade närmare påståenden som man röstade om på liknande sätt. Deltagare är i sin tur placerade närmare påståenden som de höll med om och längre bort från påståenden som de inte höll med om. Detta innebär att deltagare som röstade på liknande sätt är närmare varandra.",
     "axes": "Axlar",
     "radial_axes": "Radiella axlar",
-    "statements": "Uttalanden",
+    "statements": "Påståenden",
     "participants_bucketized": "Deltagare (grupperade)",
-    "group_outline": "Gruppens kontur",
-    "group_labels": "Gruppförklaringar",
-    "click_text": "Klicka på ett uttalande, identifierat med dess nummer, för att utforska olika regioner av grafen."
+    "group_outline": "Gruppöversikt",
+    "group_labels": "Gruppbeteckningar",
+    "click_text": "Klicka på ett påstående som är identifierat med nummer för att utforska olika områden på grafen."
   }
 }
 

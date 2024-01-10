@@ -1,9 +1,9 @@
 {
   "file_desc": "Käännökset suomeksi",
   "app": {
-    "loading_error": "Virhe latauksessa",
-    "loading_nothing_to_show": "Ei mitään näytettävää",
-    "loading": "Lataa ..."
+    "loading_error": "Ongelma lataamisessa",
+    "loading_nothing_to_show": "Ei vielä mitään näytettävää",
+    "loading": "Ladataan..."
   },
   "heading": {
     "title": "Raportti"
@@ -19,40 +19,40 @@
     }
   },
   "controls": {
-    "auto_refresh": "Sivun automaattinen päivitys",
-    "color_blind_mode": "Värisokeus tila"
+    "auto_refresh": "automaattinen päivitys",
+    "color_blind_mode": "värisokeustila"
   },
   "overview": {
     "title": "Yleiskatsaus",
-    "text": "Polis on reaaliaikainen kyselyjärjestelmä, joka auttaa tunnistamaan eri tavat, joilla suuri joukko ihmisiä ajattelee ajatuksia jakavasta tai monimutkaisesta aiheesta. Alla on perustavanlaatuinen selitys joistakin termeistä, jotka sinun tulee tietää, jotta ymmärrät tämän raportin.",
+    "text": "Polis on reaaliaikainen kyselyjärjestelmä, joka auttaa tunnistamaan miten eri tavoin suuri joukko ihmisiä ajattelee mielipiteitä jakavasta tai monimutkaisesta aiheesta. Seuraavassa esitellään joitakin termejä, jotka sinun on tunnettava tämän raportin ymmärtämiseksi.",
     "term_participants_title": "Osallistujat",
-    "term_participants_text": "Nämä ovat ihmisiä, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Jokainen osallistuja on jaettu mielipideryhmään sen perusteella, miten he äänestivät.",
-    "term_statements_title": "Väittämät",
-    "term_statements_text": "Osallistujat voivat lähettää lausuntoja muiden osallistujien äänestämistä varten. Lausunnot saavat numeron niiden lähetysjärjestyksessä.",
+    "term_participants_text": "Henkilöt, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Osallistujat lajitellaan mielipideryhmiin heidän antamiensa äänten mukaisesti.",
+    "term_statements_title": "Lausunnot",
+    "term_statements_text": "Osallistujat voivat antaa lausuntoja, joista muut osallistujat äänestävät. Lausunnot numeroidaan lähetysjärjestyksessä.",
     "term_opinion_groups_title": "Mielipideryhmät",
-    "term_opinion_groups_text": "Nämä ovat ihmisiä, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Jokainen osallistuja on jaettu mielipideryhmään sen perusteella, miten he äänestivät.",
-    "ownername_text": "Keskustelun järjestäjä on ",
-    "topic_text": "Keskustelun otsikko on ",
-    "people_voted": "äänestäjää",
-    "people_grouped": "äänestäjää ryhmitelty",
-    "votes_cast": "äänestystä",
-    "statements_submitted": "kannanottoa lähetetty",
-    "votes_per_voter_avg": "keskimäärin ääniä äänestäjää kohden",
-    "statements_per_author_avg": "keskimäärin kannanottoja kirjoittajaa kohti"
+    "term_opinion_groups_text": "Henkilöt, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Osallistujat lajitellaan mielipideryhmiin heidän antamiensa äänten mukaisesti.",
+    "ownername_text": "Tämän pol.is-keskustelun toteutti ",
+    "topic_text": "Aiheena oli ",
+    "people_voted": "henkilöä äänesti",
+    "people_grouped": "henkilöä ryhmiteltiin",
+    "votes_cast": "ääntä annettiin",
+    "statements_submitted": "lausuntoa annettiin",
+    "votes_per_voter_avg": "ääntä äänestäjää kohti keskimäärin",
+    "statements_per_author_avg": "lausuntoa per kirjoittaja keskimäärin"
   },
   "barChart": {
-    "voted": "Äänesti",
-    "agreed": "Samaa mieltä",
-    "disagreed": "Eri mieltä",
-    "passed": "Ohitti"
+    "voted": "äänesti",
+    "agreed": "samaa mieltä",
+    "disagreed": "eri mieltä",
+    "passed": "ohitti"
   },
   "beeswarm": {
-    "title": "Kuinka erimielinen keskustelu oli?",
-    "text": "Vasemmanpuoleiset lausunnot (tässä pieninä ympyröinä) äänestettiin samalla tavalla – joko kaikki olivat samaa mieltä tai kaikki eri mieltä. Oikealla olevat lausunnot jakavat erimielisyyksiä – osallistujat jakautuivat yhtä mieltä ja eri mieltä.",
-    "howto_strong": "Kuinka tämä toimii:",
-    "howto": "Vie hiiri nähdäksesi lausunnon tekstin. Aloita äärioikealta selvittääksesi, mikä oli erimielisin lausunto.",
-    "consensus": "Samaa mieltä",
-    "divisive": "Eri mieltä"
+    "title": "Miten mielipiteitä jakava keskustelu oli?",
+    "text": "Vasemmanpuoleisista lausunnoista (tässä pieninä ympyröinä) äänestettiin yksimielisesti – kaikki olivat niistä joko samaa mieltä tai eri mieltä. Oikeanpuoleiset lausunnot jakoivat mielipiteitä – osallistujat olivat samaa mieltä tai eri mieltä hyväksymisestä.",
+    "howto_strong": "Käyttöohje",
+    "howto": "Näet lausunnon tekstin siirtämällä hiirtä sen päällä. Eniten mielipiteitä jakaneen lausunnon näet äärimmäisenä oikealla.",
+    "consensus": "Lausunnot, joista yksimielisyys",
+    "divisive": "Lausunnot, joista erimielisyyttä"
   },
   "legend": {
     "agreed": "Samaa mieltä",
@@ -61,12 +61,12 @@
     "didnotvote": "Ei äänestänyt"
   },
   "all_comments": {
-    "title": "Kaikki kannanotot",
-    "text": "Äänestykset kaikista kannanotoista, lukuun ottamatta niitä kannanottoja, jotka on moderoitu.",
-    "sortby": "Järjestä: ",
-    "tid": "Järjestysnumero",
-    "consensus": "Ryhmän samanmielisyys",
-    "numvotes": "Äänien määrä",
+    "title": "Kaikki lausunnot",
+    "text": "Ryhmässä annetut äänet kaikista lausunnoista lukuun ottamatta niitä lausuntoja, jotka moderaattori poisti.",
+    "sortby": "Lajittele ",
+    "tid": "Lausunnon tunnus",
+    "consensus": "Ryhmäkohtainen yksimielisyys",
+    "numvotes": "Äänten määrä",
     "agreed": "Samaa mieltä",
     "disagreed": "Eri mieltä",
     "passed": "Ohitti"
@@ -75,42 +75,42 @@
     "agreed": "Samaa mieltä",
     "disagreed": "Eri mieltä",
     "passed": "Ohitti",
-    "respondents": " Vastaajaa",
+    "respondents": " Vastaajia",
     "overall": "YHTEENSÄ",
-    "statement": "KANNANOTTO"
+    "statement": "LAUSUNTO"
   },
   "majority": {
-    "title": "Enemmistön mielipide",
-    "text": "Tässä on se, mistä useimmat ihmiset olivat samaa mieltä.",
-    "desc": "Kaikista osallistujista 60 % tai enemmän äänesti suuntaan tai toiseen, riippumatta siitä, äänestikö suuri määrä tiettyjä vähemmistöryhmiä toisin."
+    "title": "Enemmistö",
+    "text": "Suurin osa äänestäneistä oli yhtä mieltä tästä.",
+    "desc": "60 % tai enemmän kaikista osallistujista äänesti tavalla tai toisella riippumatta siitä, äänestikö suuri määrä tiettyjä vähemmistömielipideryhmiä toisin."
   },
   "participant_groups": {
     "title": "Mielipideryhmät",
-    "text": "Yhteensä {{param1}} osallistujasta syntyi {{param2}} mielipideryhmää. Mielipideryhmän määrittelee kaksi tekijää. Ensinnäkin jokainen mielipideryhmä koostuu useista osallistujista, joilla oli tapana äänestää samalla tavalla useista lausunnoista. Toiseksi jokainen osallistujaryhmä, joka äänesti samalla tavalla, on myös äänestänyt selvästi eri tavalla kuin muut ryhmät.",
+    "text": "{{param1}} osallistujien kokonaismäärästä muodostui {{param2}} mielipideryhmää. Mielipideryhmä muodostuu kahden tekijän perusteella. Ensinnäkin mielipideryhmä koostuu osallistujista, jotka ovat äänestäneet samalla tavoin useista lausunnoista. Toiseksi jokainen samalla tavoin äänestänyt osallistujaryhmä on äänestänyt selvästi eri tavalla kuin muut ryhmät.",
     "group": "Ryhmä",
     "participants": " osallistujaa",
-    "grp_desc": "Kannanotot, jotka tekevät tästä ryhmästä ainutlaatuisen ääniensä perusteella: "
+    "grp_desc": "Lausunnot, jotka tekevät tästä ryhmästä äänten perusteella ainutlaatuisen: "
   },
   "metadata": {
-    "title": "Metadata",
-    "text": "Kunkin ryhmän demografinen jakautuminen, sellaisena kuin se on itse raportoitu hyväksymällä ja eri mieltä väittämistä, jotka moderaattorit ovat merkinneet 'metadata'."
+    "title": "Metatiedot",
+    "text": "Kunkin ryhmän demografinen jakauma oman ilmoituksen perusteella sen mukaisesti, mistä moderaattorien ”metatiedoiksi” merkitsemistä lausunnoista he ovat samaa ja mistä eri mieltä."
   },
   "uncertainty": {
-    "title": "Epävarmuus",
-    "text": "Kaikkien {{param1}} osallistujan kesken, seuraavien lausuntojen suhteen oli epävarmuutta. Yli 30 % osallistujista, jotka näkivät nämä lausunnot 'ohittivat' ne.",
-    "desc": "Epävarmuusalueet voivat tarjota keinoja kouluttaa ja käydä avointa vuoropuhelua yhteisösi kanssa."
+    "title": "Epävarmat osa-alueet",
+    "text": "Kaikkien {{param1}} osallistujien keskuudessa oli epävarmuutta seuraavista lausunnoista. Yli 30 prosenttia lausunnot nähneistä osallistujista ”ohitti”.",
+    "desc": "Epävarmat osa-alueet voivat tarjota mahdollisuuksia koulutukseen ja vuoropuhelun aloittamiseen yhteisön kanssa."
   },
   "graph": {
     "title": "Kaavio",
-    "text": "Mistä lausunnoista äänestettiin samalla tavalla? Miten osallistujat suhtautuvat toisiinsa?",
-    "desc": "Tässä kaaviossa lausunnot on sijoitettu lähemmäksi lausuntoja, joista äänestettiin samalla tavalla. Osallistujat puolestaan sijoittuvat lähemmäksi lausuntoja, joista he olivat samaa mieltä, ja kauempana lausunnoista, joista he olivat eri mieltä. Tämä tarkoittaa, että samalla tavalla äänestäneet osallistujat ovat lähempänä toisiaan.",
+    "text": "Mistä lausunnoista äänestettiin samalla tavalla? Miten osallistujat ovat yhteydessä toisiinsa?",
+    "desc": "Tässä kaaviossa lausunnot ovat lähempänä lausuntoja, joista äänestettiin samalla tavalla. Osallistujat puolestaan ovat lähempänä lausuntoja, joista he olivat samaa mieltä, ja kauempana lausunnoista, joista he olivat eri mieltä. Tämä tarkoittaa, että samalla tavalla äänestäneet osallistujat ovat lähempänä toisiaan.",
     "axes": "Akselit",
-    "radial_axes": "Radiaaliset akselit",
-    "statements": "Kannanotot",
-    "participants_bucketized": "Osallistujat (rajattu)",
-    "group_outline": "Ryhmän hahmotelma",
-    "group_labels": "Ryhmän selitteet",
-    "click_text": "Napsauta lauseketta, joka tunnistetaan sen numerolla, tutkiaksesi kaavion alueita."
+    "radial_axes": "Sädeakselit",
+    "statements": "Lausunnot",
+    "participants_bucketized": "Osallistujat (ryhmitelty)",
+    "group_outline": "Ryhmän kuvaus",
+    "group_labels": "Ryhmän tunnisteet",
+    "click_text": "Voit tarkastella kaavion alueita napsauttamalla numerolla merkittyä lausuntoa."
   }
 }
 
