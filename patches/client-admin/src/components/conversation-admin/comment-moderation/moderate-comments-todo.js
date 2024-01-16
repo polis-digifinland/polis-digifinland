@@ -54,7 +54,7 @@ class ModerateCommentsTodoTranslated extends React.Component {
     return (
       <div>
         <div>
-          <p> Displays maximum {max} comments </p> 
+          {t('moderate.display_max', { param1: max})}
           {this.props.unmoderated_comments !== null
             ? this.createCommentMarkup(max)
             : t('moderate.loading_unmoderated')}
