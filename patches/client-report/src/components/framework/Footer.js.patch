@@ -1,6 +1,6 @@
 --- ./client-report/src/components/framework/Footer.js
 +++ ../patches/client-report/src/components/framework/Footer.js
-@@ -1,18 +1,40 @@
+@@ -1,18 +1,41 @@
  // Copyright (C) 2012-present, The Authors. This program is free software: you can redistribute it and/or  modify it under the terms of the GNU Affero General Public License, version 3, as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details. You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
  import React from "react";
@@ -28,6 +28,7 @@
 +        <div style={{ width: '30%', minWidth: '300px', display: 'flex', flexDirection: 'column', marginLeft: '20px'}}>
 +            <h3>{t('footer.title')}</h3>
 +            <p>{t('footer.desc')}</p>
++            <p>{t('footer.disclaimer')}</p>
 +            <p style={{fontSize: '10px'}}>{t('footer.version', { param1: "0.1.10"})}   {t('footer.released', { param1: "16.1.2024"})}</p>
 +        </div>
 +        <div style={{ width: '30%', minWidth: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>

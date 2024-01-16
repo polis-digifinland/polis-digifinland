@@ -125,10 +125,11 @@ s.topic_bad_02_reason = "";
 
 s.footer_title = "Polis";
 s.footer_desc = "DigiFinland ja Sitra ovat tuoneet Suomeen avoimeen lähdekoodiin perustuvan Polis-verkkoalustan. Poliksen tarkoituksena on mahdollistaa suurien ryhmien osallistuminen rakentavaan mielipiteiden vaihtoon, valitun aihepiirin ympärillä.";
+s.footer_disclaimer = "Polis-verkkoalusta on kokeiluvaiheessa ja se ei vielä täytä kaikkia vaatimuksia saavutettavuuden ja käytettävyyden osalta.";
 s.footer_version = "Versio";
 s.footer_released = "Julkaisu pvm";
 s.footer_provider = "Palveluntuottaja";
-s.footer_links_privacy = "Tietosuojaseloste";
+s.footer_links_privacy = "DigiFinland Oy tietosuoja";
 s.footer_links_info = "Tietoa palvelusta";
 s.footer_links_source = "Lähdekoodi";
 

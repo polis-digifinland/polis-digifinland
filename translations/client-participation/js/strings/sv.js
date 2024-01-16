@@ -125,10 +125,11 @@ s.topic_bad_02_reason = "";
 
 s.footer_title = "Polis";
 s.footer_desc = "DigiFinland och Sitra har introducerat Polis-webbplattformen baserad på öppen källkod till Finland. Polis syftar till att möjliggöra konstruktivt utbyte av åsikter för stora grupper runt ett valt ämne.";
+s.footer_disclaimer = "Polis-plattformen är i ett testskede och uppfyller ännu inte alla krav när det gäller tillgänglighet och användarvänlighet.";
 s.footer_version = "Version";
 s.footer_released = "Publiceringsdatum";
 s.footer_provider = "Tjänsteleverantör";
-s.footer_links_privacy = "Integritetspolicy";
+s.footer_links_privacy = "DigiFinland Oy dataskydd";
 s.footer_links_info = "Information";
 s.footer_links_source = "Källkod";
 
