@@ -9,8 +9,10 @@
     "title": "Raportti"
   },
   "footer": {
-    "whatis": "Mikä on Polis?",
+    "title": "Polis",
     "desc": "DigiFinland ja Sitra ovat tuoneet Suomeen avoimeen lähdekoodiin perustuvan Polis-verkkoalustan. Poliksen tarkoituksena on mahdollistaa suurien ryhmien osallistuminen rakentavaan mielipiteiden vaihtoon, valitun aihepiirin ympärillä.",
+    "version": "Versio: {{param1}}",
+    "released": "Julkaisu pvm: {{param1}}",
     "provider": "Palveluntuottaja",
     "links": {
       "privacy": "Tietosuojaseloste",

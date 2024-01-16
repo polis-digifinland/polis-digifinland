@@ -9,8 +9,10 @@
     "title": "Rapport"
   },
   "footer": {
-    "whatis": "Vad är Polis?",
+    "title": "Polis",
     "desc": "DigiFinland och Sitra har introducerat Polis-webbplattformen baserad på öppen källkod till Finland. Polis syftar till att möjliggöra konstruktivt utbyte av åsikter för stora grupper runt ett valt ämne.",
+    "version": "Version: {{param1}}",
+    "released": "Publiceringsdatum: {{param1}}",
     "provider": "Tjänsteleverantör",
     "links": {
       "privacy": "Integritetspolicy",

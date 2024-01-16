@@ -3,6 +3,8 @@
 .css-mxl0c {
     position: absolute;
     left: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
 }
 .css-1oqccy5 {
     box-sizing: border-box;
@@ -59,17 +61,31 @@
     margin: 0px;
     min-width: 0px;
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 400;
     cursor: pointer;
     color: #fff;
     border: 0px;
+    font-size: 14px;
 }
 
 footer a, footer a:link {
     color: #fff;
+    text-decoration: underline;
 }
 footer a:hover {
     color: #0565a6;
+}
+
+footer .css-u7hqrd h3 {
+    font-size: 1em;
+}
+
+footer h3 {
+    margin-top: 1em;
+}
+
+footer p {
+    font-size: 14px;
 }
 
 .css-1uk1gs8 {

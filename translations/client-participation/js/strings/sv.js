@@ -123,8 +123,10 @@ s.topic_bad_01_reason = "personer från olika team kommer att rösta på svaren,
 s.topic_bad_02 = "vad är våra lanseringsblockerare?";
 s.topic_bad_02_reason = "";
 
-s.footer_whatis = "Vad är Polis?";
+s.footer_title = "Polis";
 s.footer_desc = "DigiFinland och Sitra har introducerat Polis-webbplattformen baserad på öppen källkod till Finland. Polis syftar till att möjliggöra konstruktivt utbyte av åsikter för stora grupper runt ett valt ämne.";
+s.footer_version = "Version";
+s.footer_released = "Publiceringsdatum";
 s.footer_provider = "Tjänsteleverantör";
 s.footer_links_privacy = "Integritetspolicy";
 s.footer_links_info = "Information";

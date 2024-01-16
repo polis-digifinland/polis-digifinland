@@ -123,8 +123,10 @@ s.topic_bad_01_reason = "people from various teams will be voting on the respons
 s.topic_bad_02 = "what are our launch blockers?";
 s.topic_bad_02_reason = "";
 
-s.footer_whatis = "What is Polis?";
+s.footer_title = "Polis";
 s.footer_desc = "DigiFinland ja Sitra ovat tuoneet Suomeen avoimeen lähdekoodiin perustuvan Polis-verkkoalustan. Poliksen tarkoituksena on mahdollistaa suurien ryhmien osallistuminen rakentavaan mielipiteiden vaihtoon, valitun aihepiirin ympärillä.";
+s.footer_version = "Version";
+s.footer_released = "Release date";
 s.footer_provider = "Service provider";
 s.footer_links_privacy = "Privacy policy";
 s.footer_links_info = "Information";
