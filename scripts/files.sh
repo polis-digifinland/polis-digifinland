@@ -61,4 +61,5 @@ client-participation/js/templates/footer.handlebars # patch7 custom footer
 client-participation/js/templates/participation.handlebars # patch7 custom footer
 client-participation/js/strings/en_us.js # patch7 custom footer
 client-participation/js/strings.js # patch8 add finnish and swedish translations
+client-participation/public/index.ejs # patch13 disable translations
 )

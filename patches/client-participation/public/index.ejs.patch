@@ -1,0 +1,14 @@
+--- ./client-participation/public/index.ejs
++++ ../patches/client-participation/public/index.ejs
+@@ -1,9 +1,10 @@
+ <!DOCTYPE html>
+-<html lang="en">
++<html lang="en" translate="no">
+   <head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <title>Polis</title>
++    <meta name="google" value="notranslate">
+ 
+     <!-- REPLACE_THIS_WITH_FB_META_TAGS -->
+ 
