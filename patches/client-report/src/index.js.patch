@@ -1,12 +1,10 @@
 --- ./client-report/src/index.js
 +++ ../patches/client-report/src/index.js
-@@ -6,6 +6,9 @@
- 
+@@ -5,6 +5,7 @@
+ import ReactDOM from "react-dom";
+ import './index.css';
  import App from "./components/app";
- 
-+// import i18n (needs to be bundled ;)) 
 +import './i18n';
-+
+ 
  // const store = configureStore();
  
- class Root extends React.Component {

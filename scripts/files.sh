@@ -9,7 +9,7 @@ client-admin/src/components/conversation-admin/conversation-config.js # patch4 h
 client-admin/src/components/landers/signin.js # patch5 1 hide facebook login/user creation on admin signin page | 2 add dev env warning before login form
 client-admin/src/components/landers/lander-footer.js # patch6 hide TOS link and replace privacy policy link on admin page footer patch8 add finnish and swedish translations
 client-admin/src/components/landers/lander-header.js # patch8 add finnish and swedish translations
-client-report/gulpfile.js # patch8 add finnish and swedish translations
+client-report/webpack.common.js # patch8 add finnish and swedish translations
 client-report/src/index.js # patch8 add finnish and swedish translations
 client-report/package.json # patch8 add finnish and swedish translations
 client-report/package-lock.json # patch8 add finnish and swedish translations

@@ -1,19 +1,20 @@
 --- ./client-participation/js/strings.js
 +++ ../patches/client-participation/js/strings.js
-@@ -58,6 +58,12 @@
-   // Ukrainian
-   uk: require("./strings/uk.js"),
+@@ -63,6 +63,13 @@
  
+   // Romanian & Moldovan
+   ro: require("./strings/ro.js"),
++
 +  // Finnish
 +  fi: require("./strings/fi.js"),
 +
 +  // Swedish
 +  sv: require("./strings/sv.js"),
 +
-   // Russian
-   ru: require("./strings/ru.js"),
  };
-@@ -83,6 +89,16 @@
+ 
+ 
+@@ -86,6 +93,16 @@
      if (languageCode.match(/^en/)) {
        _.extend(strings, translations.en_us);
      }

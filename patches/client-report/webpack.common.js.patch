@@ -1,0 +1,10 @@
+--- ./client-report/webpack.common.js
++++ ../patches/client-report/webpack.common.js
+@@ -23,6 +23,7 @@
+     new CopyWebpackPlugin({
+       patterns: [
+         { from: 'public/favicon.ico', to: 'favicon.ico' },
++        { from: 'locales', to: 'locales' },
+       ],
+     }),
+     new HtmlWebpackPlugin({

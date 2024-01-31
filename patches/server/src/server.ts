@@ -31,6 +31,7 @@ import timeout from "connect-timeout";
 import zlib from "zlib";
 import _ from "underscore";
 import pg from "pg";
+import { encode } from "html-entities";
 
 import { METRICS_IN_RAM, addInRamMetric, MPromise } from "./utils/metered";
 import CreateUser from "./auth/create-user";
@@ -765,31 +766,35 @@ function initializePolisHelpers() {
   }
 
   function redirectIfNotHttps(
-    req: { headers?: { [x: string]: string; host: string }; url: string },
+    req: { headers: { [x: string]: string; host: string }; method: string; path: string; url: string },
     res: {
-      writeHead: (arg0: number, arg1: { Location: string }) => void;
       end: () => any;
+      status: (arg0: number) => {
+        send: (arg0: string) => any;
+      };
+      writeHead: (arg0: number, arg1: { Location: string }) => void;
     },
     next: () => any
   ) {
-    let exempt = true; // DigiFinland customization: enable http-only health checks on GKE, no need to redirect https even on devMode=false since this is done on LB / nginx proxy.
-
-    // IE is picky, so use HTTP.
-    // TODO figure out IE situation, (proxy static files in worst-case)
-    // exempt = exempt || /MSIE/.test(req?.headers?.['user-agent']); // TODO test IE11
-
-    if (exempt) {
+    // Exempt dev mode or healthcheck path from HTTPS check
+    if (devMode || req.path === '/api/v3/testConnection') {
       return next();
     }
 
-    const isHttps = req?.headers?.["x-forwarded-proto"] === "https";
+    // Check if the request is already HTTPS
+    const isHttps = req.headers['x-forwarded-proto'] === 'https';
 
     if (!isHttps) {
-      // assuming we're running on Heroku, where we're behind a proxy.
-      res.writeHead(302, {
-        Location: "https://" + req?.headers?.host + req.url,
-      });
-      return res.end();
+      logger.debug('redirecting to https', { headers: req.headers });
+      // Only redirect GET requests; otherwise, send a 400 error for non-GET methods
+      if (req.method === 'GET') {
+        res.writeHead(302, {
+          Location: `https://${req.headers.host}${req.url}`
+        });
+        return res.end();
+      } else {
+        res.status(400).send('Please use HTTPS when submitting data.');
+      }
     }
     return next();
   }
@@ -1121,17 +1126,12 @@ function initializePolisHelpers() {
     ...Config.whitelistItems,
     "localhost:5000",
     "localhost:5001",
+    "localhost:5010",
     "facebook.com",
     "api.twitter.com",
     "", // for API
   ];
 
-  let whitelistedBuckets = {
-    "pol.is": "pol.is",
-    "embed.pol.is": "pol.is",
-    "survey.pol.is": "survey.pol.is",
-    "preprod.pol.is": "preprod.pol.is",
-  };
   function hasWhitelistMatches(host: string) {
     let hostWithoutProtocol = host;
     if (host.startsWith("http://")) {
@@ -1262,8 +1262,9 @@ function initializePolisHelpers() {
     });
 
     // using hex since it doesn't require escaping like base64.
-    let dest = hexToStr(req.p.dest);
-    res.redirect(dest);
+    const dest = hexToStr(req.p.dest);
+    const url = new URL(dest);
+    res.redirect(url.pathname + url.search + url.hash);
   }
 
   function handle_GET_tryCookie(
@@ -3437,7 +3438,7 @@ Feel free to reply to this email if you need help.`;
 //    if (x_forwarded_for) {
 //      let ips = x_forwarded_for;
 //      ips = ips && ips.split(", ");
-//     ip = ips.length && ips[0];
+//      ip = ips.length && ips[0];
 //      info.encrypted_ip_address = encrypt(ip);
 //      info.encrypted_x_forwarded_for = encrypt(x_forwarded_for);
 //    }
@@ -4489,7 +4490,7 @@ Email verified! You can close this tab or hit the back button.
   function createNotificationsUnsubscribeUrl(conversation_id: any, email: any) {
     let params = {
       conversation_id: conversation_id,
-      email: email,
+      email: encode(email),
     };
     let path = "api/v3/notifications/unsubscribe";
     // Element implicitly has an 'any' type because expression of type 'string | number' can't be used to index type '{}'.
@@ -4504,7 +4505,7 @@ Email verified! You can close this tab or hit the back button.
   function createNotificationsSubscribeUrl(conversation_id: any, email: any) {
     let params = {
       conversation_id: conversation_id,
-      email: email,
+      email: encode(email),
     };
     let path = "api/v3/notifications/subscribe";
     // Element implicitly has an 'any' type because expression of type 'string | number' can't be used to index type '{}'.
@@ -7108,7 +7109,7 @@ Email verified! You can close this tab or hit the back button.
             logger.debug("Post comments quote_txt", { txt, quote_txt });
             txt = quote_txt;
           } else {
-            logger.debug("Post comments txt", { txt });
+            logger.debug("Post comments txt", {zid, pid, txt});
           }
 
           let ip =
@@ -7363,12 +7364,7 @@ Email verified! You can close this tab or hit the back button.
                       function (err: { code: string | number }) {
                         if (err.code === "23505" || err.code === 23505) {
                           // duplicate comment
-                          fail(
-                            res,
-                            409,
-                            "polis_err_post_comment_duplicate",
-                            err
-                          );
+                          fail(res, 409, "polis_err_post_comment_duplicate", err);
                         } else {
                           fail(res, 500, "polis_err_post_comment", err);
                         }
@@ -7396,36 +7392,8 @@ Email verified! You can close this tab or hit the back button.
       .catch(function (err: any) {
         fail(res, 500, "polis_err_post_comment_misc", err);
       });
-
-    //var rollback = function(client) {
-    //pgQuery('ROLLBACK', function(err) {
-    //if (err) { fail(res, 500, "polis_err_post_comment", err); return; }
-    //});
-    //};
-    //pgQuery('BEGIN;', function(err) {
-    //if(err) return rollback(client);
-    ////process.nextTick(function() {
-    //pgQuery("SET CONSTRAINTS ALL DEFERRED;", function(err) {
-    //if(err) return rollback(client);
-    //pgQuery("INSERT INTO comments (tid, pid, zid, txt, created) VALUES (null, $1, $2, $3, default);", [pid, zid, txt], function(err, docs) {
-    //if(err) return rollback(client);
-    //pgQuery('COMMIT;', function(err, docs) {
-    //if (err) { fail(res, 500, "polis_err_post_comment", err); return; }
-    //var tid = docs && docs[0] && docs[0].tid;
-    //// Since the user posted it, we'll submit an auto-pull for that.
-    //var autoPull = {
-    //zid: zid,
-    //vote: polisTypes.reactions.pull,
-    //tid: tid,
-    //pid: pid
-    //};
-    ////votesPost(uid, pid, zid, tid, [autoPull]);
-    //}); // COMMIT
-    //}); // INSERT
-    //}); // SET CONSTRAINTS
-    ////}); // nextTick
-    //}); // BEGIN
   } // end POST /api/v3/comments
+
   function handle_GET_votes_me(
     req: { p: { zid: any; uid?: any; pid: any } },
     res: any
@@ -7463,33 +7431,6 @@ Email verified! You can close this tab or hit the back button.
     );
   }
 
-  //function getNextCommentRandomly(zid, pid, withoutTids, include_social) {
-  //let params = {
-  //zid: zid,
-  //not_voted_by_pid: pid,
-  //limit: 1,
-  //random: true,
-  //include_social: include_social,
-  //};
-  //if (!_.isUndefined(withoutTids) && withoutTids.length) {
-  //params.withoutTids = withoutTids;
-  //}
-  //return getComments(params).then(function(comments) {
-  //if (!comments || !comments.length) {
-  //return null;
-  //} else {
-  //let c = comments[0];
-  //return getNumberOfCommentsRemaining(zid, pid).then((rows) => {
-  //if (!rows || !rows.length) {
-  //throw new Error("polis_err_getNumberOfCommentsRemaining_" + zid + "_" + pid);
-  //}
-  //c.remaining = Number(rows[0].remaining);
-  //c.total = Number(rows[0].total);
-  //return c;
-  //});
-  //}
-  //});
-  //}
   function selectProbabilistically(
     comments: any,
     priorities: { [x: string]: any },
@@ -7551,6 +7492,8 @@ Email verified! You can close this tab or hit the back button.
       let comments = results[0];
       let math = results[1];
       let numberOfCommentsRemainingRows = results[2];
+      logger.debug("getNextPrioritizedComment intermediate results:",
+                   {zid, pid, numberOfCommentsRemainingRows});
       if (!comments || !comments.length) {
         return null;
       } else if (
@@ -7577,79 +7520,6 @@ Email verified! You can close this tab or hit the back button.
       return c;
     });
   }
-  // function getNextCommentPrioritizingNonPassedComments(zid, pid, withoutTids) {
-  //   if (!withoutTids || !withoutTids.length) {
-  //     withoutTids = [-999999]; // ensure there's a value in there so the sql parses as a list
-  //   }
-  //   let q = "WITH ";
-  //   q += "  star_counts AS ";
-  //   q += "  (SELECT tid, count(*) as starcount from stars where zid = $1 group by tid), ";
-  //   q += "  conv AS  ";
-  //   q += "  (SELECT *,";
-  //   q += "    CASE WHEN strict_moderation=TRUE then 1 ELSE 0 END as minModVal from conversations where zid = $1),";
-  //   q += "  pv AS  ";
-  //   q += "  (SELECT tid,  ";
-  //   q += "          TRUE AS voted ";
-  //   q += "   FROM votes  ";
-  //   q += "   WHERE zid = $1 ";
-  //   q += "     AND pid = $2 ";
-  //   q += "   GROUP BY tid),  ";
-  //   q += "     x AS  ";
-  //   q += "  (SELECT * ";
-  //   q += "   FROM votes_latest_unique($1) ";
-  //   q += "   ORDER BY tid),  ";
-  //   q += "     a AS  ";
-  //   q += "  (SELECT zid,  ";
-  //   q += "          tid,  ";
-  //   q += "          count(*) ";
-  //   q += "   FROM x  ";
-  //   q += "   WHERE vote < 0 ";
-  //   q += "   GROUP BY zid,  ";
-  //   q += "            tid),  ";
-  //   q += "     d AS  ";
-  //   q += "  (SELECT tid,  ";
-  //   q += "          count(*) ";
-  //   q += "   FROM x  ";
-  //   q += "   WHERE vote > 0 ";
-  //   q += "   GROUP BY tid),  ";
-  //   q += "     t AS  ";
-  //   q += "  (SELECT tid,  ";
-  //   q += "          count(*) ";
-  //   q += "   FROM x ";
-  //   q += "   GROUP BY tid),  ";
-  //   q += "     c AS  ";
-  //   q += "  (SELECT * ";
-  //   q += "   FROM comments  ";
-  //   q += "   WHERE zid = $1) ";
-  //   q += "SELECT $1 AS zid,  ";
-  //   q += "       c.tid,  ";
-  //   q += "       (COALESCE(a.count,0.0)+COALESCE(d.count,0.0)) / coalesce(t.count, 1.0) AS nonpass_score,  ";
-  //   q += "       pv.voted AS voted,  ";
-  //   q += "       c.* ";
-  //   q += "FROM c ";
-  //   q += "LEFT JOIN d ON c.tid = d.tid ";
-  //   q += "LEFT JOIN t ON c.tid = t.tid ";
-  //   q += "LEFT JOIN a ON a.zid = c.zid ";
-  //   q += "  AND a.tid = c.tid ";
-  //   q += "LEFT JOIN pv ON c.tid = pv.tid  ";
-  //   q += "LEFT JOIN conv ON c.zid = conv.zid  ";
-  //   q += "LEFT JOIN star_counts ON c.tid = star_counts.tid ";
-  //   q += "WHERE voted IS NULL ";
-  //   q += "  AND c.tid NOT IN (" + withoutTids.join(",") + ") ";
-  //   q += "  AND (pv.voted = FALSE OR pv.voted IS NULL)";
-  //   q += "  AND c.active = true";
-  //   q += "  AND c.mod >= conv.minModVal";
-  //   q += "  AND c.velocity > 0";
-  //   q += " ORDER BY starcount DESC NULLS LAST, nonpass_score DESC ";
-  //   q += " LIMIT 1;";
-  //   return pgQueryP_readOnly(q, [zid, pid]).then(function(comments) {
-  //     if (!comments || !comments.length) {
-  //       return null;
-  //     } else {
-  //       return comments[0];
-  //     }
-  //   });
-  // }
 
   function getCommentTranslations(zid: any, tid: any) {
     return dbPgQuery.queryP(
@@ -7665,8 +7535,6 @@ Email verified! You can close this tab or hit the back button.
     include_social?: boolean,
     lang?: string
   ) {
-    // return getNextCommentPrioritizingNonPassedComments(zid, pid, withoutTids, !!!!!!!!!!!!!!!!TODO IMPL!!!!!!!!!!!include_social);
-    //return getNextCommentRandomly(zid, pid, withoutTids, include_social).then((c) => {
     return getNextPrioritizedComment(
       zid,
       pid,
@@ -8103,6 +7971,7 @@ Email verified! You can close this tab or hit the back button.
             return getNextComment(zid, pid, [], true, lang);
           })
           .then(function (nextComment: any) {
+            logger.debug("handle_POST_votes nextComment:", {zid, pid, nextComment});
             let result: PidReadyResult = {};
             if (nextComment) {
               result.nextComment = nextComment;
@@ -11389,7 +11258,7 @@ Thanks for using Polis!
     }
 
     const authorsQueryParts = (authorUids || []).map(function (
-      authoruid?: any
+      authorUid?: any
     ) {
       // TODO investigate this one.
       // TODO looks like a possible typo bug
@@ -13260,7 +13129,6 @@ Thanks for using Polis!
         x_email: any;
         parent_url: any;
         dwok: any;
-        build: any;
         show_vis: any;
         bg_white: any;
         show_share: any;
@@ -13303,7 +13171,6 @@ Thanks for using Polis!
     let x_email = req.p.x_email;
     let parent_url = req.p.parent_url;
     let dwok = req.p.dwok;
-    let build = req.p.build;
     let o: ConversationType = {};
     ifDefinedSet("parent_url", req.p, o);
     ifDefinedSet("auth_needed_to_vote", req.p, o);
@@ -13375,9 +13242,6 @@ Thanks for using Polis!
       }
       if (!_.isUndefined(dwok)) {
         url += "&dwok=" + dwok;
-      }
-      if (!_.isUndefined(build)) {
-        url += "&build=" + build;
       }
       return url;
     }
@@ -13457,7 +13321,7 @@ Thanks for using Polis!
   }
 
   function proxy(req: { headers?: { host: string }; path: any }, res: any) {
-    let hostname = buildStaticHostname(req, res);
+    let hostname = Config.staticFilesHost;
     if (!hostname) {
       let host = req?.headers?.host || "";
       let re = new RegExp(Config.getServerHostname() + "$");
@@ -13492,37 +13356,6 @@ Thanks for using Polis!
       },
     });
     // }
-  }
-
-  function buildStaticHostname(req: { headers?: { host: string } }, res: any) {
-    if (devMode || domainOverride) {
-      return Config.staticFilesHost;
-    } else {
-      let origin = req?.headers?.host;
-      // Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "pol.is": string; "embed.pol.is": string; "survey.pol.is": string; "preprod.pol.is": string; }'.
-      // No index signature with a parameter of type 'string' was found on type '{ "pol.is": string; "embed.pol.is": string; "survey.pol.is": string; "preprod.pol.is": string; }'.ts(7053)
-      // @ts-ignore
-      if (!whitelistedBuckets[origin || ""]) {
-        if (hasWhitelistMatches(origin || "")) {
-          // Use the prod bucket for non pol.is domains
-          return (
-            whitelistedBuckets["pol.is"] + "." + Config.staticFilesHost
-          );
-        } else {
-          logger.error(
-            "got request with host that's not whitelisted: (" +
-              req?.headers?.host +
-              ")"
-          );
-          return;
-        }
-      }
-      // Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "pol.is": string; "embed.pol.is": string; "survey.pol.is": string; "preprod.pol.is": string; }'.
-      // No index signature with a parameter of type 'string' was found on type '{ "pol.is": string; "embed.pol.is": string; "survey.pol.is": string; "preprod.pol.is": string; }'.ts(7053)
-      // @ts-ignore
-      origin = whitelistedBuckets[origin || ""];
-      return origin + "." + Config.staticFilesHost;
-    }
   }
 
   function makeRedirectorTo(path: string) {
@@ -13600,7 +13433,7 @@ Thanks for using Polis!
       req: { headers?: { host: any }; path: any; pipe: (arg0: any) => void },
       res: { set: (arg0: any) => void }
     ) {
-      let hostname = buildStaticHostname(req, res);
+      let hostname = Config.staticFilesHost;
       if (!hostname) {
         fail(res, 500, "polis_err_file_fetcher_serving_to_domain");
         return;
@@ -13631,11 +13464,11 @@ Thanks for using Polis!
       if (preloadData && preloadData.conversation) {
         fbMetaTagsString +=
           '    <meta property="og:title" content="' +
-          preloadData.conversation.topic +
+          encode(preloadData.conversation.topic) +
           '" />\n';
         fbMetaTagsString +=
           '    <meta property="og:description" content="' +
-          preloadData.conversation.description +
+          encode(preloadData.conversation.description) +
           '" />\n';
         // fbMetaTagsString += "    <meta property=\"og:site_name\" content=\"" + site_name + "\" />\n";
       }
@@ -13707,8 +13540,7 @@ Thanks for using Polis!
       end: () => any;
     },
     preloadData: { conversation?: ConversationType },
-    port: string | number | undefined,
-    buildNumber?: string | null | undefined
+    port: string | number | undefined
   ) {
     let headers = {
       "Content-Type": "text/html",
@@ -13725,12 +13557,7 @@ Thanks for using Polis!
     // @ts-ignore
     setCookieTestCookie(req, res);
 
-    if (devMode) {
-      buildNumber = null;
-    }
-
-    let indexPath =
-      (buildNumber ? "/cached/" + buildNumber : "") + "/index.html";
+    let indexPath = "/index.html";
 
     let doFetch = makeFileFetcher(
       hostname,
@@ -13775,7 +13602,7 @@ Thanks for using Polis!
   });
 
   function fetchIndexForConversation(
-    req: { path: string; query?: { build: any } },
+    req: { path: string; },
     res: any
   ) {
     logger.debug("fetchIndexForConversation", req.path);
@@ -13783,11 +13610,6 @@ Thanks for using Polis!
     let conversation_id: any;
     if (match && match.length) {
       conversation_id = match[0];
-    }
-    let buildNumber: null = null;
-    if (req?.query?.build) {
-      buildNumber = req.query.build;
-      logger.debug("loading_build", buildNumber);
     }
 
     setTimeout(function () {
@@ -13822,14 +13644,13 @@ Thanks for using Polis!
           req,
           res,
           preloadData,
-          staticFilesParticipationPort,
-          buildNumber
+          staticFilesParticipationPort
         );
       })
       .catch(function (err: any) {
         logger.error("polis_err_fetching_conversation_info", err);
-        // Argument of type '{ path: string; query?: { build: any; } | undefined; }' is not assignable to parameter of type '{ headers?: { host: any; } | undefined; path: any; pipe: (arg0: any) => void; }'.
-        //   Property 'pipe' is missing in type '{ path: string; query?: { build: any; } | undefined; }' but required in type '{ headers?: { host: any; } | undefined; path: any; pipe: (arg0: any) => void; }'.ts(2345)
+        // Argument of type '{ path: string; }' is not assignable to parameter of type '{ headers?: { host: any; } | undefined; path: any; pipe: (arg0: any) => void; }'.
+        // Property 'pipe' is missing in type '{ path: string; }' but required in type '{ headers?: { host: any; } | undefined; path: any; pipe: (arg0: any) => void; }'.
         // @ts-ignore
         fetch404Page(req, res);
       });
@@ -13988,37 +13809,6 @@ Thanks for using Polis!
     };
   })();
 
-  function handle_GET_localFile_dev_only(
-    req: { path: any },
-    res: {
-      writeHead: (
-        arg0: number,
-        arg1?: { "Content-Type": string } | undefined
-      ) => void;
-      end: (arg0?: undefined, arg1?: string) => void;
-    }
-  ) {
-    const filenameParts = String(req.path).split("/");
-    filenameParts.shift();
-    filenameParts.shift();
-    const filename = filenameParts.join("/");
-    if (!devMode) {
-      // pretend this route doesn't exist.
-      return proxy(req, res);
-    }
-    fs.readFile(filename, function (error: any, content: any) {
-      if (error) {
-        res.writeHead(500);
-        res.end();
-      } else {
-        res.writeHead(200, {
-          "Content-Type": "text/html",
-        });
-        res.end(content, "utf-8");
-      }
-    });
-  }
-
   function middleware_log_request_body(
     req: { body: any; path: string },
     res: any,
@@ -14153,7 +13943,6 @@ Thanks for using Polis!
     handle_GET_iip_conversation,
     handle_GET_implicit_conversation_generation,
     handle_GET_launchPrep,
-    handle_GET_localFile_dev_only,
     handle_GET_locations,
     handle_GET_logMaxmindResponse,
     handle_GET_math_pca,
