@@ -59,6 +59,7 @@ client-participation/css/polis/polis.scss # patch7 custom footer
 client-participation/css/polis/modules/_footer.scss # patch7 custom footer
 client-participation/js/templates/footer.handlebars # patch7 custom footer
 client-participation/js/templates/participation.handlebars # patch7 custom footer
+client-participation/js/templates/vote-view.handlebars # patch14 hide text in participation where condition of ucw fails
 client-participation/js/strings/en_us.js # patch7 custom footer
 client-participation/js/strings.js # patch8 add finnish and swedish translations
 client-participation/public/index.ejs # patch13 disable translations
