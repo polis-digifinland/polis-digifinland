@@ -1,6 +1,6 @@
 --- ./server/src/server.ts
 +++ ../patches/server/src/server.ts
-@@ -3433,15 +3433,15 @@
+@@ -3443,15 +3443,15 @@
      if (referer) {
        info.referrer = referer;
      }
@@ -24,7 +24,7 @@
      if (permanent_cookie) {
        info.permanent_cookie = permanent_cookie;
      }
-@@ -11265,7 +11265,7 @@
+@@ -11279,7 +11279,7 @@
        // Cannot find name 'authorUid'. Did you mean 'authoruid'?ts(2552)
        // server.ts(12486, 7): 'authoruid' is declared here.
        // @ts-ignore

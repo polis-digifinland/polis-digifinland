@@ -1,33 +1,31 @@
 --- ./client-participation/js/strings.js
 +++ ../patches/client-participation/js/strings.js
-@@ -63,6 +63,13 @@
+@@ -4,6 +4,10 @@
+ var Utils = require("./util/utils");
  
-   // Romanian & Moldovan
-   ro: require("./strings/ro.js"),
-+
+ var translations = {
 +  // Finnish
 +  fi: require("./strings/fi.js"),
-+
 +  // Swedish
 +  sv: require("./strings/sv.js"),
-+
- };
- 
- 
-@@ -86,6 +93,16 @@
+   // Arabic
+   ar: require("./strings/ar.js"),
+   // Welsh
+@@ -79,7 +83,16 @@
+   prioritized.forEach(function (languageCode) {
      if (languageCode.match(/^en/)) {
        _.extend(strings, translations.en_us);
-     }
-+    else if (
+-    } else if (languageCode.match(/^ja/)) {
++    } else if (
 +      languageCode.match(/^fi/) ||
 +      languageCode.match(/^fi-FI/)) {
 +      _.extend(strings, translations.fi);
-+    }
-+    else if (
++    } else if (
 +      languageCode.match(/^sv/) ||
 +      languageCode.match(/^sv-SE/)) {
 +      _.extend(strings, translations.sv);
 +    }
-     else if (languageCode.match(/^ja/)) {
++    else if (languageCode.match(/^ja/)) {
        _.extend(strings, translations.ja);
-     }
+     } else if (
+       languageCode.match(/^zh-CN/) ||

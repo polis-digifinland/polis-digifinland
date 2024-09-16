@@ -1,6 +1,6 @@
 --- ./client-participation/js/strings/en_us.js
 +++ ../patches/client-participation/js/strings/en_us.js
-@@ -123,5 +123,14 @@
+@@ -149,6 +149,16 @@
  s.topic_bad_02 = "what are our launch blockers?";
  s.topic_bad_02_reason = "";
  
@@ -13,5 +13,7 @@
 +s.footer_links_privacy = "DigiFinland Oy data protection";
 +s.footer_links_info = "Information";
 +s.footer_links_source = "Sourcecode";
++
+ // Old unused error message from when Polis was a demo <3
  
- module.exports = s;
+ s.notSentSinceDemo = "(not really, this is a demo)";
