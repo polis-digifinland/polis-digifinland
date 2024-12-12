@@ -11,7 +11,7 @@
   "footer": {
     "title": "Polis",
     "desc": "DigiFinland ja Sitra ovat tuoneet Suomeen avoimeen lähdekoodiin perustuvan Polis-verkkoalustan. Poliksen tarkoituksena on mahdollistaa suurien ryhmien osallistuminen rakentavaan mielipiteiden vaihtoon, valitun aihepiirin ympärillä.",
-    "disclaimer": "Polis-verkkoalusta on kokeiluvaiheessa ja se ei vielä täytä kaikkia vaatimuksia saavutettavuuden ja käytettävyyden osalta.",
+    "disclaimer": "Polis-verkkoalusta on jatkokehitysvaiheessa ja se ei vielä täytä kaikkia vaatimuksia saavutettavuuden ja käytettävyyden osalta.",
     "version": "Versio: {{param1}}",
     "released": "Julkaisu pvm: {{param1}}",
     "provider": "Palveluntuottaja",
@@ -27,21 +27,21 @@
   },
   "overview": {
     "title": "Yleiskatsaus",
-    "text": "Polis on reaaliaikainen kyselyjärjestelmä, joka auttaa tunnistamaan miten eri tavoin suuri joukko ihmisiä ajattelee mielipiteitä jakavasta tai monimutkaisesta aiheesta. Seuraavassa esitellään joitakin termejä, jotka sinun on tunnettava tämän raportin ymmärtämiseksi.",
+    "text": "Polis on reaaliaikainen osallistumisalusta, joka auttaa tunnistamaan miten eri tavoin suuri joukko ihmisiä ajattelee mielipiteitä jakavasta tai monimutkaisesta aiheesta. Seuraavassa esitellään joitakin termejä, jotka sinun on tunnettava tämän raportin ymmärtämiseksi.",
     "term_participants_title": "Osallistujat",
-    "term_participants_text": "Henkilöt, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Osallistujat lajitellaan mielipideryhmiin heidän antamiensa äänten mukaisesti.",
-    "term_statements_title": "Lausunnot",
-    "term_statements_text": "Osallistujat voivat antaa lausuntoja, joista muut osallistujat äänestävät. Lausunnot numeroidaan lähetysjärjestyksessä.",
+    "term_participants_text": "Henkilöt, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla väitteitä. Osallistujat lajitellaan mielipideryhmiin heidän antamiensa äänten mukaisesti",
+    "term_statements_title": "Väitteet",
+    "term_statements_text": "Osallistujat voivat kirjoittaa väitteitä, joista muut osallistujat äänestävät. Väitteet numeroidaan lähetysjärjestyksessä.",
     "term_opinion_groups_title": "Mielipideryhmät",
-    "term_opinion_groups_text": "Henkilöt, jotka osallistuivat keskusteluun äänestämällä ja kirjoittamalla lausuntoja. Osallistujat lajitellaan mielipideryhmiin heidän antamiensa äänten mukaisesti.",
-    "ownername_text": "Tämän pol.is-keskustelun toteutti ",
+    "term_opinion_groups_text": "Osallistujat lajitellaan mielipideryhmiin heidän antamiensa äänten mukaisesti.",
+    "ownername_text": "Tämän Polis-alustan keskustelun toteutti ",
     "topic_text": "Aiheena oli ",
-    "people_voted": "henkilöä äänesti",
-    "people_grouped": "henkilöä ryhmiteltiin",
+    "people_voted": "osallistujaa äänesti",
+    "people_grouped": "osallistujaa ryhmiteltiin",
     "votes_cast": "ääntä annettiin",
-    "statements_submitted": "lausuntoa annettiin",
-    "votes_per_voter_avg": "ääntä äänestäjää kohti keskimäärin",
-    "statements_per_author_avg": "lausuntoa per kirjoittaja keskimäärin"
+    "statements_submitted": "väitettä lisättiin",
+    "votes_per_voter_avg": "ääntä osallistujaa kohti keskimäärin",
+    "statements_per_author_avg": "väitettä per kirjoittaja keskimäärin"
   },
   "barChart": {
     "voted": "äänesti",
@@ -50,12 +50,12 @@
     "passed": "ohitti"
   },
   "beeswarm": {
-    "title": "Miten mielipiteitä jakava keskustelu oli?",
-    "text": "Vasemmanpuoleisista lausunnoista (tässä pieninä ympyröinä) äänestettiin yksimielisesti – kaikki olivat niistä joko samaa mieltä tai eri mieltä. Oikeanpuoleiset lausunnot jakoivat mielipiteitä – osallistujat olivat samaa mieltä tai eri mieltä hyväksymisestä.",
+    "title": "Konsensusjana - Miten mielipiteitä jakava keskustelu oli? ",
+    "text": "Polis-alusta ryhmittelee väittämät konsensusjanalle sen mukaan, miten yhdistäviä tai mielipiteitä jakavia ne ovat. Janan vasemmanpuoleisista väitteistä äänestettiin yksimielisesti – osallistujat olivat niistä joko samaa mieltä tai eri mieltä. Oikeanpuoleiset väitteet jakoivat mielipiteitä – osa osallistujista olivat samaa mieltä ja osa eri mieltä.",
     "howto_strong": "Käyttöohje",
-    "howto": "Näet lausunnon tekstin siirtämällä hiirtä sen päällä. Eniten mielipiteitä jakaneen lausunnon näet äärimmäisenä oikealla.",
-    "consensus": "Lausunnot, joista yksimielisyys",
-    "divisive": "Lausunnot, joista erimielisyyttä"
+    "howto": "Alla olevalla konsensusjanalla yksi piste edustaa yhtä väitettä. Väitteisiin sekä niiden saamaan kannatukseen voi tutustua liikuttamalla hiiren kursoria janalle asettuvien pisteiden päälle. ",
+    "consensus": "Väitteet, joista yksimielisyys",
+    "divisive": "Väitteet, joista erimielisyyttä"
   },
   "legend": {
     "agreed": "Samaa mieltä",
@@ -64,11 +64,11 @@
     "didnotvote": "Ei äänestänyt"
   },
   "all_comments": {
-    "title": "Kaikki lausunnot",
-    "text": "Ryhmässä annetut äänet kaikista lausunnoista lukuun ottamatta niitä lausuntoja, jotka moderaattori poisti.",
+    "title": "Kaikki väitteet",
+    "text": "Ryhmässä annetut äänet kaikista väitteistä lukuun ottamatta niitä väitteitä, jotka moderaattori poisti.",
     "sortby": "Lajittele ",
-    "tid": "Lausunnon tunnus",
-    "consensus": "Ryhmäkohtainen yksimielisyys",
+    "tid": "Väitteen tunnus",
+    "consensus": "Ryhmien välinen yksimielisyys",
     "numvotes": "Äänten määrä",
     "agreed": "Samaa mieltä",
     "disagreed": "Eri mieltä",
@@ -80,7 +80,7 @@
     "passed": "Ohitti",
     "respondents": " Vastaajia",
     "overall": "YHTEENSÄ",
-    "statement": "LAUSUNTO"
+    "statement": "VÄITE"
   },
   "majority": {
     "title": "Enemmistö",
@@ -89,31 +89,31 @@
   },
   "participant_groups": {
     "title": "Mielipideryhmät",
-    "text": "{{param1}} osallistujien kokonaismäärästä muodostui {{param2}} mielipideryhmää. Mielipideryhmä muodostuu kahden tekijän perusteella. Ensinnäkin mielipideryhmä koostuu osallistujista, jotka ovat äänestäneet samalla tavoin useista lausunnoista. Toiseksi jokainen samalla tavoin äänestänyt osallistujaryhmä on äänestänyt selvästi eri tavalla kuin muut ryhmät.",
+    "text": "{{param1}} osallistujien kokonaismäärästä muodostui {{param2}} mielipideryhmää. Mielipideryhmä muodostuu kahden tekijän perusteella. Ensinnäkin mielipideryhmä koostuu osallistujista, jotka ovat äänestäneet samalla tavoin useista väitteistä. Toiseksi jokainen samalla tavoin äänestänyt osallistujaryhmä on äänestänyt selvästi eri tavalla kuin muut ryhmät.",
     "group": "Ryhmä",
     "participants": " osallistujaa",
-    "grp_desc": "Lausunnot, jotka tekevät tästä ryhmästä äänten perusteella ainutlaatuisen: "
+    "grp_desc": "Väitteet, jotka tekevät tästä ryhmästä äänten perusteella ainutlaatuisen: "
   },
   "metadata": {
     "title": "Metatiedot",
-    "text": "Kunkin ryhmän demografinen jakauma oman ilmoituksen perusteella sen mukaisesti, mistä moderaattorien ”metatiedoiksi” merkitsemistä lausunnoista he ovat samaa ja mistä eri mieltä."
+    "text": "Kunkin ryhmän demografinen jakauma oman ilmoituksen perusteella sen mukaisesti, mistä moderaattorien ”metatiedoiksi” merkitsemistä väitteistä he ovat samaa ja mistä eri mieltä."
   },
   "uncertainty": {
     "title": "Epävarmat osa-alueet",
-    "text": "Kaikkien {{param1}} osallistujien keskuudessa oli epävarmuutta seuraavista lausunnoista. Yli 30 prosenttia lausunnot nähneistä osallistujista ”ohitti”.",
+    "text": "Kaikkien {{param1}} osallistujien keskuudessa oli epävarmuutta seuraavista väitteistä. Yli 30 prosenttia väitteen nähneistä osallistujista äänesti ”ohita/epävarma”..",
     "desc": "Epävarmat osa-alueet voivat tarjota mahdollisuuksia koulutukseen ja vuoropuhelun aloittamiseen yhteisön kanssa."
   },
   "graph": {
     "title": "Kaavio",
-    "text": "Mistä lausunnoista äänestettiin samalla tavalla? Miten osallistujat ovat yhteydessä toisiinsa?",
-    "desc": "Tässä kaaviossa lausunnot ovat lähempänä lausuntoja, joista äänestettiin samalla tavalla. Osallistujat puolestaan ovat lähempänä lausuntoja, joista he olivat samaa mieltä, ja kauempana lausunnoista, joista he olivat eri mieltä. Tämä tarkoittaa, että samalla tavalla äänestäneet osallistujat ovat lähempänä toisiaan.",
+    "text": "Mistä väitteistä äänestettiin samalla tavalla? Miten osallistujat ovat yhteydessä toisiinsa?",
+    "desc": "Tässä kaaviossa väitteet ovat sijoittuneet lähemmäksi väitteitä, joista äänestettiin samalla tavalla. Osallistujat puolestaan ovat sijoittuneet lähemmäksi väitteitä, joista he olivat samaa mieltä, ja kauemmaksi väitteistä, joista he olivat eri mieltä. Tämä tarkoittaa, että samalla tavalla äänestäneet osallistujat ovat lähempänä toisiaan.",
     "axes": "Akselit",
     "radial_axes": "Sädeakselit",
-    "statements": "Lausunnot",
+    "statements": "Väitteet",
     "participants_bucketized": "Osallistujat (ryhmitelty)",
     "group_outline": "Ryhmän kuvaus",
     "group_labels": "Ryhmän tunnisteet",
-    "click_text": "Voit tarkastella kaavion alueita napsauttamalla numerolla merkittyä lausuntoa."
+    "click_text": "Voit tarkastella kaavion alueita napsauttamalla numerolla merkittyä väitettä."
   }
 }
 
