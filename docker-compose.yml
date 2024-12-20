@@ -21,6 +21,24 @@
 # `docker compose down`
 
 services:
+  df-participation:
+    build:
+      context: ./df-participation
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: "production"
+        BUILD_VERSION: "compose"
+        BUILD_DATE: "Tänään"
+        NEXT_PUBLIC_EXTERNAL_API_BASE_URL: "https://polis.local"
+    depends_on:
+      - "server"
+    networks:
+      - "polis-net"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+    ports:
+     - 4000:3000
   server:
     env_file: .env
     image: docker.io/compdem/polis-server:${DOCKER_ENV:-dev}
@@ -129,6 +147,7 @@ services:
       - TAG
     depends_on:
       - "server"
+      - "df-participation"
     restart: unless-stopped
     networks:
       - "polis-net"

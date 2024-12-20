@@ -3,3 +3,6 @@
     url = https://github.com/compdemocracy/polis.git
     branch = stable
     update = merge
+[submodule "df-participation"]
+	path = df-participation
+	url = https://github.com/polis-digifinland/df-participation.git
