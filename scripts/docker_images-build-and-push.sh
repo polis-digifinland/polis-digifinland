@@ -10,19 +10,19 @@
 # gcloud auth configure-docker registry-domain.example
 # gcloud config set project polis-gcp-project-name-example
 
+# Store the current working directory in a variable called "current_dir"
+current_dir=$(pwd)
 
-
-cd ./df-participation/
+cd $current_dir/df-participation/
 docker build . -f Dockerfile -t $1/df-participation:$3 --build-arg BUILD_VERSION=$3 --build-arg NEXT_PUBLIC_EXTERNAL_API_BASE_URL="https://$4" --build-arg BUILD_DATE=$(date +%d.%m.%Y) --build-arg NODE_ENV="production"
-cd ./polis-digifinland/
 
-cd ./polis/
+cd $current_dir/polis/
 docker build . -f file-server/Dockerfile -t $1/polis-file-server:$2 --build-arg SERVICE_URL="https://$4" --build-arg EMBED_SERVICE_HOSTNAME="$4" --build-arg NODE_ENV="production"
 
-cd ./math/
+cd $current_dir/polis/math/
 docker build . -t $1/polis-math:$2 --build-arg SERVICE_URL="https://$4"
 
-cd ../server/
+cd $current_dir/polis/server/
 docker build . -t $1/polis-server:$2 --build-arg SERVICE_URL="https://$4"
 
 # push images
@@ -30,3 +30,4 @@ docker push $1/df-participation:$3
 docker push $1/polis-file-server:$2
 docker push $1/polis-math:$2
 docker push $1/polis-server:$2
+
