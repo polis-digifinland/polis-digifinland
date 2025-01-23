@@ -29,7 +29,7 @@ class ParticipantGroupsTranslated extends React.Component {
     }
     const { t } = this.props;
     const ptptCount=this.props.ptptCount;
-    const groups=this.props.math["group-votes"].length;
+    const groupsCount = Object.keys(this.props.math["group-votes"]).length;
     return (
       <div style={Object.assign(
         {},
@@ -38,7 +38,7 @@ class ParticipantGroupsTranslated extends React.Component {
       )}>
       <div>
         <p style={globals.primaryHeading}>{t('participant_groups.title')}</p>
-        <p style={globals.paragraph}>{t('participant_groups.text', { param1: ptptCount, param2: groups })}</p>
+        <p style={globals.paragraph}>{t('participant_groups.text', { param1: ptptCount, param2: groupsCount })}</p>
       <Metadata
         math={this.props.math}
         comments={this.props.comments}

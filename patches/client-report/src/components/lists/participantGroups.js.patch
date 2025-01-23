@@ -17,7 +17,7 @@
      }
 +    const { t } = this.props;
 +    const ptptCount=this.props.ptptCount;
-+    const groups=this.props.math["group-votes"].length;
++    const groupsCount = Object.keys(this.props.math["group-votes"]).length;
      return (
        <div style={Object.assign(
          {},
@@ -30,7 +30,7 @@
 -          Across {this.props.ptptCount} total participants, {this.props.math["group-votes"].length} opinion groups emerged. There are two factors that define an opinion group. First, each opinion group is made up of a number of participants who tended to vote similarly on multiple statements. Second, each group of participants who voted similarly will have also voted distinctly differently from other groups.
 -        </p>
 +        <p style={globals.primaryHeading}>{t('participant_groups.title')}</p>
-+        <p style={globals.paragraph}>{t('participant_groups.text', { param1: ptptCount, param2: groups })}</p>
++        <p style={globals.paragraph}>{t('participant_groups.text', { param1: ptptCount, param2: groupsCount })}</p>
        <Metadata
          math={this.props.math}
          comments={this.props.comments}
