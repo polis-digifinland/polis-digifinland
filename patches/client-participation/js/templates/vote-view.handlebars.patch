@@ -1,6 +1,6 @@
 --- ./client-participation/js/templates/vote-view.handlebars
 +++ ../patches/client-participation/js/templates/vote-view.handlebars
-@@ -90,7 +90,7 @@
+@@ -55,7 +55,7 @@
        </form>
      {{else}} {{!-- !canSubscribe --}}
        <div><strong>{{txt1}}</strong></div>

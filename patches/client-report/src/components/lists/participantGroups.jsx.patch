@@ -1,0 +1,42 @@
+--- ./client-report/src/components/lists/participantGroups.jsx
++++ ../patches/client-report/src/components/lists/participantGroups.jsx
+@@ -4,6 +4,7 @@
+ import Group from "./participantGroup.jsx";
+ import * as globals from "../globals.js";
+ import Metadata from "./metadata.jsx";
++import { useTranslation } from 'react-i18next';
+ 
+ const ParticipantGroups = ({
+   conversation,
+@@ -22,6 +23,8 @@
+ }) => {
+   const [isLoading, setIsLoading] = useState(true);
+   const [groups, setGroups] = useState([]);
++  
++  const { t } = useTranslation();
+ 
+   useEffect(() => {
+     if (!conversation || !math || !comments) return;
+@@ -95,18 +98,13 @@
+     ...style,
+   };
+ 
++  const groupsCount = Object.keys(math["group-votes"]).length;
++  
+   return (
+     <div style={styles}>
+       <div>
+-        <p style={globals.primaryHeading}> Opinion Groups </p>
+-        <p style={globals.paragraph}>
+-          Across {ptptCount} total participants, {math && Object.keys(math["group-votes"])?.length}{" "}
+-          opinion groups emerged. There are two factors that define an opinion
+-          group. First, each opinion group is made up of a number of participants
+-          who tended to vote similarly on multiple statements. Second, each group
+-          of participants who voted similarly will have also voted distinctly
+-          differently from other groups.
+-        </p>
++        <p style={globals.primaryHeading}>{t('participant_groups.title')}</p>
++        <p style={globals.paragraph}>{t('participant_groups.text', { param1: ptptCount, param2: groupsCount })}</p>
+         <Metadata
+           math={math}
+           comments={comments}

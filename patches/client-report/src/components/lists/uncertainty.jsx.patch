@@ -1,0 +1,31 @@
+--- ./client-report/src/components/lists/uncertainty.jsx
++++ ../patches/client-report/src/components/lists/uncertainty.jsx
+@@ -5,6 +5,7 @@
+ import * as globals from "../globals.js";
+ // import style from "../../util/style";
+ import Narrative from "../narrative/index.jsx";
++import { useTranslation } from 'react-i18next';
+ 
+ const Uncertainty = ({
+   conversation,
+@@ -19,16 +20,12 @@
+   if (!conversation) {
+     return <div>Loading Uncertainty...</div>;
+   }
++  const { t } = useTranslation();
+   return (
+     <div>
+-      <p style={globals.primaryHeading}> Areas of uncertainty </p>
+-      <p style={globals.paragraph}>
+-        Across all {ptptCount} participants, there was uncertainty about the following statements.
+-        Greater than 30% of participants who saw these statements &apos;passed&apos;.
+-      </p>
+-      <p style={globals.paragraph}>
+-        Areas of uncertainty can provide avenues to educate and open dialogue with your community.
+-      </p>
++      <p style={globals.primaryHeading}>{t('uncertainty.title')}</p>
++      <p style={globals.paragraph}>{t('uncertainty.text', { param1: ptptCount})}</p>
++      <p style={globals.paragraph}>{t('uncertainty.desc')}</p>
+       <div style={{ marginTop: 50 }}>
+         <CommentList
+           conversation={conversation}

@@ -36,7 +36,7 @@
          </Heading>
          <Flex sx={{ mb: [4] }}>
            <Link
-@@ -74,7 +78,7 @@
+@@ -75,7 +79,7 @@
                variant: url ? 'links.nav' : 'links.activeNav'
              }}
              to={`${match.url}`}>
@@ -45,7 +45,7 @@
              {this.props.unmoderated.unmoderated_comments
                ? this.props.unmoderated.unmoderated_comments.length
                : null}
-@@ -85,7 +89,7 @@
+@@ -87,7 +91,7 @@
                variant: url === 'accepted' ? 'links.activeNav' : 'links.nav'
              }}
              to={`${match.url}/accepted`}>
@@ -54,7 +54,7 @@
              {this.props.accepted.accepted_comments
                ? this.props.accepted.accepted_comments.length
                : null}
-@@ -96,7 +100,7 @@
+@@ -99,7 +103,7 @@
                variant: url === 'rejected' ? 'links.activeNav' : 'links.nav'
              }}
              to={`${match.url}/rejected`}>
@@ -63,11 +63,9 @@
              {this.props.rejected.rejected_comments
                ? this.props.rejected.rejected_comments.length
                : null}
-@@ -126,4 +130,6 @@
+@@ -129,4 +133,5 @@
    }
  }
  
--export default CommentModeration
-+// export default CommentModeration
 +const CommentModeration = withTranslation()(CommentModerationTranslated);
-+export default withTranslation()(CommentModeration);
+ export default CommentModeration

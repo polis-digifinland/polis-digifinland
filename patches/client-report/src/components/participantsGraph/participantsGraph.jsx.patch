@@ -1,0 +1,103 @@
+--- ./client-report/src/components/participantsGraph/participantsGraph.jsx
++++ ../patches/client-report/src/components/participantsGraph/participantsGraph.jsx
+@@ -10,6 +10,8 @@
+ import Hull from "./hull.jsx";
+ import CommentList from "../lists/commentList.jsx";
+ 
++import { useTranslation } from 'react-i18next';
++
+ const pointsPerSquarePixelMax = 0.0017; /* choose dynamically ? */
+ const contourBandwidth = 20;
+ const colorScaleDownFactor = 0.5; /* The colors are too dark. This helps. */
+@@ -60,6 +62,8 @@
+   const [showComments, setShowComments] = useState(true);
+   const [showAxes, setShowAxes] = useState(true);
+   const [showRadialAxes, setShowRadialAxes] = useState(true);
++  
++  const { t } = useTranslation();
+ 
+   const handleCommentClick = (sc) => {
+     return () => {
+@@ -108,16 +112,9 @@
+   return (
+     <div style={{ position: "relative" }}>
+       <div>
+-        <p style={globals.primaryHeading}> Graph </p>
+-        <p style={globals.paragraph}>
+-          Which statements were voted on similarly? How do participants relate to each other?
+-        </p>
+-        <p style={globals.paragraph}>
+-          In this graph, statements are positioned more closely to statements which were voted on
+-          similarly. Participants, in turn, are positioned more closely to statements on which
+-          they agreed, and further from statements on which they disagreed. This means
+-          participants who voted similarly are closer together.
+-        </p>
++        <p style={globals.primaryHeading}>{t('graph.title')}</p>
++        <p style={globals.paragraph}>{t('graph.text')}</p>
++        <p style={globals.paragraph}>{t('graph.desc')}</p>
+       </div>
+       <div>
+         <button
+@@ -134,7 +131,7 @@
+             setShowAxes(a => !a);
+           }}
+         >
+-          Axes
++          {t('graph.axes')}
+         </button>
+         <button
+           style={{
+@@ -150,7 +147,7 @@
+             setShowRadialAxes(ra => !ra);
+           }}
+         >
+-          Radial axes
++          {t('graph.radial_axes')}
+         </button>
+         <button
+           style={{
+@@ -166,7 +163,7 @@
+             setShowComments(c => !c)
+           }}
+         >
+-          Statements
++          {t('graph.statements')}
+         </button>
+         <button
+           style={{
+@@ -182,7 +179,7 @@
+             setShowParticipants(p => !p);
+           }}
+         >
+-          Participants (bucketized)
++          {t('graph.participants_bucketized')}
+         </button>
+         <button
+           style={{
+@@ -198,7 +195,7 @@
+             setShowGroupOutline(g => !g);
+           }}
+         >
+-          Group outline
++          {t('graph.group_outline')}
+         </button>
+         <button
+           style={{
+@@ -214,7 +211,7 @@
+             setShowGroupLabels(l => !l);
+           }}
+         >
+-          Group labels
++          {t('graph.group_labels')}
+         </button>
+       </div>
+ 
+@@ -230,7 +227,7 @@
+             voteColors={props.voteColors}
+           />
+         ) : (
+-          <p>Click a statement, identified by its number, to explore regions of the graph.</p>
++          <p>{t('graph.click_text')}</p>
+         )}
+       </div>
+ 

@@ -42,7 +42,7 @@ class ModerateCommentsRejectedTranslated extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <div>
+      <div data-test-id="rejected-comments">
         {this.props.rejected_comments !== null
           ? this.createCommentMarkup()
           : t('moderate.loading_rejected')}

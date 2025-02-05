@@ -1,6 +1,6 @@
 --- ./client-participation/js/strings/en_us.js
 +++ ../patches/client-participation/js/strings/en_us.js
-@@ -149,6 +149,16 @@
+@@ -196,6 +196,16 @@
  s.topic_bad_02 = "what are our launch blockers?";
  s.topic_bad_02_reason = "";
  

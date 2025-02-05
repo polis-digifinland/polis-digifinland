@@ -46,16 +46,16 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -76,7 +80,7 @@
-                 variant: url === 'comments' ? 'links.activeNav' : 'links.nav'
+@@ -77,7 +81,7 @@
                }}
+               data-test-id="moderate-comments"
                to={`${match.url}/comments`}>
 -              Moderate
 +              {t('conv_nav.moderate')}
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -85,7 +89,7 @@
+@@ -86,7 +90,7 @@
                  variant: url === 'stats' ? 'links.activeNav' : 'links.nav'
                }}
                to={`${match.url}/stats`}>
@@ -64,7 +64,7 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -94,7 +98,7 @@
+@@ -95,7 +99,7 @@
                  variant: url === 'reports' ? 'links.activeNav' : 'links.nav'
                }}
                to={`${match.url}/reports`}>
@@ -73,11 +73,9 @@
              </Link>
            </Box>
          </Box>
-@@ -128,4 +132,6 @@
+@@ -129,4 +133,5 @@
    }
  }
  
--export default ConversationAdminContainer
-+// export default ConversationAdminContainer
 +const ConversationAdminContainer = withTranslation()(ConversationAdminContainerTranslated);
-+export default withTranslation()(ConversationAdminContainer);
+ export default ConversationAdminContainer

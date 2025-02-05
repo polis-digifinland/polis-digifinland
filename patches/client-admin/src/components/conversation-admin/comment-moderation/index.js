@@ -73,6 +73,7 @@ class CommentModerationTranslated extends React.Component {
         </Heading>
         <Flex sx={{ mb: [4] }}>
           <Link
+            data-test-id="mod-queue"
             sx={{
               mr: [4],
               variant: url ? 'links.nav' : 'links.activeNav'
@@ -84,6 +85,7 @@ class CommentModerationTranslated extends React.Component {
               : null}
           </Link>
           <Link
+            data-test-id="filter-approved"
             sx={{
               mr: [4],
               variant: url === 'accepted' ? 'links.activeNav' : 'links.nav'
@@ -95,6 +97,7 @@ class CommentModerationTranslated extends React.Component {
               : null}
           </Link>
           <Link
+          data-test-id="filter-rejected"
             sx={{
               mr: [4],
               variant: url === 'rejected' ? 'links.activeNav' : 'links.nav'
@@ -130,6 +133,5 @@ class CommentModerationTranslated extends React.Component {
   }
 }
 
-// export default CommentModeration
 const CommentModeration = withTranslation()(CommentModerationTranslated);
-export default withTranslation()(CommentModeration);
+export default CommentModeration

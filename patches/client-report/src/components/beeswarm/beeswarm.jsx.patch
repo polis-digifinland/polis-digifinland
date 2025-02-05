@@ -1,0 +1,48 @@
+--- ./client-report/src/components/beeswarm/beeswarm.jsx
++++ ../patches/client-report/src/components/beeswarm/beeswarm.jsx
+@@ -4,6 +4,7 @@
+ import CommentList from "../lists/commentList.jsx";
+ import * as globals from "../globals";
+ import _ from "lodash";
++import { useTranslation } from 'react-i18next';
+ // import Flex from "../framework/flex"
+ 
+ // function type(d) {
+@@ -103,6 +104,8 @@
+ 
+ const Beeswarm = ({ comments, extremity, probabilitiesTids, probabilities, conversation, ptptCount, math, formatTid, voteColors }) => {
+ 
++    const { t } = useTranslation();
++    
+     const svgWidth = 960;
+     const svgHeight = 200;
+     const margin = {top: 10, right: 10, bottom: 10, left: 10};
+@@ -177,12 +180,11 @@
+   
+   return (
+     <div style={{width: svgWidth}}>
+-      <p style={globals.primaryHeading}> How divisive was the conversation? </p>
+-      <p style={globals.paragraph}>
+-        Statements (here as little circles) to the left were voted on the same way—either everyone agreed or everyone disagreed. Statements to the right were divisive—participants were split between agreement and disagreement.
+-      </p>
+-      <p style={globals.paragraph}>
+-        <strong>How to use this:</strong> Hover to see the statement text. Start on the far right to find out what the most divisive statement was.
++        <p style={globals.primaryHeading}> {t('beeswarm.title')} </p>
++        <p style={globals.paragraph}> {t('beeswarm.text')} </p>
++        <p style={globals.paragraph}> 
++        <strong>{t('beeswarm.howto_strong')} </strong>
++        {t('beeswarm.howto')}
+       </p>
+       <svg width={svgWidth} height={svgHeight}>
+         <g id="beeswarmAxisAttachPointD3" transform={"translate(" + margin.left + "," + margin.top + ")"}>
+@@ -199,8 +201,8 @@
+         <line x1="0" y1={svgHeight - 10} x2={svgWidth} y2={svgHeight - 10} strokeWidth="1" stroke="black"/>
+       </svg>
+       <div style={{display: "flex", justifyContent: "space-between", margin: 0}}>
+-        <p style={{margin: 0}}> Consensus statements </p>
+-        <p style={{margin: 0}}> Divisive statements</p>
++          <p style={{margin: 0}}> {t('beeswarm.consensus')} </p>
++          <p style={{margin: 0}}> {t('beeswarm.divisive')} </p>
+       </div>
+       {/*<ProbabilityLegend/>*/}
+ 

@@ -124,6 +124,10 @@ class SignInTranslated extends React.Component {
             {t('signin.forgot')}
             <Link to={'/pwresetinit'}> {t('signin.reset')}</Link>
           </Text>
+          <Text sx={{ my: 4 }}>
+            {'Or '}
+            <Link to={'/createuser'}>Create an Account</Link>
+          </Text>
         </form>
         {fbAppId && (
           <Box sx={{ my: 4 }}>
@@ -182,8 +186,6 @@ class SignInTranslated extends React.Component {
     )
   }
 
-
-
   render() {
     const { signInSuccessful, authed } = this.props
     const { t } = this.props;
@@ -198,7 +200,7 @@ class SignInTranslated extends React.Component {
           {t('signin.signin')}
         </Heading>
         { (window.location.hostname.includes('test') || window.location.hostname.includes('local'))
-          ? this.drawTestEnvWarning() 
+          ? this.drawTestEnvWarning()
           : '' }
         {this.props.facebookError !== 'polis_err_user_with_this_email_exists'
           ? this.drawLoginForm()
@@ -208,6 +210,5 @@ class SignInTranslated extends React.Component {
   }
 }
 
-// export default SignIn
 const SignIn = withTranslation()(SignInTranslated);
-export default withTranslation()(SignIn);
+export default SignIn

@@ -1,0 +1,69 @@
+--- ./client-report/src/components/lists/commentList.jsx
++++ ../patches/client-report/src/components/lists/commentList.jsx
+@@ -3,6 +3,8 @@
+ import React from "react";
+ import * as globals from "../globals";
+ 
++import { useTranslation } from 'react-i18next';
++
+ const BarChartCompact = ({ comment, voteCounts, nMembers, voteColors }) => {
+   if (!comment) return null;
+ 
+@@ -31,21 +33,19 @@
+   const disagreeSaw = (disagrees / sawTheComment) * w;
+   const passSaw = (passes / sawTheComment) * w;
+ 
+-  const agreeString = (agreeSaw << 0) + "%";
+-  const disagreeString = (disagreeSaw << 0) + "%";
+-  const passString = (passSaw << 0) + "%";
++  const agreeString = (agreeSaw << 0) + "% ";
++  const disagreeString = (disagreeSaw << 0) + "% ";
++  const passString = (passSaw << 0) + "% ";
+ 
++  const { t } = useTranslation();
++  
+   return (
+     <div
+       title={
+-        agreeString +
+-        " Agreed\n" +
+-        disagreeString +
+-        " Disagreed\n" +
+-        passString +
+-        " Passed\n" +
+-        sawTheComment +
+-        " Respondents"
++        agreeString + t('comment_list.agreed')+"\n"+
++        disagreeString + t('comment_list.disagreed')+"\n"+
++        passString + t('comment_list.passed')+"\n"+
++        sawTheComment + t('comment_list.respondents')
+       }
+     >
+       <svg width={101} height={10} style={{ marginRight: 30 }}>
+@@ -154,6 +154,8 @@
+ 
+ const CommentList = ({ comments, math, ptptCount, tidsToRender, voteColors }) => {
+ 
++  const { t } = useTranslation();
++  
+   const getGroupLabels = () => {
+     function makeLabel(key, label, numMembers) {
+       return (
+@@ -182,7 +184,7 @@
+     let labels = [];
+ 
+     // totals
+-    labels.push(makeLabel(99, "Overall", ptptCount));
++    labels.push(makeLabel(99, t('comment_list.overall'), ptptCount));
+ 
+     Object.entries(math["group-votes"]).forEach(([key, g]) => {
+       const i = parseInt(key, 10);
+@@ -217,7 +219,7 @@
+             textTransform: "uppercase",
+           }}
+         >
+-          Statement
++          {t('comment_list.statement')}
+         </span>
+ 
+         {getGroupLabels()}

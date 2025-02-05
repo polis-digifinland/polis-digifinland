@@ -1,6 +1,6 @@
 --- ./client-report/package.json
 +++ ../patches/client-report/package.json
-@@ -37,6 +37,9 @@
+@@ -45,12 +45,16 @@
      "d3-contour": "~1.1.2",
      "d3-scale-chromatic": "~1.1.1",
      "hull.js": "~0.2.11",
@@ -10,9 +10,8 @@
      "jquery": "~3.6.3",
      "lodash": "~4.17.21",
      "prop-types": "~15.8.1",
-@@ -44,6 +47,7 @@
-     "react": "~17.0.2",
-     "react-dom": "~17.0.2",
+     "react": "^18.3.1",
+     "react-dom": "~18.3.1",
      "react-fontawesome": "~0.3.3",
 +    "react-i18next": "^13.3.1",
      "react-redux": "~7.2.9",

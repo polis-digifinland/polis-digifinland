@@ -39,7 +39,7 @@
 +    const { t } = this.props;
 +    const max = 500;
      return (
-       <div>
+       <div data-test-id="pending-comment">
          <div>
 -          <p> Displays maximum {max} comments </p> 
 +          {t('moderate.display_max', { param1: max})}

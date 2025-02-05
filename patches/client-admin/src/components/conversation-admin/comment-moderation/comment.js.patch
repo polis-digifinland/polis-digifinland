@@ -22,9 +22,9 @@
    render() {
 +    const { t } = this.props;
      return (
-       <Card sx={{ mb: [3], minWidth: '35em' }}>
+       <Card sx={{ mb: [3], minWidth: '35em' }} data-test-id="pending-comment">
          <Box>
-@@ -53,12 +56,12 @@
+@@ -54,12 +57,12 @@
                  target="_blank"
                  sx={{ mr: [2] }}
                  href="https://compdemocracy.org/metadata">
@@ -39,7 +39,7 @@
                    ref={(c) => (this.is_meta = c)}
                    checked={this.props.comment.is_meta}
                    onChange={this.onIsMetaClicked.bind(this)}
-@@ -72,7 +75,7 @@
+@@ -73,7 +76,7 @@
    }
  }
  
@@ -48,19 +48,17 @@
    dispatch: PropTypes.func,
    acceptClickHandler: PropTypes.func,
    rejectClickHandler: PropTypes.func,
-@@ -82,10 +85,13 @@
+@@ -83,6 +86,7 @@
    rejectButton: PropTypes.bool,
    rejectButtonText: PropTypes.string,
    isMetaCheckbox: PropTypes.bool,
 +  t: PropTypes.func.isRequired,
    comment: PropTypes.shape({
+     active: PropTypes.bool,
      txt: PropTypes.string,
-     is_meta: PropTypes.bool
+@@ -90,4 +94,5 @@
    })
  }
  
--export default Comment
-+// export default Comment
 +const Comment = withTranslation()(CommentTranslated);
-+export default withTranslation()(Comment);
-\ No newline at end of file
+ export default Comment

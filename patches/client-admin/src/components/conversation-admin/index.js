@@ -79,6 +79,7 @@ class ConversationAdminContainerTranslated extends React.Component {
               sx={{
                 variant: url === 'comments' ? 'links.activeNav' : 'links.nav'
               }}
+              data-test-id="moderate-comments"
               to={`${match.url}/comments`}>
               {t('conv_nav.moderate')}
             </Link>
@@ -132,6 +133,5 @@ class ConversationAdminContainerTranslated extends React.Component {
   }
 }
 
-// export default ConversationAdminContainer
 const ConversationAdminContainer = withTranslation()(ConversationAdminContainerTranslated);
-export default withTranslation()(ConversationAdminContainer);
+export default ConversationAdminContainer

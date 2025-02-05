@@ -1,0 +1,28 @@
+--- ./client-report/src/components/lists/metadata.jsx
++++ ../patches/client-report/src/components/lists/metadata.jsx
+@@ -3,6 +3,7 @@
+ import React from "react";
+ import CommentList from "./commentList.jsx";
+ import * as globals from "../globals.js";
++import { useTranslation } from 'react-i18next';
+ 
+ const Metadata = ({ conversation, comments, ptptCount, formatTid, math, voteColors }) => {
+   if (!conversation) {
+@@ -20,14 +21,11 @@
+   if (_metadataTids.length === 0) {
+     return null;
+   }
+-
++  const { t } = useTranslation();
+   return (
+     <div>
+-      <p style={globals.primaryHeading}> Metadata </p>
+-      <p style={globals.paragraph}>
+-        The demographic breakdown of each group, as self reported by agreeing and disagreeing on
+-        statements marked &apos;metadata&apos; by moderators.
+-      </p>
++      <p style={globals.primaryHeading}>{t('metadata.title')}</p>
++      <p style={globals.paragraph}>{t('metadata.text')}</p>
+       <div style={{ marginTop: 50 }}>
+         <CommentList
+           conversation={conversation}

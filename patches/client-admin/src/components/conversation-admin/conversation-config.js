@@ -76,7 +76,7 @@ class ConversationConfigTranslated extends React.Component {
         </Box>
 
         <CheckboxField field="is_active" label="Conversation Is Open">
-        {t('configure.conversation_open')}
+          {t('configure.conversation_open')}
         </CheckboxField>
 
         <Box sx={{ mb: [3] }}>
@@ -148,6 +148,10 @@ class ConversationConfigTranslated extends React.Component {
           {t('configure.customize_ui')}
         </Heading>
 
+        <CheckboxField field="importance_enabled" label="Importance Enabled">
+          [EXPERIMENTAL FEATURE] Participants can see the &quot;This comment is important&quot; checkbox
+        </CheckboxField>
+
         <CheckboxField field="vis_type" label="Visualization" isIntegerBool>
           {t('configure.vis_type')}
         </CheckboxField>
@@ -159,8 +163,7 @@ class ConversationConfigTranslated extends React.Component {
         <CheckboxField field="help_type" label="Help text" isIntegerBool>
           {t('configure.help_type')}
         </CheckboxField>
-
-
+        
         {
         // hide these settings to avoid accidentally collecting of PII data
         //
@@ -174,18 +177,7 @@ class ConversationConfigTranslated extends React.Component {
         //   participants may optionally provide their email address to receive
         //   notifications when there are new comments to vote on.
         // </CheckboxField>
-
-        // changed also in polis-server constants.ts: auth_opt_fb = false
-        // <CheckboxField field="auth_opt_fb" label="Facebook login prompt">
-        //   Show Facebook login prompt
-        // </CheckboxField>
-
-        // changed also in polis-server constants.ts: auth_opt_tw = false
-        // <CheckboxField field="auth_opt_tw" label="Twitter login prompt">
-        //   Show Twitter login prompt
-        // </CheckboxField>
         }
-
 
         <Heading
           as="h6"
@@ -200,34 +192,13 @@ class ConversationConfigTranslated extends React.Component {
         <CheckboxField field="strict_moderation">
           {t('configure.strict_moderation')}
         </CheckboxField>
-
-        {
-        // hide these settings to avoid accidentally collecting of PII data
-
-        // changed also in polis-server constants.ts: auth_needed_to_write = false
-        // <CheckboxField
-        //   field="auth_needed_to_write"
-        //   label="Require Auth to Comment">
-        //   Participants cannot submit comments without first connecting either
-        //   Facebook or Twitter
-        // </CheckboxField>
-
-        // changed also in polis-server constants.ts: auth_needed_to_vote = false
-        // <CheckboxField field="auth_needed_to_vote" label="Require Auth to Vote">
-        //   Participants cannot vote without first connecting either Facebook or
-        //   Twitter
-        // </CheckboxField>
-        }
       </Box>
     )
   }
 }
 
-// export default ConversationConfig
 const ConversationConfig = withTranslation()(ConversationConfigTranslated);
-export default withTranslation()(ConversationConfig);
-
-
+export default ConversationConfig;
 
 // checked={this.props.zid_metadata.is_data_open}
 // Comments, votes, and group data can be exported by any user

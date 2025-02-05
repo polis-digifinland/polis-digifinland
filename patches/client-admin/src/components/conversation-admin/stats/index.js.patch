@@ -14,7 +14,7 @@
    constructor(props) {
      super(props)
      const times = dateSetupUtil()
-@@ -80,7 +82,9 @@
+@@ -91,7 +93,9 @@
        !conversation_stats.firstCommentTimes ||
        !conversation_stats.firstVoteTimes
  
@@ -25,7 +25,7 @@
  
      return (
        <div>
-@@ -91,7 +95,7 @@
+@@ -102,7 +106,7 @@
              lineHeight: 'body',
              mb: [3, null, 4]
            }}>
@@ -34,11 +34,9 @@
          </Heading>
          <NumberCards data={conversation_stats} />
          <Voters
-@@ -109,4 +113,6 @@
+@@ -120,4 +124,5 @@
    }
  }
  
--export default ConversationStats
-+// export default ConversationStats
 +const ConversationStats = withTranslation()(ConversationStatsTranslated);
-+export default withTranslation()(ConversationStats);
+ export default ConversationStats

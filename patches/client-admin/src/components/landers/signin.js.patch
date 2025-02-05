@@ -53,9 +53,9 @@
 +            {t('signin.forgot')}
 +            <Link to={'/pwresetinit'}> {t('signin.reset')}</Link>
            </Text>
-         </form>
-         {fbAppId && (
-@@ -165,8 +168,25 @@
+           <Text sx={{ my: 4 }}>
+             {'Or '}
+@@ -169,8 +172,23 @@
      )
    }
  
@@ -73,15 +73,13 @@
 +    )
 +  }
 +
-+
-+
    render() {
      const { signInSuccessful, authed } = this.props
 +    const { t } = this.props;
  
      if (signInSuccessful || authed) {
        return <Redirect to={'/'} />
-@@ -175,8 +195,11 @@
+@@ -179,8 +197,11 @@
      return (
        <StaticLayout>
          <Heading as="h1" sx={{ my: [4, null, 5], fontSize: [6, null, 7] }}>
@@ -89,16 +87,14 @@
 +          {t('signin.signin')}
          </Heading>
 +        { (window.location.hostname.includes('test') || window.location.hostname.includes('local'))
-+          ? this.drawTestEnvWarning() 
++          ? this.drawTestEnvWarning()
 +          : '' }
          {this.props.facebookError !== 'polis_err_user_with_this_email_exists'
            ? this.drawLoginForm()
            : this.drawPasswordConnectFacebookForm()}{' '}
-@@ -185,4 +208,6 @@
+@@ -189,4 +210,5 @@
    }
  }
  
--export default SignIn
-+// export default SignIn
 +const SignIn = withTranslation()(SignInTranslated);
-+export default withTranslation()(SignIn);
+ export default SignIn

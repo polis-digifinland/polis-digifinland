@@ -52,7 +52,7 @@ class ModerateCommentsTodoTranslated extends React.Component {
     const { t } = this.props;
     const max = 500;
     return (
-      <div>
+      <div data-test-id="pending-comment">
         <div>
           {t('moderate.display_max', { param1: max})}
           {this.props.unmoderated_comments !== null

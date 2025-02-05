@@ -5,7 +5,7 @@
 import akismetLib from "akismet";
 import AWS from "aws-sdk";
 import badwords from "badwords/object";
-import Promise from "bluebird";
+import { Promise as BluebirdPromise } from "bluebird";
 import http from "http";
 import httpProxy from "http-proxy";
 // const Promise = require('es6-promise').Promise,
@@ -13,6 +13,7 @@ import async from "async";
 // npm list types-at-fb
 // @ts-ignore
 import FB from "fb";
+import { google } from "googleapis";
 import fs from "fs";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
@@ -28,7 +29,6 @@ import responseTime from "response-time";
 import request from "request-promise"; // includes Request, but adds promise methods
 import LruCache from "lru-cache";
 import timeout from "connect-timeout";
-import zlib from "zlib";
 import _ from "underscore";
 import pg from "pg";
 import { encode } from "html-entities";
@@ -36,10 +36,25 @@ import { encode } from "html-entities";
 import { METRICS_IN_RAM, addInRamMetric, MPromise } from "./utils/metered";
 import CreateUser from "./auth/create-user";
 import Password from "./auth/password";
-import dbPgQuery from "./db/pg-query";
+import dbPgQuery, {
+  query as pgQuery,
+  query_readOnly as pgQuery_readOnly,
+  queryP as pgQueryP,
+  queryP_metered as pgQueryP_metered,
+  queryP_metered_readOnly as pgQueryP_metered_readOnly,
+  queryP_readOnly as pgQueryP_readOnly,
+  stream_queryP_readOnly as stream_pgQueryP_readOnly,
+  queryP_readOnly_wRetryIfEmpty as pgQueryP_readOnly_wRetryIfEmpty,
+} from "./db/pg-query";
 
 import Config from "./config";
 import fail from "./utils/fail";
+import { PcaCacheItem, getPca, fetchAndCacheLatestPcaData } from "./utils/pca";
+import { getZinvite, getZinvites, getZidForRid } from "./utils/zinvite";
+import { getBidIndexToPidMapping, getPidsForGid } from "./utils/participants";
+
+import { handle_GET_reportExport } from "./routes/export";
+import { handle_GET_reportNarrative } from "./routes/reportNarrative";
 
 import {
   Body,
@@ -68,20 +83,7 @@ import {
 AWS.config.update({ region: Config.awsRegion });
 const devMode = Config.isDevMode;
 const s3Client = new AWS.S3({ apiVersion: "2006-03-01" });
-// Property 'Client' does not exist on type '{ query: (...args: any[]) => void; query_readOnly:
-// (...args: any[]) => void; queryP: (...args: any[]) => Promise<unknown>; queryP_metered:
-// (name: any, queryString: any, params: any) => any; queryP_metered_readOnly:
-// (name: any, queryString: any, params: any) => any; queryP_readOnly:
-// (...args: any[]) => Promise <...>; ...'.ts(2339)
-// @ts-ignore
 const escapeLiteral = pg.Client.prototype.escapeLiteral;
-const pgQuery = dbPgQuery.query;
-const pgQuery_readOnly = dbPgQuery.query_readOnly;
-const pgQueryP = dbPgQuery.queryP;
-const pgQueryP_metered = dbPgQuery.queryP_metered;
-const pgQueryP_metered_readOnly = dbPgQuery.queryP_metered_readOnly;
-const pgQueryP_readOnly = dbPgQuery.queryP_readOnly;
-const pgQueryP_readOnly_wRetryIfEmpty = dbPgQuery.queryP_readOnly_wRetryIfEmpty;
 const doSendVerification = CreateUser.doSendVerification;
 const generateAndRegisterZinvite = CreateUser.generateAndRegisterZinvite;
 const generateToken = Password.generateToken;
@@ -114,7 +116,6 @@ const resolveWith = (x: { body?: { user_id: string } }) => {
   return Promise.resolve(x);
 };
 
-
 //var SegfaultHandler = require('segfault-handler');
 
 //SegfaultHandler.registerHandler("segfault.log");
@@ -125,22 +126,18 @@ const resolveWith = (x: { body?: { user_id: string } }) => {
 // };
 
 if (devMode) {
-  Promise.longStackTraces();
+  BluebirdPromise.longStackTraces();
 }
 
 // Bluebird uncaught error handler.
-Promise.onPossiblyUnhandledRejection(function (err: any) {
-  logger.error('onPossiblyUnhandledRejection', err);
+BluebirdPromise.onPossiblyUnhandledRejection(function (err: any) {
+  logger.error("onPossiblyUnhandledRejection", err);
   // throw err; // not throwing since we're printing stack traces anyway
 });
 
-const adminEmails = Config.adminEmails
-  ? JSON.parse(Config.adminEmails)
-  : [];
+const adminEmails = Config.adminEmails ? JSON.parse(Config.adminEmails) : [];
 
-const polisDevs = Config.adminUIDs
-  ? JSON.parse(Config.adminUIDs)
-  : [];
+const polisDevs = Config.adminUIDs ? JSON.parse(Config.adminUIDs) : [];
 
 function isPolisDev(uid?: any) {
   return polisDevs.indexOf(uid) >= 0;
@@ -612,6 +609,7 @@ function initializePolisHelpers() {
     tid?: any,
     voteType?: any,
     weight?: number,
+    high_priority?: boolean,
   ) {
     let zid = conv?.zid;
     weight = weight || 0;
@@ -621,8 +619,8 @@ function initializePolisHelpers() {
       reject: (arg0: string) => void
     ) {
       let query =
-        "INSERT INTO votes (pid, zid, tid, vote, weight_x_32767, created) VALUES ($1, $2, $3, $4, $5, default) RETURNING *;";
-      let params = [pid, zid, tid, voteType, weight_x_32767];
+        "INSERT INTO votes (pid, zid, tid, vote, weight_x_32767, high_priority, created) VALUES ($1, $2, $3, $4, $5, $6, default) RETURNING *;";
+      let params = [pid, zid, tid, voteType, weight_x_32767, high_priority];
       pgQuery(query, params, function (err: any, result: { rows: any[] }) {
         if (err) {
           if (isDuplicateKey(err)) {
@@ -652,6 +650,7 @@ function initializePolisHelpers() {
     xid?: any,
     voteType?: any,
     weight?: number,
+    high_priority?: boolean,
   ) {
     return (
       pgQueryP_readOnly("select * from conversations where zid = ($1);", [zid])
@@ -664,44 +663,20 @@ function initializePolisHelpers() {
           if (!rows || !rows.length) {
             throw "polis_err_unknown_conversation";
           }
-          let conv = rows[0];
+          const conv = rows[0];
           if (!conv.is_active) {
             throw "polis_err_conversation_is_closed";
           }
-          if (conv.auth_needed_to_vote) {
-            return isModerator(zid, uid).then((is_mod: any) => {
-              if (is_mod) {
-                return conv;
-              }
-              return Promise.all([
-                pgQueryP(
-                  "select * from xids where owner = ($1) and uid = ($2);",
-                  [conv.owner, uid]
-                ),
-                getSocialInfoForUsers([uid], zid),
-                // Binding elements 'xids' and 'info' implicitly have an 'any' type.ts(7031)
-                // @ts-ignore
-              ]).then(([xids, info]) => {
-                var socialAccountIsLinked = info.length > 0;
-                // Object is of type 'unknown'.ts(2571)
-                // @ts-ignore
-                var hasXid = xids.length > 0;
-                if (socialAccountIsLinked || hasXid) {
+          if (conv.use_xid_whitelist) {
+            return isXidWhitelisted(conv.owner, xid).then(
+              (is_whitelisted: boolean) => {
+                if (is_whitelisted) {
                   return conv;
                 } else {
-                  throw "polis_err_post_votes_social_needed";
+                  throw "polis_err_xid_not_whitelisted";
                 }
-              });
-            });
-          }
-          if (conv.use_xid_whitelist) {
-            return isXidWhitelisted(conv.owner, xid).then((is_whitelisted: boolean) => {
-              if (is_whitelisted) {
-                return conv;
-              } else {
-                throw 'polis_err_xid_not_whitelisted';
               }
-            });
+            );
           }
           return conv;
         })
@@ -713,6 +688,7 @@ function initializePolisHelpers() {
             tid,
             voteType,
             weight,
+            high_priority,
           );
         })
     );
@@ -776,10 +752,17 @@ function initializePolisHelpers() {
   }
 
   function redirectIfNotHttps(
-    req: { headers: { [x: string]: string; host: string }; method: string; path: string; url: string },
+    req: {
+      headers: { [x: string]: string; host: string };
+      method: string;
+      path: string;
+      url: string;
+    },
     res: {
       end: () => any;
-      status: (arg0: number) => {
+      status: (
+        arg0: number
+      ) => {
         send: (arg0: string) => any;
       };
       writeHead: (arg0: number, arg1: { Location: string }) => void;
@@ -787,23 +770,23 @@ function initializePolisHelpers() {
     next: () => any
   ) {
     // Exempt dev mode or healthcheck path from HTTPS check
-    if (devMode || req.path === '/api/v3/testConnection') {
+    if (devMode || req.path === "/api/v3/testConnection") {
       return next();
     }
 
     // Check if the request is already HTTPS
-    const isHttps = req.headers['x-forwarded-proto'] === 'https';
+    const isHttps = req.headers["x-forwarded-proto"] === "https";
 
     if (!isHttps) {
-      logger.debug('redirecting to https', { headers: req.headers });
+      logger.debug("redirecting to https", { headers: req.headers });
       // Only redirect GET requests; otherwise, send a 400 error for non-GET methods
-      if (req.method === 'GET') {
+      if (req.method === "GET") {
         res.writeHead(302, {
-          Location: `https://${req.headers.host}${req.url}`
+          Location: `https://${req.headers.host}${req.url}`,
         });
         return res.end();
       } else {
-        res.status(400).send('Please use HTTPS when submitting data.');
+        res.status(400).send("Please use HTTPS when submitting data.");
       }
     }
     return next();
@@ -1299,73 +1282,6 @@ function initializePolisHelpers() {
     }
     res.status(200).json({});
   }
-  let pcaCacheSize = Config.cacheMathResults ? 300 : 1;
-  let pcaCache = new LruCache({
-    max: pcaCacheSize,
-  });
-
-  let lastPrefetchedMathTick = -1;
-
-  // this scheme might not last forever. For now, there are only a couple of MB worth of conversation pca data.
-  function fetchAndCacheLatestPcaData() {
-    let lastPrefetchPollStartTime = Date.now();
-
-    function waitTime() {
-      let timePassed = Date.now() - lastPrefetchPollStartTime;
-      return Math.max(0, 2500 - timePassed);
-    }
-    // cursor.sort([["math_tick", "asc"]]);
-    pgQueryP_readOnly(
-      "select * from math_main where caching_tick > ($1) order by caching_tick limit 10;",
-      [lastPrefetchedMathTick]
-    )
-      // Argument of type '(rows: any[]) => void' is not assignable to parameter of type '(value: unknown) => void | PromiseLike<void>'.
-      // Types of parameters 'rows' and 'value' are incompatible.
-      //     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-      // @ts-ignore
-      .then((rows: any[]) => {
-        if (!rows || !rows.length) {
-          // call again
-          logger.info("mathpoll done");
-          setTimeout(fetchAndCacheLatestPcaData, waitTime());
-          return;
-        }
-
-        let results = rows.map(
-          (row: { data: any; math_tick: any; caching_tick: any }) => {
-            let item = row.data;
-
-            if (row.math_tick) {
-              item.math_tick = Number(row.math_tick);
-            }
-            if (row.caching_tick) {
-              item.caching_tick = Number(row.caching_tick);
-            }
-
-            logger.info("mathpoll updating", {
-              caching_tick: item.caching_tick,
-              zid: item.zid,
-            });
-
-            // let prev = pcaCache.get(item.zid);
-            if (item.caching_tick > lastPrefetchedMathTick) {
-              lastPrefetchedMathTick = item.caching_tick;
-            }
-
-            processMathObject(item);
-
-            return updatePcaCache(item.zid, item);
-          }
-        );
-        Promise.all(results).then((a: any) => {
-          setTimeout(fetchAndCacheLatestPcaData, waitTime());
-        });
-      })
-      .catch((err: any) => {
-        logger.error("mathpoll error", err);
-        setTimeout(fetchAndCacheLatestPcaData, waitTime());
-      });
-  }
 
   // don't start immediately, let other things load first.
   // setTimeout(fetchAndCacheLatestPcaData, 5000);
@@ -1439,248 +1355,8 @@ function initializePolisHelpers() {
   }
   */
 
-  function processMathObject(o: { [x: string]: any }) {
-    function remapSubgroupStuff(g: { val: any[] }) {
-      if (_.isArray(g.val)) {
-        g.val = g.val.map((x: { id: number }) => {
-          return { id: Number(x.id), val: x };
-        });
-      } else {
-        // Argument of type '(id: number) => { id: number; val: any; }'
-        // is not assignable to parameter of type '(value: string, index: number, array: string[]) => { id: number; val: any; }'.
-        // Types of parameters 'id' and 'value' are incompatible.
-        //         Type 'string' is not assignable to type 'number'.ts(2345)
-        // @ts-ignore
-        g.val = _.keys(g.val).map((id: number) => {
-          return { id: Number(id), val: g.val[id] };
-        });
-      }
-      return g;
-    }
-
-    // Normalize so everything is arrays of objects (group-clusters is already in this format, but needs to have the val: subobject style too).
-
-    if (_.isArray(o["group-clusters"])) {
-      // NOTE this is different since group-clusters is already an array.
-      o["group-clusters"] = o["group-clusters"].map((g: { id: any }) => {
-        return { id: Number(g.id), val: g };
-      });
-    }
-
-    if (!_.isArray(o["repness"])) {
-      o["repness"] = _.keys(o["repness"]).map((gid: string | number) => {
-        return { id: Number(gid), val: o["repness"][gid] };
-      });
-    }
-    if (!_.isArray(o["group-votes"])) {
-      o["group-votes"] = _.keys(o["group-votes"]).map(
-        (gid: string | number) => {
-          return { id: Number(gid), val: o["group-votes"][gid] };
-        }
-      );
-    }
-    if (!_.isArray(o["subgroup-repness"])) {
-      o["subgroup-repness"] = _.keys(o["subgroup-repness"]).map(
-        (gid: string | number) => {
-          return { id: Number(gid), val: o["subgroup-repness"][gid] };
-        }
-      );
-      o["subgroup-repness"].map(remapSubgroupStuff);
-    }
-    if (!_.isArray(o["subgroup-votes"])) {
-      o["subgroup-votes"] = _.keys(o["subgroup-votes"]).map(
-        (gid: string | number) => {
-          return { id: Number(gid), val: o["subgroup-votes"][gid] };
-        }
-      );
-      o["subgroup-votes"].map(remapSubgroupStuff);
-    }
-    if (!_.isArray(o["subgroup-clusters"])) {
-      o["subgroup-clusters"] = _.keys(o["subgroup-clusters"]).map(
-        (gid: string | number) => {
-          return { id: Number(gid), val: o["subgroup-clusters"][gid] };
-        }
-      );
-      o["subgroup-clusters"].map(remapSubgroupStuff);
-    }
-
-    // Edge case where there are two groups and one is huge, split the large group.
-    // Once we have a better story for h-clust in the participation view, then we can just show the h-clust instead.
-    // var groupVotes = o['group-votes'];
-    // if (_.keys(groupVotes).length === 2 && o['subgroup-votes'] && o['subgroup-clusters'] && o['subgroup-repness']) {
-    //   var s0 = groupVotes[0].val['n-members'];
-    //   var s1 = groupVotes[1].val['n-members'];
-    //   const scaleRatio = 1.1;
-    //   if (s1 * scaleRatio < s0) {
-    //     o = splitTopLevelGroup(o, groupVotes[0].id);
-    //   } else if (s0 * scaleRatio < s1) {
-    //     o = splitTopLevelGroup(o, groupVotes[1].id);
-    //   }
-    // }
-
-    // // Gaps in the gids are not what we want to show users, and they make client development difficult.
-    // // So this guarantees that the gids are contiguous. TODO look into Darwin.
-    // o = packGids(o);
-
-    // Un-normalize to maintain API consistency.
-    // This could removed in a future API version.
-    function toObj(a: string | any[]) {
-      let obj = {};
-      if (!a) {
-        return obj;
-      }
-      for (let i = 0; i < a.length; i++) {
-        // Element implicitly has an 'any' type
-        // because expression of type 'any' can't be used to index type '{ } '.ts(7053)
-        // @ts-ignore
-        obj[a[i].id] = a[i].val;
-        // Element implicitly has an 'any' type
-        // because expression of type 'any' can't be used to index type '{ } '.ts(7053)
-        // @ts-ignore
-        obj[a[i].id].id = a[i].id;
-      }
-      return obj;
-    }
-    function toArray(a: any[]) {
-      if (!a) {
-        return [];
-      }
-      return a.map((g: { id: any; val: any }) => {
-        let id = g.id;
-        g = g.val;
-        g.id = id;
-        return g;
-      });
-    }
-    o["repness"] = toObj(o["repness"]);
-    o["group-votes"] = toObj(o["group-votes"]);
-    o["group-clusters"] = toArray(o["group-clusters"]);
-
-    delete o["subgroup-repness"];
-    delete o["subgroup-votes"];
-    delete o["subgroup-clusters"];
-    return o;
-  }
-
-  function getPca(zid?: any, math_tick?: number) {
-    let cached = pcaCache.get(zid);
-    // Object is of type 'unknown'.ts(2571)
-    // @ts-ignore
-    if (cached && cached.expiration < Date.now()) {
-      cached = null;
-    }
-    // Object is of type 'unknown'.ts(2571)
-    // @ts-ignore
-    let cachedPOJO = cached && cached.asPOJO;
-    if (cachedPOJO) {
-      if (cachedPOJO.math_tick <= (math_tick || 0)) {
-        logger.info("math was cached but not new", {
-          zid,
-          cached_math_tick: cachedPOJO.math_tick,
-          query_math_tick: math_tick,
-        });
-        return Promise.resolve(null);
-      } else {
-        logger.info("math from cache", { zid, math_tick });
-        return Promise.resolve(cached);
-      }
-    }
-
-    logger.info("mathpoll cache miss", { zid, math_tick });
-
-    // NOTE: not caching results from this query for now, think about this later.
-    // not caching these means that conversations without new votes might not be cached. (closed conversations may be slower to load)
-    // It's probably not difficult to cache, but keeping things simple for now, and only caching things that come down with the poll.
-
-    let queryStart = Date.now();
-
-    return pgQueryP_readOnly(
-      "select * from math_main where zid = ($1) and math_env = ($2);",
-      [zid, Config.mathEnv]
-      //     Argument of type '(rows: string | any[]) => Promise<any> | null' is not assignable to parameter of type '(value: unknown) => any'.
-      // Types of parameters 'rows' and 'value' are incompatible.
-      //   Type 'unknown' is not assignable to type 'string | any[]'.
-      //     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-      // @ts-ignore
-    ).then((rows: string | any[]) => {
-      let queryEnd = Date.now();
-      let queryDuration = queryEnd - queryStart;
-      addInRamMetric("pcaGetQuery", queryDuration);
-
-      if (!rows || !rows.length) {
-        logger.info(
-          "mathpoll related; after cache miss, unable to find data for",
-          {
-            zid,
-            math_tick,
-            math_env: Config.mathEnv,
-          }
-        );
-        return null;
-      }
-      let item = rows[0].data;
-
-      if (rows[0].math_tick) {
-        item.math_tick = Number(rows[0].math_tick);
-      }
-
-      if (item.math_tick <= (math_tick || 0)) {
-        logger.info("after cache miss, unable to find newer item", {
-          zid,
-          math_tick,
-        });
-        return null;
-      }
-      logger.info("after cache miss, found item, adding to cache", {
-        zid,
-        math_tick,
-      });
-
-      processMathObject(item);
-
-      return updatePcaCache(zid, item).then(
-        function (o: any) {
-          return o;
-        },
-        function (err: any) {
-          return err;
-        }
-      );
-    });
-  }
-
-  function updatePcaCache(zid: any, item: { zid: any }) {
-    return new Promise(function (
-      resolve: (arg0: {
-        asPOJO: any;
-        asJSON: string;
-        asBufferOfGzippedJson: any;
-        expiration: number;
-      }) => void,
-      reject: (arg0: any) => any
-    ) {
-      delete item.zid; // don't leak zid
-      let asJSON = JSON.stringify(item);
-      let buf = Buffer.from(asJSON, "utf-8");
-      zlib.gzip(buf, function (err: any, jsondGzipdPcaBuffer: any) {
-        if (err) {
-          return reject(err);
-        }
-
-        let o = {
-          asPOJO: item,
-          asJSON: asJSON,
-          asBufferOfGzippedJson: jsondGzipdPcaBuffer,
-          expiration: Date.now() + 3000,
-        };
-        // save in LRU cache, but don't update the lastPrefetchedMathTick
-        pcaCache.set(zid, o);
-        resolve(o);
-      });
-    });
-  }
   function redirectIfHasZidButNoConversationId(
-    req: { body: { zid: any; conversation_id: any }, headers?: any },
+    req: { body: { zid: any; conversation_id: any }; headers?: any },
     res: {
       writeHead: (arg0: number, arg1: { Location: string }) => void;
       end: () => any;
@@ -1775,10 +1451,7 @@ function initializePolisHelpers() {
     }
 
     getPca(zid, math_tick)
-      .then(function (data: {
-        asPOJO: { math_tick: string };
-        asBufferOfGzippedJson: any;
-      }) {
+      .then(function (data: PcaCacheItem | undefined) {
         if (data) {
           // The buffer is gzipped beforehand to cut down on server effort in re-gzipping the same json string for each response.
           // We can't cache this endpoint on Cloudflare because the response changes too freqently, so it seems like the best way
@@ -1813,22 +1486,6 @@ function initializePolisHelpers() {
       .catch(function (err: any) {
         fail(res, 500, err);
       });
-  }
-
-  function getZidForRid(rid: any) {
-    return pgQueryP("select zid from reports where rid = ($1);", [rid]).then(
-      //     Argument of type '(row: string | any[]) => any' is not assignable to parameter of type '(value: unknown) => any'.
-      // Types of parameters 'row' and 'value' are incompatible.
-      //   Type 'unknown' is not assignable to type 'string | any[]'.
-      //     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-      // @ts-ignore
-      (row: string | any[]) => {
-        if (!row || !row.length) {
-          return null;
-        }
-        return row[0].zid;
-      }
-    );
   }
 
   function handle_POST_math_update(
@@ -2074,27 +1731,7 @@ function initializePolisHelpers() {
     // });
     // return res.end();
   }
-  function getBidIndexToPidMapping(zid: number, math_tick: number) {
-    math_tick = math_tick || -1;
-    return pgQueryP_readOnly(
-      "select * from math_bidtopid where zid = ($1) and math_env = ($2);",
-      [zid, Config.mathEnv]
-      //     Argument of type '(rows: string | any[]) => any' is not assignable to parameter of type '(value: unknown) => any'.
-      // Types of parameters 'rows' and 'value' are incompatible.
-      //   Type 'unknown' is not assignable to type 'string | any[]'.
-      //     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-      // @ts-ignore
-    ).then((rows: string | any[]) => {
-      if (!rows || !rows.length) {
-        // Could actually be a 404, would require more work to determine that.
-        return new Error("polis_err_get_pca_results_missing");
-      } else if (rows[0].data.math_tick <= math_tick) {
-        return new Error("polis_err_get_pca_results_not_new");
-      } else {
-        return rows[0].data;
-      }
-    });
-  }
+
   function handle_GET_bidToPid(
     req: { p: { zid: any; math_tick: any } },
     res: {
@@ -2368,7 +2005,8 @@ function initializePolisHelpers() {
             );
           }
         );
-      });
+      }
+    );
   }
 
   const getServerNameWithProtocol = Config.getServerNameWithProtocol;
@@ -2407,7 +2045,12 @@ function initializePolisHelpers() {
             server,
             function (err: any) {
               if (err) {
-                fail(res, 500, "Error: Couldn't send password reset email.", err);
+                fail(
+                  res,
+                  500,
+                  "Error: Couldn't send password reset email.",
+                  err
+                );
                 return;
               }
               finish();
@@ -2470,7 +2113,7 @@ Feel free to reply to this email if you need help.`;
   ) {
     res?.clearCookie?.(cookieName, {
       path: "/",
-      domain: cookies.cookieDomain(req)
+      domain: cookies.cookieDomain(req),
     });
   }
 
@@ -2818,96 +2461,6 @@ Feel free to reply to this email if you need help.`;
     );
   }
 
-  let zidToConversationIdCache = new LruCache({
-    max: 1000,
-  });
-
-  function getZinvite(zid: any, dontUseCache?: boolean) {
-    let cachedConversationId = zidToConversationIdCache.get(zid);
-    if (!dontUseCache && cachedConversationId) {
-      return Promise.resolve(cachedConversationId);
-    }
-    return pgQueryP_metered(
-      "getZinvite",
-      "select * from zinvites where zid = ($1);",
-      [zid]
-    ).then(function (rows: { zinvite: any }[]) {
-      let conversation_id = (rows && rows[0] && rows[0].zinvite) || void 0;
-      if (conversation_id) {
-        zidToConversationIdCache.set(zid, conversation_id);
-      }
-      return conversation_id;
-    });
-  }
-
-  function getZinvites(zids: any[]) {
-    if (!zids.length) {
-      return Promise.resolve(zids);
-    }
-    zids = _.map(zids, function (zid: any) {
-      return Number(zid); // just in case
-    });
-    zids = _.uniq(zids);
-
-    let uncachedZids = zids.filter(function (zid: any) {
-      return !zidToConversationIdCache.get(zid);
-    });
-    let zidsWithCachedConversationIds = zids
-      .filter(function (zid: any) {
-        return !!zidToConversationIdCache.get(zid);
-      })
-      .map(function (zid: any) {
-        return {
-          zid: zid,
-          zinvite: zidToConversationIdCache.get(zid),
-        };
-      });
-
-    function makeZidToConversationIdMap(arrays: any[]) {
-      let zid2conversation_id = {};
-      arrays.forEach(function (a: any[]) {
-        a.forEach(function (o: { zid: string | number; zinvite: any }) {
-          // (property) zid: string | number
-          // Element implicitly has an 'any' type because expression of type 'string | number' can't be used to index type '{}'.
-          //           No index signature with a parameter of type 'string' was found onpe '{}'.ts(7053)
-          // @ts-ignore
-          zid2conversation_id[o.zid] = o.zinvite;
-        });
-      });
-      return zid2conversation_id;
-    }
-
-    // 'new' expression, whose target lacks a construct signature, implicitly has an 'any' type.ts(7009)
-    // @ts-ignore
-    return new MPromise(
-      "getZinvites",
-      function (resolve: (arg0: {}) => void, reject: (arg0: any) => void) {
-        if (uncachedZids.length === 0) {
-          resolve(makeZidToConversationIdMap([zidsWithCachedConversationIds]));
-          return;
-        }
-        pgQuery_readOnly(
-          "select * from zinvites where zid in (" +
-            uncachedZids.join(",") +
-            ");",
-          [],
-          function (err: any, result: { rows: any }) {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(
-                makeZidToConversationIdMap([
-                  result.rows,
-                  zidsWithCachedConversationIds,
-                ])
-              );
-            }
-          }
-        );
-      }
-    );
-  }
-
   function addConversationId(
     o: { zid?: any; conversation_id?: any },
     dontUseCache: any
@@ -3050,21 +2603,16 @@ Feel free to reply to this email if you need help.`;
     });
   }
 
-  function deleteSuzinvite(suzinvite: any) {
-    return new Promise(function (resolve: () => void, reject: any) {
-      pgQuery(
-        "DELETE FROM suzinvites WHERE suzinvite = ($1);",
-        [suzinvite],
-        function (err: any, results: any) {
-          if (err) {
-            // resolve, but complain
-            logger.error("polis_err_removing_suzinvite", err);
-          }
-          resolve();
-        }
-      );
-    });
-  }
+  const deleteSuzinvite = async (suzinvite: string): Promise<void> => {
+    try {
+      await pgQuery("DELETE FROM suzinvites WHERE suzinvite = ($1);", [
+        suzinvite,
+      ]);
+    } catch (err) {
+      // resolve, but complain
+      logger.error("polis_err_removing_suzinvite", err);
+    }
+  };
 
   function xidExists(xid: any, owner: any, uid?: any) {
     return pgQueryP(
@@ -3080,25 +2628,21 @@ Feel free to reply to this email if you need help.`;
     });
   }
 
-  function createXidEntry(xid: any, owner: any, uid?: any) {
-    return new Promise(function (
-      resolve: () => void,
-      reject: (arg0: Error) => void
-    ) {
-      pgQuery(
+  const createXidEntry = async (
+    xid: string,
+    owner: string,
+    uid?: string
+  ): Promise<void> => {
+    try {
+      await pgQueryP(
         "INSERT INTO xids (uid, owner, xid) VALUES ($1, $2, $3);",
-        [uid, owner, xid],
-        function (err: any, results: any) {
-          if (err) {
-            logger.error("polis_err_adding_xid_entry", err);
-            reject(new Error("polis_err_adding_xid_entry"));
-            return;
-          }
-          resolve();
-        }
+        [uid, owner, xid]
       );
-    });
-  }
+    } catch (err) {
+      logger.error("polis_err_adding_xid_entry", err);
+      throw new Error("polis_err_adding_xid_entry");
+    }
+  };
 
   function saveParticipantMetadataChoicesP(zid: any, pid: any, answers: any) {
     return new Promise(function (
@@ -3254,25 +2798,15 @@ Feel free to reply to this email if you need help.`;
     pid?: any
   ) {
     getUsersLocationName(uid)
-      //     No overload matches this call.
-      // Overload 1 of 2, '(onFulfill?: ((value: unknown) => Resolvable<void>) | undefined, onReject?: ((error: any) => Resolvable<void>) | undefined): Bluebird<void>', gave the following error.
-      //   Argument of type '(locationData: { location: any; source: any; }) => void' is not assignable to parameter of type '(value: unknown) => Resolvable<void>'.
-      //     Types of parameters 'locationData' and 'value' are incompatible.
-      //       Type 'unknown' is not assignable to type '{ location: any; source: any; }'.
-      // Overload 2 of 2, '(onfulfilled?: ((value: unknown) => Resolvable<void>) | null | undefined, onrejected?: ((reason: any) => PromiseLike<never>) | null | undefined): Bluebird<void>', gave the following error.
-      //   Argument of type '(locationData: { location: any; source: any; }) => void' is not assignable to parameter of type '(value: unknown) => Resolvable<void>'.
-      //     Types of parameters 'locationData' and 'value' are incompatible.
-      //     Type 'unknown' is not assignable to type '{ location: any; source: any; }'.ts(2769)
+      // Argument of type '(locationData: { location: any; source: any; }) => void' is not assignable to parameter of type '(value: [unknown, unknown]) => void | PromiseLike<void>'.
+      // Types of parameters 'locationData' and 'value' are incompatible.
+      // Type '[unknown, unknown]' is not assignable to type '{ location: any; source: any; }'.ts(2345)
       // @ts-ignore
       .then(function (locationData: { location: any; source: any }) {
-        if (!locationData) {
+        if (!locationData || !process.env.GOOGLE_API_KEY) {
           return;
         }
         geoCode(locationData.location)
-          //         Argument of type '(o: { lat: any; lng: any; }) => void' is not assignable to parameter of type '(value: unknown) => void | PromiseLike<void>'.
-          // Types of parameters 'o' and 'value' are incompatible.
-          //         Type 'unknown' is not assignable to type '{ lat: any; lng: any; }'.ts(2345)
-          // @ts-ignore
           .then(function (o: { lat: any; lng: any }) {
             createParticpantLocationRecord(
               zid,
@@ -3304,65 +2838,6 @@ Feel free to reply to this email if you need help.`;
       "update participants set last_interaction = now_as_millis(), nsli = 0 where zid = ($1) and uid = ($2);",
       [zid, uid]
     );
-  }
-  function populateGeoIpInfo(zid: any, uid?: any, ipAddress?: string | null) {
-    var userId = Config.maxmindUserID;
-    var licenseKey = Config.maxmindLicenseKey;
-
-    var url = "https://geoip.maxmind.com/geoip/v2.1/city/";
-    var contentType =
-      "application/vnd.maxmind.com-city+json; charset=UTF-8; version=2.1";
-
-    // "city" is     $0.0004 per query
-    // "insights" is $0.002  per query
-    var insights = false;
-
-    if (insights) {
-      url = "https://geoip.maxmind.com/geoip/v2.1/insights/";
-      contentType =
-        "application/vnd.maxmind.com-insights+json; charset=UTF-8; version=2.1";
-    }
-    //   No overload matches this call.
-    // Overload 1 of 3, '(uri: string, options?: RequestPromiseOptions | undefined, callback?: RequestCallback | undefined): RequestPromise<any>', gave the following error.
-    //   Argument of type '{ method: string; contentType: string; headers: { Authorization: string; }; }' is not assignable to parameter of type 'RequestPromiseOptions'.
-    //     Object literal may only specify known properties, and 'contentType' does not exist in type 'RequestPromiseOptions'.
-    // Overload 2 of 3, '(uri: string, callback?: RequestCallback | undefined): RequestPromise<any>', gave the following error.
-    //   Argument of type '{ method: string; contentType: string; headers: { Authorization: string; }; }' is not assignable to parameter of type 'RequestCallback'.
-    //     Object literal may only specify known properties, and 'method' does not exist in type 'RequestCallback'.
-    // Overload 3 of 3, '(options: RequiredUriUrl & RequestPromiseOptions, callback?: RequestCallback | undefined): RequestPromise<any>', gave the following error.
-    //   Argument of type 'string' is not assignable to parameter of type 'RequiredUriUrl & RequestPromiseOptions'.ts(2769)
-    // @ts-ignore
-    return request
-      .get(url + ipAddress, {
-        method: "GET",
-        contentType: contentType,
-        headers: {
-          Authorization:
-            "Basic " +
-            Buffer.from(userId + ":" + licenseKey, "utf8").toString("base64"),
-        },
-      })
-      .then(function (response: string) {
-        var parsedResponse = JSON.parse(response);
-        logger.debug("maxmind response", parsedResponse);
-
-        return pgQueryP(
-          "update participants_extended set modified=now_as_millis(), country_iso_code=($4), encrypted_maxmind_response_city=($3), " +
-            "location=ST_GeographyFromText('SRID=4326;POINT(" +
-            parsedResponse.location.latitude +
-            " " +
-            parsedResponse.location.longitude +
-            ")'), latitude=($5), longitude=($6) where zid = ($1) and uid = ($2);",
-          [
-            zid,
-            uid,
-            encrypt(response),
-            parsedResponse.country.iso_code,
-            parsedResponse.location.latitude,
-            parsedResponse.location.longitude,
-          ]
-        );
-      });
   }
 
   function addExtendedParticipantInfo(zid: any, uid?: any, data?: {}) {
@@ -3443,15 +2918,20 @@ Feel free to reply to this email if you need help.`;
     if (referer) {
       info.referrer = referer;
     }
-    //let x_forwarded_for = req?.headers?.["x-forwarded-for"]; // DigiFinland customization - comment out saving encrypted IP-addresses
-    let ip: string | null = null;
-//    if (x_forwarded_for) {
-//      let ips = x_forwarded_for;
-//      ips = ips && ips.split(", ");
-//      ip = ips.length && ips[0];
-//      info.encrypted_ip_address = encrypt(ip);
-//      info.encrypted_x_forwarded_for = encrypt(x_forwarded_for);
-//    }
+
+    // These fields only exist on the PolisWebServer deployment.
+    if (Config.applicationName === "PolisWebServer") {
+      //let x_forwarded_for = req?.headers?.["x-forwarded-for"]; // DigiFinland customization - comment out saving encrypted IP-addresses
+      let ip: string | null = null;
+//      if (x_forwarded_for) {
+//        let ips = x_forwarded_for;
+//        ips = ips && ips.split(", ");
+//        ip = ips.length && ips[0];
+//        info.encrypted_ip_address = encrypt(ip);
+//        info.encrypted_x_forwarded_for = encrypt(x_forwarded_for);
+//      }
+    }
+
     if (permanent_cookie) {
       info.permanent_cookie = permanent_cookie;
     }
@@ -3467,9 +2947,7 @@ Feel free to reply to this email if you need help.`;
       let pid = ptpt.pid;
       populateParticipantLocationRecordIfPossible(zid, uid, pid);
       addExtendedParticipantInfo(zid, uid, info);
-      if (ip) {
-        populateGeoIpInfo(zid, uid, ip);
-      }
+
       return rows;
     });
   }
@@ -3719,12 +3197,14 @@ ${serverName}/pwreset/${pwresettoken}
           userInfo.email,
           "Polis Password Reset",
           body
-        ).then(function () {
-          callback?.();
-        }).catch(function (err: any) {
-          logger.error("polis_err_failed_to_email_password_reset_code", err);
-          callback?.(err);
-        });
+        )
+          .then(function () {
+            callback?.();
+          })
+          .catch(function (err: any) {
+            logger.error("polis_err_failed_to_email_password_reset_code", err);
+            callback?.(err);
+          });
       }
     );
   }
@@ -3907,17 +3387,17 @@ Email verified! You can close this tab or hit the back button.
     return hash;
   }
 
-  function verifyHmacForQueryParams(
+  const verifyHmacForQueryParams = (
     path: string,
     params: { [x: string]: any; conversation_id?: any; email?: any }
-  ) {
-    return new Promise(function (resolve: () => void, reject: () => void) {
-      params = _.clone(params);
-      let hash = params[HMAC_SIGNATURE_PARAM_NAME];
-      delete params[HMAC_SIGNATURE_PARAM_NAME];
-      let correctHash = createHmacForQueryParams(path, params);
+  ): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const clonedParams = { ...params };
+      const hash = clonedParams[HMAC_SIGNATURE_PARAM_NAME];
+      delete clonedParams[HMAC_SIGNATURE_PARAM_NAME];
+      const correctHash = createHmacForQueryParams(path, clonedParams);
       // To thwart timing attacks, add some randomness to the response time with setTimeout.
-      setTimeout(function () {
+      setTimeout(() => {
         logger.debug("comparing", { correctHash, hash });
         if (correctHash === hash) {
           resolve();
@@ -3926,7 +3406,7 @@ Email verified! You can close this tab or hit the back button.
         }
       });
     });
-  }
+  };
 
   function sendEmailByUid(uid?: any, subject?: string, body?: string | number) {
     return getUserInfoForUid2(uid).then(function (userInfo: {
@@ -4303,7 +3783,7 @@ Email verified! You can close this tab or hit the back button.
               // @ts-ignore
               pid_to_ptpt[c.pid] = c;
             });
-            return Promise.mapSeries(
+            return BluebirdPromise.mapSeries(
               candidates,
               (item: { zid: any; pid: any }, index: any, length: any) => {
                 return getNumberOfCommentsRemaining(item.zid, item.pid).then(
@@ -4403,7 +3883,7 @@ Email verified! You can close this tab or hit the back button.
                   }
                 );
 
-                return Promise.each(
+                return BluebirdPromise.each(
                   needNotification,
                   (
                     item: { pid: string | number; remaining: any },
@@ -4741,9 +4221,10 @@ Email verified! You can close this tab or hit the back button.
                   // lti_user_image: any; lti_context_id: any; tool_consumer_instance_guid?: any; afterJoinRedirectUrl: any; }; }' but required in type
                   // '{ cookies: { [x: string]: any; }; }'.ts(2345)
                   // @ts-ignore
-                  addCookies(req, res, token, uid).then(function () {
-                    res.json(response_data);
-                  })
+                  addCookies(req, res, token, uid)
+                    .then(function () {
+                      res.json(response_data);
+                    })
                     .catch(function (err: any) {
                       fail(res, 500, "polis_err_adding_cookies", err);
                     });
@@ -5271,7 +4752,11 @@ Email verified! You can close this tab or hit the back button.
       //     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
       // @ts-ignore
     ).then(function (rows: string | any[]) {
-      logger.debug("isParentDomainWhitelisted", { domain, zid, isWithinIframe });
+      logger.debug("isParentDomainWhitelisted", {
+        domain,
+        zid,
+        isWithinIframe,
+      });
       if (!rows || !rows.length || !rows[0].domain_whitelist.length) {
         // there is no whitelist, so any domain is ok.
         logger.debug("isParentDomainWhitelisted : no whitelist");
@@ -5769,26 +5254,27 @@ Email verified! You can close this tab or hit the back button.
     // @ts-ignore
     function getMoreFriends(friendsSoFar: any[], urlForNextCall: any) {
       // urlForNextCall includes access token
-      return request.get(urlForNextCall).then(
-        function (response: { data: string | any[]; paging: { next: any } }) {
-          let len = response.data.length;
-          if (len) {
-            for (var i = 0; i < len; i++) {
-              friendsSoFar.push(response.data[i]);
+      return request
+        .get(urlForNextCall)
+        .then(
+          (response: {
+            data: string | any[];
+            paging: { next: any };
+          }): Promise<any[]> => {
+            const { data, paging } = response;
+            if (data.length) {
+              friendsSoFar.push(...data);
+              if (paging.next) {
+                return getMoreFriends(friendsSoFar, paging.next);
+              }
             }
-            if (response.paging.next) {
-              return getMoreFriends(friendsSoFar, response.paging.next);
-            }
-            return friendsSoFar;
-          } else {
-            return friendsSoFar;
+            return Promise.resolve(friendsSoFar);
           }
-        },
-        function (err: any) {
+        )
+        .catch((err: any) => {
           emailBadProblemTime("getMoreFriends failed");
-          return friendsSoFar;
-        }
-      );
+          return Promise.resolve(friendsSoFar);
+        });
     }
     return new Promise(function (
       resolve: (arg0: any) => void,
@@ -6373,7 +5859,6 @@ Email verified! You can close this tab or hit the back button.
   const _getCommentsList = Comment._getCommentsList;
   const getNumberOfCommentsRemaining = Comment.getNumberOfCommentsRemaining;
 
-
   function handle_GET_participation(
     req: { p: { zid: any; uid?: any; strict: any } },
     res: {
@@ -6897,30 +6382,29 @@ Email verified! You can close this tab or hit the back button.
   // }
 
   function moderateComment(
-    zid: string,
-    tid: number,
-    active: boolean,
-    mod: boolean,
-    is_meta: boolean
+    zid: any,
+    tid: any,
+    active: any,
+    mod: any,
+    is_meta: any
   ) {
-    return new Promise(function (
-      resolve: () => void,
-      reject: (arg0: any) => void
-    ) {
-      pgQuery(
-        "UPDATE COMMENTS SET active=($3), mod=($4), modified=now_as_millis(), is_meta = ($5) WHERE zid=($1) and tid=($2);",
-        [zid, tid, active, mod, is_meta],
-        function (err: any) {
-          if (err) {
-            reject(err);
-          } else {
-            // TODO an optimization would be to only add the task when the comment becomes visible after the mod.
-            addNotificationTask(zid);
+    return new Promise((resolve, reject) => {
+      let query =
+        "UPDATE comments SET active = $1, mod = $2, is_meta = $3 WHERE zid = $4 AND tid = $5";
+      let params = [active, mod, is_meta, zid, tid];
 
-            resolve();
-          }
+      logger.debug("Executing query:", { query });
+      logger.debug("With parameters:", { params });
+
+      pgQuery(query, params, (err: any, result: any) => {
+        if (err) {
+          logger.error("moderateComment pgQuery error:", err);
+          reject(err);
+        } else {
+          logger.debug("moderateComment pgQuery executed successfully");
+          resolve(result);
         }
-      );
+      });
     });
   }
 
@@ -7010,400 +6494,333 @@ Email verified! You can close this tab or hit the back button.
     });
   }
 
-  function handle_POST_comments(
-    req: {
-      p: {
-        zid?: any;
-        xid?: any;
-        uid?: any;
-        txt?: any;
-        pid?: any;
-        vote?: any;
-        twitter_tweet_id?: any;
-        quote_twitter_screen_name?: any;
-        quote_txt?: any;
-        quote_src_url?: any;
-        anon?: any;
-        is_seed?: any;
-      };
-      headers?: Headers;
-      connection?: { remoteAddress: any; socket: { remoteAddress: any } };
-      socket?: { remoteAddress: any };
-    },
-    res: { json: (arg0: { tid: any; currentPid: any }) => void }
-  ) {
-    let zid = req.p.zid;
-    let xid = req.p.xid;
-    let uid = req.p.uid;
-    let txt = req.p.txt;
-    let pid = req.p.pid; // PID_FLOW may be undefined
-    let currentPid = pid;
-    let vote = req.p.vote;
-    let twitter_tweet_id = req.p.twitter_tweet_id;
-    let quote_twitter_screen_name = req.p.quote_twitter_screen_name;
-    let quote_txt = req.p.quote_txt;
-    let quote_src_url = req.p.quote_src_url;
-    let anon = req.p.anon;
-    let is_seed = req.p.is_seed;
-    let mustBeModerator = !!quote_txt || !!twitter_tweet_id || anon;
+  const GOOGLE_DISCOVERY_URL =
+    "https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1";
 
-    // either include txt, or a tweet id
-    if (
-      (_.isUndefined(txt) || txt === "") &&
-      (_.isUndefined(twitter_tweet_id) || twitter_tweet_id === "") &&
-      (_.isUndefined(quote_txt) || quote_txt === "")
-    ) {
+  async function analyzeComment(txt: string) {
+    try {
+      const client = await google.discoverAPI(GOOGLE_DISCOVERY_URL);
+
+      const analyzeRequest = {
+        comment: {
+          text: txt,
+        },
+        requestedAttributes: {
+          TOXICITY: {},
+        },
+      };
+
+      // @ts-ignore
+      const response = await client.comments.analyze({
+        key: Config.googleJigsawPerspectiveApiKey,
+        resource: analyzeRequest,
+      });
+
+      return response.data;
+    } catch (err) {
+      logger.error("analyzeComment error", err);
+    }
+  }
+
+  /* this is a concept and can be generalized to other handlers */
+  interface PolisRequestParams {
+    zid?: string;
+    xid?: string;
+    uid?: string;
+    txt?: string;
+    pid?: string;
+    vote?: number;
+    anon?: boolean;
+    is_seed?: boolean;
+  }
+
+  interface PolisRequest extends Request {
+    p: PolisRequestParams;
+    connection?: {
+      remoteAddress?: string;
+      socket?: {
+        remoteAddress?: string;
+      };
+    };
+    socket?: {
+      remoteAddress?: string;
+    };
+  }
+
+  async function handle_POST_comments(
+    req: PolisRequest,
+    /*
+      extending response seems strange here but,
+      res.json({
+        tid: tid,
+        currentPid: currentPid,
+      });
+      require it down below here.
+    */
+    res: Response & { json: (data: any) => void }
+  ): Promise<void> {
+    let { zid, xid, uid, txt, pid: initialPid, vote, anon, is_seed } = req.p;
+
+    // console.log("============= debug handle_POST_comments ===========");
+    // console.log(zid, xid, uid, txt, initialPid, vote, anon, is_seed);
+    /*
+    2024-08-20 15:44:25 ============= handle_POST_comments ===========
+    2024-08-20 15:44:25 37436 undefined 186 a lovely comment 3 undefined -1 undefined undefined
+    */
+
+    let pid = initialPid;
+    let currentPid = pid;
+    const mustBeModerator = anon;
+
+    if (!txt || txt === "") {
       fail(res, 400, "polis_err_param_missing_txt");
       return;
     }
 
-    if (quote_txt && _.isUndefined(quote_src_url)) {
-      fail(res, 400, "polis_err_param_missing_quote_src_url");
-      return;
+    async function doGetPid(): Promise<number> {
+      if (_.isUndefined(pid)) {
+        const newPid = await getPidPromise(zid!, uid!, true);
+        if (newPid === -1) {
+          const rows = await addParticipant(zid!, uid!);
+          const ptpt = rows[0];
+          pid = ptpt.pid;
+          currentPid = pid;
+          return Number(pid);
+        } else {
+          return newPid;
+        }
+      }
+      return Number(pid);
     }
 
-    function doGetPid() {
-      // PID_FLOW
-      if (_.isUndefined(pid)) {
-        return getPidPromise(req.p.zid, req.p.uid, true).then((pid: number) => {
-          if (pid === -1) {
-            //           Argument of type '(rows: any[]) => number' is not assignable to parameter of type '(value: unknown) => number | PromiseLike<number>'.
-            // Types of parameters 'rows' and 'value' are incompatible.
-            //             Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-            // @ts-ignore
-            return addParticipant(req.p.zid, req.p.uid).then(function (
-              rows: any[]
-            ) {
-              let ptpt = rows[0];
-              pid = ptpt.pid;
-              currentPid = pid;
-              return pid;
-            });
-          } else {
+    try {
+      logger.debug("Post comments txt", { zid, pid, txt });
+
+      const ip =
+        // @ts-ignore
+        req.headers["x-forwarded-for"] ||
+        req.connection?.remoteAddress ||
+        req.socket?.remoteAddress ||
+        req.connection?.socket?.remoteAddress;
+
+      const isSpamPromise = isSpam({
+        comment_content: txt,
+        comment_author: uid!,
+        permalink: `https://pol.is/${zid}`,
+        user_ip: ip as string,
+        // @ts-ignore
+        user_agent: req.headers["user-agent"],
+        // @ts-ignore
+        referrer: req.headers["referer"],
+      }).catch((err: any) => {
+        logger.error("isSpam failed", err);
+        return false;
+      });
+
+      // Only analyze comments if we have a Jigsaw API key
+      const jigsawModerationPromise = Config.googleJigsawPerspectiveApiKey
+        ? analyzeComment(txt)
+        : Promise.resolve(null);
+
+      const isModeratorPromise = isModerator(zid!, uid!);
+      const conversationInfoPromise = getConversationInfo(zid!);
+
+      let shouldCreateXidRecord = false;
+
+      const pidPromise = (async () => {
+        if (xid) {
+          const xidUser = await getXidStuff(xid, zid!);
+          shouldCreateXidRecord = xidUser === "noXidRecord";
+          if (typeof xidUser === "object") {
+            uid = xidUser.uid;
+            pid = xidUser.pid;
             return pid;
           }
-        });
-      }
-      return Promise.resolve(pid);
-    }
-    let twitterPrepPromise = Promise.resolve();
-    if (twitter_tweet_id) {
-      twitterPrepPromise = prepForTwitterComment(twitter_tweet_id, zid);
-    } else if (quote_twitter_screen_name) {
-      twitterPrepPromise = prepForQuoteWithTwitterUser(
-        quote_twitter_screen_name,
-        zid
-      );
-    }
-
-    twitterPrepPromise
-      .then(
-        //       No overload matches this call.
-        // Overload 1 of 2, '(onFulfill?: ((value: void) => any) | undefined, onReject?: ((error: any) => any) | undefined): Bluebird<any>', gave the following error.
-        //   Argument of type '(info: { ptpt: any; tweet: any; }) => Bluebird<any>' is not assignable to parameter of type '(value: void) => any'.
-        //     Types of parameters 'info' and 'value' are incompatible.
-        //       Type 'void' is not assignable to type '{ ptpt: any; tweet: any; }'.
-        // Overload 2 of 2, '(onfulfilled?: ((value: void) => any) | null | undefined, onrejected?: ((reason: any) => Resolvable<void>) | null | undefined): Bluebird<any>', gave the following error.
-        //   Argument of type '(info: { ptpt: any; tweet: any; }) => Bluebird<any>' is not assignable to parameter of type '(value: void) => any'.
-        //     Types of parameters 'info' and 'value' are incompatible.
-        //       Type 'void' is not assignable to type '{ ptpt: any; tweet: any; }'.ts(2769)
-        // @ts-ignore
-        function (info: { ptpt: any; tweet: any }) {
-          let ptpt = info && info.ptpt;
-          // let twitterUser = info && info.twitterUser;
-          let tweet = info && info.tweet;
-
-          if (tweet) {
-            logger.debug("Post comments tweet", { txt, tweetTxt: tweet.txt });
-            txt = tweet.text;
-          } else if (quote_txt) {
-            logger.debug("Post comments quote_txt", { txt, quote_txt });
-            txt = quote_txt;
-          } else {
-            logger.debug("Post comments txt", {zid, pid, txt});
-          }
-
-          let ip =
-            req?.headers?.["x-forwarded-for"] || // TODO This header may contain multiple IP addresses. Which should we report?
-            req?.connection?.remoteAddress ||
-            req?.socket?.remoteAddress ||
-            req?.connection?.socket.remoteAddress;
-
-          let isSpamPromise = isSpam({
-            comment_content: txt,
-            comment_author: uid,
-            permalink: "https://pol.is/" + zid,
-            user_ip: ip,
-            user_agent: req?.headers?.["user-agent"],
-            referrer: req?.headers?.referer,
-          });
-          isSpamPromise.catch(function (err: any) {
-            logger.error("isSpam failed", err);
-          });
-          // let isSpamPromise = Promise.resolve(false);
-          let isModeratorPromise = isModerator(zid, uid);
-
-          let conversationInfoPromise = getConversationInfo(zid);
-
-          // return xidUserPromise.then(function(xidUser) {
-
-          let shouldCreateXidRecord = false;
-
-          let pidPromise;
-          if (ptpt) {
-            pidPromise = Promise.resolve(ptpt.pid);
-          } else {
-            let xidUserPromise =
-              !_.isUndefined(xid) && !_.isNull(xid)
-                ? getXidStuff(xid, zid)
-                : Promise.resolve();
-            pidPromise = xidUserPromise.then((xidUser: UserType | "noXidRecord") => {
-              shouldCreateXidRecord = xidUser === "noXidRecord";
-              if (typeof xidUser === 'object') {
-                uid = xidUser.uid;
-                pid = xidUser.pid;
-                return pid;
-              } else {
-                return doGetPid().then((pid: any) => {
-                  if (shouldCreateXidRecord) {
-                    // Expected 6 arguments, but got 3.ts(2554)
-                    // conversation.ts(34, 3): An argument for 'x_profile_image_url' was not provided.
-                    // @ts-ignore
-                    return createXidRecordByZid(zid, uid, xid).then(() => {
-                      return pid;
-                    });
-                  }
-                  return pid;
-                });
-              }
-            });
-          }
-
-          let commentExistsPromise = commentExists(zid, txt);
-
-          return Promise.all([
-            pidPromise,
-            conversationInfoPromise,
-            isModeratorPromise,
-            commentExistsPromise,
-          ]).then(
-            function (results: any[]) {
-              let pid = results[0];
-              let conv = results[1];
-              let is_moderator = results[2];
-              let commentExists = results[3];
-
-              if (!is_moderator && mustBeModerator) {
-                fail(res, 403, "polis_err_post_comment_auth");
-                return;
-              }
-
-              if (pid < 0) {
-                // NOTE: this API should not be called in /demo mode
-                fail(res, 500, "polis_err_post_comment_bad_pid");
-                return;
-              }
-
-              if (commentExists) {
-                fail(res, 409, "polis_err_post_comment_duplicate");
-                return;
-              }
-
-              if (!conv.is_active) {
-                fail(res, 403, "polis_err_conversation_is_closed");
-                return;
-              }
-
-              if (_.isUndefined(txt)) {
-                logger.error("polis_err_post_comments_missing_txt");
-                throw "polis_err_post_comments_missing_txt";
-              }
-              let bad = hasBadWords(txt);
-
-              return isSpamPromise
-                .then(
-                  function (spammy: any) {
-                    return spammy;
-                  },
-                  function (err: any) {
-                    logger.error("spam check failed", err);
-                    return false; // spam check failed, continue assuming "not spammy".
-                  }
-                )
-                .then(function (spammy: any) {
-                  let velocity = 1;
-                  let active = true;
-                  let classifications = [];
-                  if (bad && conv.profanity_filter) {
-                    active = false;
-                    classifications.push("bad");
-                    logger.info("active=false because (bad && conv.profanity_filter)");
-                  }
-                  if (spammy && conv.spam_filter) {
-                    active = false;
-                    classifications.push("spammy");
-                    logger.info("active=false because (spammy && conv.spam_filter)");
-                  }
-                  if (conv.strict_moderation) {
-                    active = false;
-                    logger.info("active=false because (conv.strict_moderation)");
-                  }
-
-                  let mod = 0; // hasn't yet been moderated.
-
-                  // moderators' comments are automatically in (when prepopulating).
-                  if (is_moderator && is_seed) {
-                    mod = polisTypes.mod.ok;
-                    active = true;
-                  }
-                  let authorUid = ptpt ? ptpt.uid : uid;
-
-                  Promise.all([detectLanguage(txt)]).then((a: any[]) => {
-                    let detections = a[0];
-                    let detection = Array.isArray(detections)
-                      ? detections[0]
-                      : detections;
-                    let lang = detection.language;
-                    let lang_confidence = detection.confidence;
-
-                    return pgQueryP(
-                      "INSERT INTO COMMENTS " +
-                        "(pid, zid, txt, velocity, active, mod, uid, tweet_id, quote_src_url, anon, is_seed, created, tid, lang, lang_confidence) VALUES " +
-                        "($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, default, null, $12, $13) RETURNING *;",
-                      [
-                        pid,
-                        zid,
-                        txt,
-                        velocity,
-                        active,
-                        mod,
-                        authorUid,
-                        twitter_tweet_id || null,
-                        quote_src_url || null,
-                        anon || false,
-                        is_seed || false,
-                        lang,
-                        lang_confidence,
-                      ]
-                    ).then(
-                      //                     Argument of type '(docs: any[]) => any' is not assignable to parameter of type '(value: unknown) => any'.
-                      // Types of parameters 'docs' and 'value' are incompatible.
-                      //                     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-                      // @ts-ignore
-                      function (docs: any[]) {
-                        let comment = docs && docs[0];
-                        let tid = comment && comment.tid;
-                        // let createdTime = comment && comment.created;
-
-                        if (bad || spammy || conv.strict_moderation) {
-                          getNumberOfCommentsWithModerationStatus(
-                            zid,
-                            polisTypes.mod.unmoderated
-                          )
-                            .catch(function (err: any) {
-                              logger.error(
-                                "polis_err_getting_modstatus_comment_count",
-                                err
-                              );
-                              return void 0;
-                            })
-                            .then(function (n: number) {
-                              if (n === 0) {
-                                return;
-                              }
-                              pgQueryP_readOnly(
-                                "select * from users where site_id = (select site_id from page_ids where zid = ($1)) UNION select * from users where uid = ($2);",
-                                [zid, conv.owner]
-                              ).then(function (users: any) {
-                                let uids = _.pluck(users, "uid");
-                                // also notify polis team for moderation
-                                uids.forEach(function (uid?: any) {
-                                  sendCommentModerationEmail(req, uid, zid, n);
-                                });
-                              });
-                            });
-                        } else {
-                          addNotificationTask(zid);
-                        }
-
-                        // It should be safe to delete this. Was added to postpone the no-auto-vote change for old conversations.
-                        if (is_seed && _.isUndefined(vote) && zid <= 17037) {
-                          vote = 0;
-                        }
-
-                        let createdTime = comment.created;
-                        let votePromise = _.isUndefined(vote)
-                          ? Promise.resolve()
-                          : votesPost(uid, pid, zid, tid, xid, vote, 0);
-
-                        return (
-                          votePromise
-                            // This expression is not callable.
-                            //Each member of the union type '{ <U>(onFulfill?: ((value: void) => Resolvable<U>) | undefined, onReject?: ((error: any) => Resolvable<U>) | undefined): Bluebird<U>; <TResult1 = void, TResult2 = never>(onfulfilled?: ((value: void) => Resolvable<...>) | ... 1 more ... | undefined, onrejected?: ((reason: any) => Resolvable<...>) | ... 1 more ... | u...' has signatures, but none of those signatures are compatible with each other.ts(2349)
-                            // @ts-ignore
-                            .then(
-                              function (o: { vote: { created: any } }) {
-                                if (o && o.vote && o.vote.created) {
-                                  createdTime = o.vote.created;
-                                }
-
-                                setTimeout(function () {
-                                  updateConversationModifiedTime(
-                                    zid,
-                                    createdTime
-                                  );
-                                  updateLastInteractionTimeForConversation(
-                                    zid,
-                                    uid
-                                  );
-                                  if (!_.isUndefined(vote)) {
-                                    updateVoteCount(zid, pid);
-                                  }
-                                }, 100);
-
-                                res.json({
-                                  tid: tid,
-                                  currentPid: currentPid,
-                                });
-                              },
-                              function (err: any) {
-                                fail(res, 500, "polis_err_vote_on_create", err);
-                              }
-                            )
-                        );
-                      },
-                      function (err: { code: string | number }) {
-                        if (err.code === "23505" || err.code === 23505) {
-                          // duplicate comment
-                          fail(res, 409, "polis_err_post_comment_duplicate", err);
-                        } else {
-                          fail(res, 500, "polis_err_post_comment", err);
-                        }
-                      }
-                    ); // insert
-                  }); // lang
-                });
-            },
-            function (errors: any[]) {
-              if (errors[0]) {
-                fail(res, 500, "polis_err_getting_pid", errors[0]);
-                return;
-              }
-              if (errors[1]) {
-                fail(res, 500, "polis_err_getting_conv_info", errors[1]);
-                return;
-              }
-            }
-          );
-        },
-        function (err: any) {
-          fail(res, 500, "polis_err_fetching_tweet", err);
         }
-      )
-      .catch(function (err: any) {
-        fail(res, 500, "polis_err_post_comment_misc", err);
+        const newPid = await doGetPid();
+        if (shouldCreateXidRecord) {
+          await createXidRecordByZid(zid!, uid!, xid!, null, null, null);
+        }
+        return newPid;
+      })();
+
+      const commentExistsPromise = commentExists(zid!, txt);
+
+      const [
+        finalPid,
+        conv,
+        is_moderator,
+        commentExistsAlready,
+        spammy,
+        jigsawResponse,
+      ] = await Promise.all([
+        pidPromise,
+        conversationInfoPromise,
+        isModeratorPromise,
+        commentExistsPromise,
+        isSpamPromise,
+        jigsawModerationPromise,
+      ]);
+
+      if (!is_moderator && mustBeModerator) {
+        fail(res, 403, "polis_err_post_comment_auth");
+        return;
+      }
+
+      if (finalPid && finalPid < 0) {
+        fail(res, 500, "polis_err_post_comment_bad_pid");
+        return;
+      }
+
+      if (commentExistsAlready) {
+        fail(res, 409, "polis_err_post_comment_duplicate");
+        return;
+      }
+
+      if (!conv.is_active) {
+        fail(res, 403, "polis_err_conversation_is_closed");
+        return;
+      }
+
+      const bad = hasBadWords(txt);
+
+      const velocity = 1;
+      const jigsawToxicityThreshold = 0.8;
+      let active = true;
+      const classifications = [];
+
+      const toxicityScore =
+        jigsawResponse?.attributeScores?.TOXICITY?.summaryScore?.value;
+
+      if (typeof toxicityScore === "number" && !isNaN(toxicityScore)) {
+        logger.debug(
+          `Jigsaw toxicity Score for comment "${txt}": ${toxicityScore}`
+        );
+
+        if (toxicityScore > jigsawToxicityThreshold && conv.profanity_filter) {
+          active = false;
+          classifications.push("bad");
+          logger.info(
+            "active=false because (jigsawToxicity && conv.profanity_filter)"
+          );
+        }
+        // Fall back to bad words filter if Jigsaw API is not available or fails to return a numeric value
+      } else if (bad && conv.profanity_filter) {
+        active = false;
+        classifications.push("bad");
+        logger.info("active=false because (bad && conv.profanity_filter)");
+      }
+
+      if (spammy && conv.spam_filter) {
+        active = false;
+        classifications.push("spammy");
+        logger.info("active=false because (spammy && conv.spam_filter)");
+      }
+
+      let mod = 0;
+      if (is_moderator && is_seed) {
+        mod = polisTypes.mod.ok;
+        active = true;
+      }
+
+      const [detections] = await Promise.all([detectLanguage(txt)]);
+      const detection = Array.isArray(detections) ? detections[0] : detections;
+      const lang = detection.language;
+      const lang_confidence = detection.confidence;
+
+      const insertedComment: any = await pgQueryP(
+        `INSERT INTO COMMENTS
+        (pid, zid, txt, velocity, active, mod, uid, anon, is_seed, created, tid, lang, lang_confidence)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, default, null, $10, $11)
+        RETURNING *;`,
+        [
+          finalPid,
+          zid,
+          txt,
+          velocity,
+          active,
+          mod,
+          uid,
+          anon || false,
+          is_seed || false,
+          lang,
+          lang_confidence,
+        ]
+      );
+
+      const comment = insertedComment[0];
+      const tid = comment.tid;
+
+      if (bad || spammy || conv.strict_moderation) {
+        try {
+          const n = await getNumberOfCommentsWithModerationStatus(
+            zid!,
+            polisTypes.mod.unmoderated
+          );
+          if (n !== 0) {
+            const users: any = await pgQueryP_readOnly(
+              "SELECT * FROM users WHERE site_id = (SELECT site_id FROM page_ids WHERE zid = $1) UNION SELECT * FROM users WHERE uid = $2;",
+              [zid, conv.owner]
+            );
+            const uids = users.map((user: { uid: string }) => user.uid);
+            uids.forEach((uid: string) =>
+              sendCommentModerationEmail(req, Number(uid), zid!, n)
+            );
+          }
+        } catch (err) {
+          logger.error("polis_err_getting_modstatus_comment_count", err);
+        }
+      } else {
+        addNotificationTask(zid!);
+      }
+
+      if (is_seed && _.isUndefined(vote) && Number(zid) <= 17037) {
+        vote = 0;
+      }
+
+      let createdTime = comment.created;
+
+      if (!_.isUndefined(vote)) {
+        try {
+          const voteResult = await votesPost(
+            uid!,
+            finalPid,
+            zid!,
+            tid,
+            xid!,
+            vote,
+            0,
+            false
+          );
+          if (voteResult?.vote?.created) {
+            createdTime = voteResult.vote.created;
+          }
+        } catch (err) {
+          fail(res, 500, "polis_err_vote_on_create", err);
+          return;
+        }
+      }
+
+      setTimeout(() => {
+        updateConversationModifiedTime(zid!, createdTime);
+        updateLastInteractionTimeForConversation(zid!, uid!);
+        if (!_.isUndefined(vote)) {
+          updateVoteCount(zid!, finalPid);
+        }
+      }, 100);
+
+      res.json({
+        tid: tid,
+        currentPid: currentPid,
       });
-  } // end POST /api/v3/comments
+    } catch (err: any) {
+      if (err.code === "23505" || err.code === 23505) {
+        fail(res, 409, "polis_err_post_comment_duplicate", err);
+      } else {
+        fail(res, 500, "polis_err_post_comment", err);
+      }
+    }
+  }
 
   function handle_GET_votes_me(
     req: { p: { zid: any; uid?: any; pid: any } },
@@ -7503,8 +6920,11 @@ Email verified! You can close this tab or hit the back button.
       let comments = results[0];
       let math = results[1];
       let numberOfCommentsRemainingRows = results[2];
-      logger.debug("getNextPrioritizedComment intermediate results:",
-                   {zid, pid, numberOfCommentsRemainingRows});
+      logger.debug("getNextPrioritizedComment intermediate results:", {
+        zid,
+        pid,
+        numberOfCommentsRemainingRows,
+      });
       if (!comments || !comments.length) {
         return null;
       } else if (
@@ -7960,6 +7380,7 @@ Email verified! You can close this tab or hit the back button.
               req.p.xid,
               req.p.vote,
               req.p.weight,
+              req.p.high_priority,
             );
           })
           .then(function (o: { vote: any }) {
@@ -7983,7 +7404,11 @@ Email verified! You can close this tab or hit the back button.
             return getNextComment(zid, pid, [], true, lang);
           })
           .then(function (nextComment: any) {
-            logger.debug("handle_POST_votes nextComment:", {zid, pid, nextComment});
+            logger.debug("handle_POST_votes nextComment:", {
+              zid,
+              pid,
+              nextComment,
+            });
             let result: PidReadyResult = {};
             if (nextComment) {
               result.nextComment = nextComment;
@@ -8022,8 +7447,8 @@ Email verified! You can close this tab or hit the back button.
           fail(res, 403, "polis_err_conversation_is_closed", err);
         } else if (err === "polis_err_post_votes_social_needed") {
           fail(res, 403, "polis_err_post_votes_social_needed", err);
-        } else if (err === 'polis_err_xid_not_whitelisted') {
-          fail(res, 403, 'polis_err_xid_not_whitelisted', err);
+        } else if (err === "polis_err_xid_not_whitelisted") {
+          fail(res, 403, "polis_err_xid_not_whitelisted", err);
         } else {
           fail(res, 500, "polis_err_vote", err);
         }
@@ -8273,10 +7698,7 @@ Email verified! You can close this tab or hit the back button.
   }
   function verifyMetadataAnswersExistForEachQuestion(zid: any) {
     let errorcode = "polis_err_missing_metadata_answers";
-    return new Promise(function (
-      resolve: () => void,
-      reject: (arg0: Error) => void
-    ) {
+    return new Promise<void>((resolve, reject) => {
       pgQuery_readOnly(
         "select pmqid from participant_metadata_questions where zid = ($1);",
         [zid],
@@ -8346,22 +7768,31 @@ Email verified! You can close this tab or hit the back button.
     let mod = req.p.mod;
     let is_meta = req.p.is_meta;
 
+    logger.debug(
+      `Attempting to update comment. zid: ${zid}, tid: ${tid}, uid: ${uid}`
+    );
+
     isModerator(zid, uid)
       .then(function (isModerator: any) {
+        logger.debug(`isModerator result: ${isModerator}`);
         if (isModerator) {
           moderateComment(zid, tid, active, mod, is_meta).then(
             function () {
+              logger.debug("Comment moderated successfully");
               res.status(200).json({});
             },
             function (err: any) {
+              logger.error("Error in moderateComment:", err);
               fail(res, 500, "polis_err_update_comment", err);
             }
           );
         } else {
+          logger.debug("User is not a moderator");
           fail(res, 403, "polis_err_update_comment_auth");
         }
       })
       .catch(function (err: any) {
+        logger.error("Error in isModerator:", err);
         fail(res, 500, "polis_err_update_comment", err);
       });
   }
@@ -8460,7 +7891,7 @@ Email verified! You can close this tab or hit the back button.
         pgQueryP(
           "update conversations set is_active = false where zid = ($1);",
           [conv.zid]
-        )
+        );
       })
       .catch(function (err: any) {
         fail(res, 500, "polis_err_closing_conversation", err);
@@ -8561,6 +7992,7 @@ Email verified! You can close this tab or hit the back button.
         help_bgcolor: string;
         style_btn: any;
         write_type: any;
+        importance_enabled: any;
         owner_sees_participation_stats: any;
         launch_presentation_return_url_hex: any;
         link_url: any;
@@ -8652,10 +8084,9 @@ Email verified! You can close this tab or hit the back button.
         if (!_.isUndefined(req.p.write_type)) {
           fields.write_type = req.p.write_type;
         }
-        ifDefinedSet("auth_needed_to_vote", req.p, fields);
-        ifDefinedSet("auth_needed_to_write", req.p, fields);
-        ifDefinedSet("auth_opt_fb", req.p, fields);
-        ifDefinedSet("auth_opt_tw", req.p, fields);
+        if (!_.isUndefined(req.p.importance_enabled)) {
+          fields.importance_enabled = req.p.importance_enabled;
+        }
         ifDefinedSet("auth_opt_allow_3rdparty", req.p, fields);
 
         if (!_.isUndefined(req.p.owner_sees_participation_stats)) {
@@ -9367,12 +8798,8 @@ Email verified! You can close this tab or hit the back button.
         conv.auth_opt_allow_3rdparty,
         true
       );
-      conv.auth_opt_fb_computed =
-        conv.auth_opt_allow_3rdparty &&
-        ifDefinedFirstElseSecond(conv.auth_opt_fb, true);
-      conv.auth_opt_tw_computed =
-        conv.auth_opt_allow_3rdparty &&
-        ifDefinedFirstElseSecond(conv.auth_opt_tw, true);
+      conv.auth_opt_fb_computed = false;
+      conv.auth_opt_tw_computed = false;
 
       conv.translations = translations;
 
@@ -10089,15 +9516,13 @@ Email verified! You can close this tab or hit the back button.
                 owner_sees_participation_stats: !!req.p
                   .owner_sees_participation_stats,
                 // Set defaults for fields that aren't set at postgres level.
-                auth_needed_to_vote:
-                  req.p.auth_needed_to_vote || DEFAULTS.auth_needed_to_vote,
-                auth_needed_to_write:
-                  req.p.auth_needed_to_write || DEFAULTS.auth_needed_to_write,
+                auth_needed_to_vote: DEFAULTS.auth_needed_to_vote,
+                auth_needed_to_write: DEFAULTS.auth_needed_to_write,
                 auth_opt_allow_3rdparty:
                   req.p.auth_opt_allow_3rdparty ||
                   DEFAULTS.auth_opt_allow_3rdparty,
-                auth_opt_fb: req.p.auth_opt_fb || DEFAULTS.auth_opt_fb,
-                auth_opt_tw: req.p.auth_opt_tw || DEFAULTS.auth_opt_tw,
+                auth_opt_fb: DEFAULTS.auth_opt_fb,
+                auth_opt_tw: DEFAULTS.auth_opt_tw,
               })
               .returning("*")
               .toString();
@@ -10650,23 +10075,16 @@ Thanks for using Polis!
       );
     });
   }
-  function switchToUser(req: any, res: any, uid?: any) {
-    return new Promise(function (
-      resolve: () => void,
-      reject: (arg0: string) => void
-    ) {
-      startSession(uid, function (errSess: any, token: any) {
+  function switchToUser(req: any, res: any, uid?: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      startSession(uid, (errSess: any, token: any) => {
         if (errSess) {
           reject(errSess);
           return;
         }
         addCookies(req, res, token, uid)
-          .then(function () {
-            resolve();
-          })
-          .catch(function (err: any) {
-            reject("polis_err_adding_cookies");
-          });
+          .then(() => resolve())
+          .catch(() => reject("polis_err_adding_cookies"));
       });
     });
   }
@@ -10913,17 +10331,18 @@ Thanks for using Polis!
     //       * create a twitter record
   }
 
-  function addParticipant(zid: any, uid?: any) {
-    return pgQueryP(
+  const addParticipant = async (zid: string, uid?: string): Promise<any> => {
+    await pgQueryP(
       "INSERT INTO participants_extended (zid, uid) VALUES ($1, $2);",
       [zid, uid]
-    ).then(() => {
-      return pgQueryP(
-        "INSERT INTO participants (pid, zid, uid, created) VALUES (NULL, $1, $2, default) RETURNING *;",
-        [zid, uid]
-      );
-    });
-  }
+    );
+
+    return pgQueryP(
+      "INSERT INTO participants (pid, zid, uid, created) VALUES (NULL, $1, $2, default) RETURNING *;",
+      [zid, uid]
+    );
+  };
+
   function getAndInsertTwitterUser(o: any, uid?: any) {
     return getTwitterUserInfo(o, false).then(function (userString: string) {
       const u: UserType = JSON.parse(userString)[0];
@@ -11274,12 +10693,7 @@ Thanks for using Polis!
     const authorsQueryParts = (authorUids || []).map(function (
       authorUid?: any
     ) {
-      // TODO investigate this one.
-      // TODO looks like a possible typo bug
-      // Cannot find name 'authorUid'. Did you mean 'authoruid'?ts(2552)
-      // server.ts(12486, 7): 'authoruid' is declared here.
-      // @ts-ignore
-      return "select " + Number(authoruid) + " as uid, 900 as priority";
+      return "select " + Number(authorUid) + " as uid, 900 as priority";
     });
     let authorsQuery: string | null =
       "(" + authorsQueryParts.join(" union ") + ")";
@@ -11387,29 +10801,6 @@ Thanks for using Polis!
       return response;
     });
   }
-
-  // function getFacebookFriendsInConversation(zid, uid) {
-  //   if (!uid) {
-  //     return Promise.resolve([]);
-  //   }
-  //   let p = pgQueryP_readOnly(
-  //     "select * from " +
-  //     "(select * from " +
-  //     "(select * from " +
-  //     "(select friend as uid from facebook_friends where uid = ($2) union select uid from facebook_friends where friend = ($2) union select uid from facebook_users where uid = ($2)) as friends) " +
-  //     // ^ as friends
-  //     "as fb natural left join facebook_users) as fb2 " +
-  //     "inner join (select * from participants where zid = ($1) and (vote_count > 0 OR uid = ($2))) as p on fb2.uid = p.uid;", [zid, uid]);
-  //   //"select * from (select * from (select friend as uid from facebook_friends where uid = ($2) union select uid from facebook_friends where friend = ($2)) as friends where uid in (select uid from participants where zid = ($1))) as fb natural left join facebook_users;", [zid, uid]);
-  //   return p;
-  // }
-
-  // function getFacebookUsersInConversation(zid) {
-  //   let p = pgQueryP_readOnly("select * from facebook_users inner join (select * from participants where zid = ($1) and vote_count > 0) as p on facebook_users.uid = p.uid;", [zid]);
-  //   return p;
-  // }
-
-  const getSocialInfoForUsers = User.getSocialInfoForUsers;
 
   function updateVoteCount(zid: any, pid: any) {
     // return pgQueryP("update participants set vote_count = vote_count + 1 where zid = ($1) and pid = ($2);",[zid, pid]);
@@ -11591,44 +10982,6 @@ Thanks for using Polis!
     );
   }
 
-  function getPidsForGid(zid: any, gid: number, math_tick: number) {
-    return Promise.all([
-      getPca(zid, math_tick),
-      getBidIndexToPidMapping(zid, math_tick),
-    ]).then(function (o: ParticipantOption[]) {
-      if (!o[0] || !o[0].asPOJO) {
-        return [];
-      }
-      o[0] = o[0].asPOJO;
-      let clusters = o[0]["group-clusters"];
-      let indexToBid = o[0]["base-clusters"].id; // index to bid
-      let bidToIndex = [];
-      for (let i = 0; i < indexToBid.length; i++) {
-        bidToIndex[indexToBid[i]] = i;
-      }
-      let indexToPids = o[1].bidToPid; // actually index to [pid]
-      let cluster = clusters[gid];
-      if (!cluster) {
-        return [];
-      }
-      let members = cluster.members; // bids
-      let pids: any[] = [];
-      for (var i = 0; i < members.length; i++) {
-        let bid = members[i];
-        let index = bidToIndex[bid];
-        let morePids = indexToPids[index];
-        Array.prototype.push.apply(pids, morePids);
-      }
-      pids = pids.map(function (x) {
-        return parseInt(x);
-      });
-      pids.sort(function (a, b) {
-        return a - b;
-      });
-      return pids;
-    });
-  }
-
   function geoCodeWithGoogleApi(locationString: string) {
     let googleApiKey = process.env.GOOGLE_API_KEY;
     let address = encodeURI(locationString);
@@ -11658,42 +11011,18 @@ Thanks for using Polis!
   }
 
   function geoCode(locationString: any) {
-    return (
-      pgQueryP("select * from geolocation_cache where location = ($1);", [
-        locationString,
-      ])
-        //     Argument of type '(rows: string | any[]) => Bluebird<{ lat: any; lng: any; }> | { lat: any; lng: any; }' is not assignable to parameter of type '(value: unknown) => { lat: any; lng: any; } | PromiseLike<{ lat: any; lng: any; }>'.
-        // Types of parameters 'rows' and 'value' are incompatible.
-        //   Type 'unknown' is not assignable to type 'string | any[]'.
-        //     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-        // @ts-ignore
-        .then(function (rows: string | any[]) {
-          if (!rows || !rows.length) {
-            return geoCodeWithGoogleApi(locationString).then(function (result: {
-              geometry: { location: { lat: any; lng: any } };
-            }) {
-              let lat = result.geometry.location.lat;
-              let lng = result.geometry.location.lng;
-              // NOTE: not waiting for the response to this - it might fail in the case of a race-condition, since we don't have upsert
-              pgQueryP(
-                "insert into geolocation_cache (location,lat,lng,response) values ($1,$2,$3,$4);",
-                [locationString, lat, lng, JSON.stringify(result)]
-              );
-              let o = {
-                lat: lat,
-                lng: lng,
-              };
-              return o;
-            });
-          } else {
-            let o = {
-              lat: rows[0].lat,
-              lng: rows[0].lng,
-            };
-            return o;
-          }
-        })
-    );
+    return geoCodeWithGoogleApi(locationString).then(function (result: {
+      geometry: { location: { lat: any; lng: any } };
+    }) {
+      let lat = result.geometry.location.lat;
+      let lng = result.geometry.location.lng;
+
+      let o = {
+        lat: lat,
+        lng: lng,
+      };
+      return o;
+    });
   }
   // Value of type 'typeof LRUCache' is not callable. Did you mean to include 'new'? ts(2348)
   // @ts-ignore
@@ -11982,44 +11311,6 @@ Thanks for using Polis!
       });
   }
 
-  // this is for testing the encryption
-  function handle_GET_logMaxmindResponse(
-    req: { p: { uid?: any; zid: any; user_uid?: any } },
-    res: { json: (arg0: {}) => void }
-  ) {
-    if (!isPolisDev(req.p.uid) || !devMode) {
-      // TODO fix this by piping the error from the usage of this in ./app
-      // Cannot find name 'err'.ts(2304)
-      // @ts-ignore
-      return fail(res, 403, "polis_err_permissions", err);
-    }
-    pgQueryP(
-      "select * from participants_extended where zid = ($1) and uid = ($2);",
-      [req.p.zid, req.p.user_uid]
-    )
-      //     Argument of type '(results: string | any[]) => void' is not assignable to parameter of type '(value: unknown) => void | PromiseLike<void>'.
-      // Types of parameters 'results' and 'value' are incompatible.
-      //   Type 'unknown' is not assignable to type 'string | any[]'.
-      //     Type 'unknown' is not assignable to type 'any[]'.ts(2345)
-      // @ts-ignore
-      .then((results: string | any[]) => {
-        if (!results || !results.length) {
-          res.json({});
-          return;
-        }
-        var o = results[0];
-        _.each(o, (val: any, key: string) => {
-          if (key.startsWith("encrypted_")) {
-            o[key] = decrypt(val);
-          }
-        });
-        res.json({});
-      })
-      .catch((err: any) => {
-        fail(res, 500, "polis_err_get_participantsExtended", err);
-      });
-  }
-
   function handle_GET_locations(
     req: { p: { zid: any; gid: any } },
     res: {
@@ -12232,15 +11523,27 @@ Thanks for using Polis!
     let mod = 0; // for now, assume all conversations will show unmoderated and approved participants.
 
     function getAuthorUidsOfFeaturedComments() {
-      return getPca(zid, 0).then(function (pcaData: {
-        asPOJO: any;
-        consensus: { agree?: any; disagree?: any };
-        repness: { [x: string]: any };
-      }) {
-        if (!pcaData) {
+      return getPca(zid, 0).then((pcaResult: PcaCacheItem | unknown) => {
+        if (
+          !pcaResult ||
+          typeof pcaResult !== "object" ||
+          pcaResult === null ||
+          !("asPOJO" in pcaResult)
+        ) {
           return [];
         }
-        pcaData = pcaData.asPOJO;
+
+        interface PcaData {
+          consensus?: {
+            agree?: Array<{ tid: number }>;
+            disagree?: Array<{ tid: number }>;
+          };
+          repness?: {
+            [gid: string]: Array<{ tid: number }>;
+          };
+        }
+
+        const pcaData = (pcaResult as { asPOJO: PcaData }).asPOJO;
         pcaData.consensus = pcaData.consensus || {};
         pcaData.consensus.agree = pcaData.consensus.agree || [];
         pcaData.consensus.disagree = pcaData.consensus.disagree || [];
@@ -12509,7 +11812,6 @@ Thanks for using Polis!
       });
     });
   }
-
 
   function handle_POST_einvites(
     req: { p: { email: any } },
@@ -13058,12 +12360,8 @@ Thanks for using Polis!
           conv.auth_opt_allow_3rdparty,
           DEFAULTS.auth_opt_allow_3rdparty
         );
-        let auth_opt_fb_computed =
-          auth_opt_allow_3rdparty &&
-          ifDefinedFirstElseSecond(conv.auth_opt_fb, DEFAULTS.auth_opt_fb);
-        let auth_opt_tw_computed =
-          auth_opt_allow_3rdparty &&
-          ifDefinedFirstElseSecond(conv.auth_opt_tw, DEFAULTS.auth_opt_tw);
+        let auth_opt_fb_computed = false;
+        let auth_opt_tw_computed = false;
 
         conv = {
           topic: conv.topic,
@@ -13073,20 +12371,15 @@ Thanks for using Polis!
           parent_url: conv.parent_url,
           vis_type: conv.vis_type,
           write_type: conv.write_type,
+          importance_enabled: conv.importance_enabled,
           help_type: conv.help_type,
           socialbtn_type: conv.socialbtn_type,
           bgcolor: conv.bgcolor,
           help_color: conv.help_color,
           help_bgcolor: conv.help_bgcolor,
           style_btn: conv.style_btn,
-          auth_needed_to_vote: ifDefinedFirstElseSecond(
-            conv.auth_needed_to_vote,
-            DEFAULTS.auth_needed_to_vote
-          ),
-          auth_needed_to_write: ifDefinedFirstElseSecond(
-            conv.auth_needed_to_write,
-            DEFAULTS.auth_needed_to_write
-          ),
+          auth_needed_to_vote: false,
+          auth_needed_to_write: false,
           auth_opt_allow_3rdparty: auth_opt_allow_3rdparty,
           auth_opt_fb_computed: auth_opt_fb_computed,
           auth_opt_tw_computed: auth_opt_tw_computed,
@@ -13187,10 +12480,6 @@ Thanks for using Polis!
     let dwok = req.p.dwok;
     let o: ConversationType = {};
     ifDefinedSet("parent_url", req.p, o);
-    ifDefinedSet("auth_needed_to_vote", req.p, o);
-    ifDefinedSet("auth_needed_to_write", req.p, o);
-    ifDefinedSet("auth_opt_fb", req.p, o);
-    ifDefinedSet("auth_opt_tw", req.p, o);
     ifDefinedSet("auth_opt_allow_3rdparty", req.p, o);
     ifDefinedSet("topic", req.p, o);
     if (!_.isUndefined(req.p.show_vis)) {
@@ -13536,7 +12825,8 @@ Thanks for using Polis!
 
   // serve up index.html in response to anything starting with a number
   let hostname: string = Config.staticFilesHost;
-  let staticFilesParticipationPort: number = Config.staticFilesParticipationPort;
+  let staticFilesParticipationPort: number =
+    Config.staticFilesParticipationPort;
   let staticFilesAdminPort: number = Config.staticFilesAdminPort;
   let fetchUnsupportedBrowserPage = makeFileFetcher(
     hostname,
@@ -13611,14 +12901,16 @@ Thanks for using Polis!
   function ifDefinedFirstElseSecond(first: any, second: boolean) {
     return _.isUndefined(first) ? second : first;
   }
-  let fetch404Page = makeFileFetcher(hostname, staticFilesAdminPort, "/404.html", {
-    "Content-Type": "text/html",
-  });
+  let fetch404Page = makeFileFetcher(
+    hostname,
+    staticFilesAdminPort,
+    "/404.html",
+    {
+      "Content-Type": "text/html",
+    }
+  );
 
-  function fetchIndexForConversation(
-    req: { path: string; },
-    res: any
-  ) {
+  function fetchIndexForConversation(req: { path: string }, res: any) {
     logger.debug("fetchIndexForConversation", req.path);
     let match = req.path.match(/[0-9][0-9A-Za-z]+/);
     let conversation_id: any;
@@ -13654,12 +12946,7 @@ Thanks for using Polis!
           conversation: x,
           // Nothing user-specific can go here, since we want to cache these per-conv index files on the CDN.
         };
-        fetchIndex(
-          req,
-          res,
-          preloadData,
-          staticFilesParticipationPort
-        );
+        fetchIndex(req, res, preloadData, staticFilesParticipationPort);
       })
       .catch(function (err: any) {
         logger.error("polis_err_fetching_conversation_info", err);
@@ -13948,6 +13235,7 @@ Thanks for using Polis!
     handle_GET_math_correlationMatrix,
     handle_GET_dataExport,
     handle_GET_dataExport_results,
+    handle_GET_reportExport,
     handle_GET_domainWhitelist,
     handle_GET_dummyButton,
     handle_GET_einvites,
@@ -13958,7 +13246,6 @@ Thanks for using Polis!
     handle_GET_implicit_conversation_generation,
     handle_GET_launchPrep,
     handle_GET_locations,
-    handle_GET_logMaxmindResponse,
     handle_GET_math_pca,
     handle_GET_math_pca2,
     handle_GET_metadata,
@@ -13974,6 +13261,7 @@ Thanks for using Polis!
     handle_GET_perfStats,
     handle_GET_ptptois,
     handle_GET_reports,
+    handle_GET_reportNarrative,
     handle_GET_snapshot,
     handle_GET_testConnection,
     handle_GET_testDatabase,

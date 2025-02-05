@@ -1,0 +1,48 @@
+--- ./client-report/src/components/lists/allCommentsModeratedIn.jsx
++++ ../patches/client-report/src/components/lists/allCommentsModeratedIn.jsx
+@@ -3,7 +3,7 @@
+ import React, { useState } from "react";
+ import CommentList from "./commentList.jsx";
+ import * as globals from "../globals";
+-
++import { useTranslation } from 'react-i18next';
+ 
+ const sortFunctions = {
+   tid: (comments) => comments.sort((a, b) => a.tid - b.tid).map(c => c.tid),
+@@ -16,6 +16,8 @@
+ 
+ const allCommentsModeratedIn = ({ conversation, ptptCount, math, formatTid, comments, voteColors }) => {
+ 
++  const { t } = useTranslation();
++  
+   const [sortStyle, setSortStyle] = useState(globals.allCommentsSortDefault)
+ 
+   const onSortChanged = (event) => {
+@@ -31,18 +33,16 @@
+ 
+   return (
+     <div>
+-      <p style={globals.primaryHeading}> All statements </p>
+-      <p style={globals.paragraph}>
+-        Group votes across all statements, excluding those statements which were moderated out.
+-      </p>
+-      <label htmlFor="allCommentsSortMode">Sort by: </label>
++      <p style={globals.primaryHeading}>{t('all_comments.title')}</p>
++      <p style={globals.paragraph}>{t('all_comments.text')}</p>
++      <label htmlFor="allCommentsSortMode">{t('all_comments.sortby')}</label>
+       <select id="allCommentsSortMode" onChange={onSortChanged} value={sortStyle}>
+-        <option value="tid">Statement Id</option>
+-        <option value="consensus">Group-informed Consensus</option>
+-        <option value="numvotes">Number of votes</option>
+-        <option value="pctAgreed">% Agreed</option>
+-        <option value="pctDisagreed">% Disagreed</option>
+-        <option value="pctPassed">% Passed</option>
++        <option value="tid">{t('all_comments.tid')}</option>
++        <option value="consensus">{t('all_comments.consensus')}</option>
++        <option value="numvotes">{t('all_comments.numvotes')}</option>
++        <option value="pctAgreed">% {t('all_comments.agreed')}</option>
++        <option value="pctDisagreed">% {t('all_comments.disagreed')}</option>
++        <option value="pctPassed">% {t('all_comments.passed')}</option>
+       </select>
+       <div style={{marginTop: 50}}>
+         <CommentList

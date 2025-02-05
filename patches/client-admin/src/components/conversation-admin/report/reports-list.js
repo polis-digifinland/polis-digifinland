@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import Url from '../../../util/url'
 import { connect } from 'react-redux'
 import { Heading, Box, Button } from 'theme-ui'
+import { populateZidMetadataStore } from '../../../actions'
 import ComponentHelpers from '../../../util/component-helpers'
 import NoPermission from '../no-permission'
 
@@ -33,11 +34,24 @@ class ReportsListTranslated extends React.Component {
       })
     })
   }
-
+  
   componentDidMount() {
     const { zid_metadata } = this.props
+    
+    // eslint-disable-next-line react/prop-types
+    this.props.dispatch(
+      populateZidMetadataStore(this.props.match.params.conversation_id)
+    )
 
-    if (zid_metadata.is_mod) {
+    // If we already have is_mod, get the data
+    if (zid_metadata?.is_mod) {
+      this.getData()
+    }
+  }
+
+  componentDidUpdate() {
+    const { zid_metadata } = this.props
+    if (zid_metadata?.is_mod) {
       this.getData()
     }
   }
@@ -55,9 +69,9 @@ class ReportsListTranslated extends React.Component {
     if (ComponentHelpers.shouldShowPermissionsError(this.props)) {
       return <NoPermission />
     }
-    
-    const { t } = this.props;
 
+    const { t } = this.props;
+    
     if (this.state.loading) {
       return <div>{t('reports.loading')}</div>
     }
@@ -79,7 +93,7 @@ class ReportsListTranslated extends React.Component {
         </Box>
         {this.state.reports.map((report) => {
           return (
-            <Box sx={{ mb: [2] }} key={report.report_id}>
+            <Box sx={{ mb: [2] }} key={report.report_id} data-test-id="report-list-item">
               <a
                 target="_blank"
                 rel="noreferrer"
@@ -106,6 +120,5 @@ ReportsListTranslated.propTypes = {
   })
 }
 
-// export default ReportsList
 const ReportsList = withTranslation()(ReportsListTranslated);
-export default withTranslation()(ReportsList);
+export default ReportsList
