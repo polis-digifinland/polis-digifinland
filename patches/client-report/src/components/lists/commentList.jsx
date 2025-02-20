@@ -42,10 +42,14 @@ const BarChartCompact = ({ comment, voteCounts, nMembers, voteColors }) => {
   return (
     <div
       title={
-        agreeString + t('comment_list.agreed')+"\n"+
-        disagreeString + t('comment_list.disagreed')+"\n"+
-        passString + t('comment_list.passed')+"\n"+
-        sawTheComment + t('comment_list.respondents')
+        agreeString +
+        t('comment_list.agreed')+"\n" +
+        disagreeString +
+        t('comment_list.disagreed')+"\n" +
+        passString +
+        t('comment_list.passed')+"\n" +
+        sawTheComment +
+        t('comment_list.respondents')
       }
     >
       <svg width={101} height={10} style={{ marginRight: 30 }}>
@@ -78,7 +82,6 @@ const BarChartCompact = ({ comment, voteCounts, nMembers, voteColors }) => {
 
 const CommentRow = ({ comment, groups, voteColors }) => {
   if (!comment) {
-    console.error("WHY IS THERE NO COMMENT 3452354235", comment);
     return null;
   }
 

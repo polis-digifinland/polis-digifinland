@@ -55,13 +55,4 @@ client-admin/src/components/conversation-admin/stats/index.js # patch8 add finni
 client-admin/src/components/conversation-admin/stats/commenters.js # patch8 add finnish and swedish translations
 client-admin/src/components/conversation-admin/stats/conversation-stats-number-cards.js # patch8 add finnish and swedish translations
 client-admin/src/components/conversation-admin/stats/voters.js # patch8 add finnish and swedish translations
-client-participation/vis2/components/graphParticipants.js # patch12 Draw only isSelf icon
-client-participation/css/polis/polis.scss # patch7 custom footer
-client-participation/css/polis/modules/_footer.scss # patch7 custom footer
-client-participation/js/templates/footer.handlebars # patch7 custom footer
-client-participation/js/templates/participation.handlebars # patch7 custom footer
-client-participation/js/templates/vote-view.handlebars # patch14 hide text in participation where condition of ucw fails
-client-participation/js/strings/en_us.js # patch7 custom footer
-client-participation/js/strings.js # patch8 add finnish and swedish translations
-client-participation/public/index.ejs # patch13 disable translations
 )

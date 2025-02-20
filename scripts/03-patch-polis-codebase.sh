@@ -51,7 +51,6 @@ do
 done
 
 # patch8 copy files related to finnish and swedish translations
-cp -r ../translations/client-participation/js/strings/* ./client-participation/js/strings/
 cp -r ../translations/client-report/locales ./client-report/locales
 cp -r ../translations/client-report/src/i18n.js ./client-report/src/i18n.js
 cp -r ../translations/client-admin/public/locales ./client-admin/public/locales
