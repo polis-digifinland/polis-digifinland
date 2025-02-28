@@ -70,7 +70,7 @@
          </Heading>
          <ModerateCommentsSeed
            params={{ conversation_id: this.props.zid_metadata.conversation_id }}
-@@ -141,7 +145,7 @@
+@@ -141,34 +145,39 @@
              lineHeight: 'body',
              my: [3, null, 4]
            }}>
@@ -78,9 +78,11 @@
 +          {t('configure.customize_ui')}
          </Heading>
  
-         <CheckboxField field="importance_enabled" label="Importance Enabled">
-@@ -149,26 +153,31 @@
-         </CheckboxField>
+-        <CheckboxField field="importance_enabled" label="Importance Enabled">
++        {/*<CheckboxField field="importance_enabled" label="Importance Enabled">
+           [EXPERIMENTAL FEATURE] Participants can see the &quot;This comment is important&quot; checkbox
+-        </CheckboxField>
++        </CheckboxField>*/}
  
          <CheckboxField field="vis_type" label="Visualization" isIntegerBool>
 -          Participants can see the visualization

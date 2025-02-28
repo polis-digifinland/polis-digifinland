@@ -148,9 +148,9 @@ class ConversationConfigTranslated extends React.Component {
           {t('configure.customize_ui')}
         </Heading>
 
-        <CheckboxField field="importance_enabled" label="Importance Enabled">
+        {/*<CheckboxField field="importance_enabled" label="Importance Enabled">
           [EXPERIMENTAL FEATURE] Participants can see the &quot;This comment is important&quot; checkbox
-        </CheckboxField>
+        </CheckboxField>*/}
 
         <CheckboxField field="vis_type" label="Visualization" isIntegerBool>
           {t('configure.vis_type')}
