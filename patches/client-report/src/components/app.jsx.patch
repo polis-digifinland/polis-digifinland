@@ -1,0 +1,18 @@
+--- ./client-report/src/components/app.jsx
++++ ../patches/client-report/src/components/app.jsx
+@@ -20,7 +20,6 @@
+ import Controls from "./controls/controls.jsx";
+ import net from "../util/net.js";
+ import ConsensusNarrative from "./lists/consensusNarrative.jsx";
+-import RawDataExport from "./RawDataExport.jsx";
+ import TopicNarrative from "./lists/topicNarrative.jsx";
+ 
+ const pathname = window.location.pathname; // "/report/2arcefpshi"
+@@ -646,7 +645,6 @@
+           />
+         )}
+ 
+-        {!isNarrativeReport && <RawDataExport conversation={conversation} report_id={report_id} />}
+ 
+         {isNarrativeReport ? (
+           <>

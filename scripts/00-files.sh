@@ -14,6 +14,7 @@ client-report/webpack.common.js # patch8 add finnish and swedish translations
 client-report/src/index.js # patch8 add finnish and swedish translations
 client-report/package.json # patch8 add finnish and swedish translations
 client-report/package-lock.json # patch8 add finnish and swedish translations
+client-report/src/components/app.jsx
 client-report/src/components/overview.jsx # patch8 add finnish and swedish translations
 client-report/src/components/controls/controls.jsx # patch8 add finnish and swedish translations
 client-report/src/components/beeswarm/beeswarm.jsx # patch8 add finnish and swedish translations
