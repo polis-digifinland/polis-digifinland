@@ -16,7 +16,7 @@ const Footer = () => {
             <h3>{t('footer.title')}</h3>
             <p>{t('footer.desc')}</p>
             <p>{t('footer.disclaimer')}</p>
-            <p style={{fontSize: '10px'}}>{t('footer.version', { param1: "0.1.18"})}   {t('footer.released', { param1: "28.2.2025"})}</p>
+            <p style={{fontSize: '10px'}}>{t('footer.version', { param1: "0.1.19"})}   {t('footer.released', { param1: "4.3.2025"})}</p>
         </div>
         <div style={{ width: '30%', minWidth: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <ul style={{ display: 'flex',flexDirection: 'column', listStyle: 'none',}}>
@@ -36,7 +36,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
- )
+  )
 };
 
 export default Footer;
