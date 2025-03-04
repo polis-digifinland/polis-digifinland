@@ -14,7 +14,7 @@
    constructor(props) {
      super(props)
      const times = dateSetupUtil()
-@@ -91,7 +93,9 @@
+@@ -105,7 +107,9 @@
        !conversation_stats.firstCommentTimes ||
        !conversation_stats.firstVoteTimes
  
@@ -25,7 +25,7 @@
  
      return (
        <div>
-@@ -102,7 +106,7 @@
+@@ -116,7 +120,7 @@
              lineHeight: 'body',
              mb: [3, null, 4]
            }}>
@@ -34,7 +34,7 @@
          </Heading>
          <NumberCards data={conversation_stats} />
          <Voters
-@@ -120,4 +124,5 @@
+@@ -134,4 +138,5 @@
    }
  }
  

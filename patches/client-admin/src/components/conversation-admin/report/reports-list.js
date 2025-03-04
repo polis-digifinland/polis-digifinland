@@ -34,11 +34,10 @@ class ReportsListTranslated extends React.Component {
       })
     })
   }
-  
+
   componentDidMount() {
     const { zid_metadata } = this.props
-    
-    // eslint-disable-next-line react/prop-types
+
     this.props.dispatch(
       populateZidMetadataStore(this.props.match.params.conversation_id)
     )
@@ -49,9 +48,13 @@ class ReportsListTranslated extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    // Only call getData() if is_mod changed from false/undefined to true
     const { zid_metadata } = this.props
-    if (zid_metadata?.is_mod) {
+    const prevIsMod = prevProps.zid_metadata?.is_mod
+    const currentIsMod = zid_metadata?.is_mod
+
+    if (!prevIsMod && currentIsMod) {
       this.getData()
     }
   }
@@ -69,9 +72,9 @@ class ReportsListTranslated extends React.Component {
     if (ComponentHelpers.shouldShowPermissionsError(this.props)) {
       return <NoPermission />
     }
-
-    const { t } = this.props;
     
+    const { t } = this.props;
+
     if (this.state.loading) {
       return <div>{t('reports.loading')}</div>
     }
@@ -110,6 +113,7 @@ class ReportsListTranslated extends React.Component {
 
 ReportsListTranslated.propTypes = {
   t: PropTypes.func.isRequired,
+  dispatch: PropTypes.func,
   match: PropTypes.shape({
     params: PropTypes.shape({
       conversation_id: PropTypes.string

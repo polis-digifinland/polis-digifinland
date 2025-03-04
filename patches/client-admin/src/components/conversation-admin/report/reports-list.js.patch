@@ -12,19 +12,20 @@
    constructor(props) {
      super(props)
      this.state = {
-@@ -68,8 +70,10 @@
+@@ -70,9 +72,11 @@
+     if (ComponentHelpers.shouldShowPermissionsError(this.props)) {
        return <NoPermission />
      }
- 
-+    const { t } = this.props;
 +    
++    const { t } = this.props;
+ 
      if (this.state.loading) {
 -      return <div>Loading Reports...</div>
 +      return <div>{t('reports.loading')}</div>
      }
      return (
        <Box>
-@@ -80,11 +84,11 @@
+@@ -83,11 +87,11 @@
              lineHeight: 'body',
              mb: [3, null, 4]
            }}>
@@ -38,17 +39,17 @@
            </Button>
          </Box>
          {this.state.reports.map((report) => {
-@@ -104,7 +108,8 @@
+@@ -107,7 +111,8 @@
    }
  }
  
 -ReportsList.propTypes = {
 +ReportsListTranslated.propTypes = {
 +  t: PropTypes.func.isRequired,
+   dispatch: PropTypes.func,
    match: PropTypes.shape({
      params: PropTypes.shape({
-       conversation_id: PropTypes.string
-@@ -115,4 +120,5 @@
+@@ -119,4 +124,5 @@
    })
  }
  

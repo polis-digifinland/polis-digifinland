@@ -12,7 +12,7 @@
    loadZidMetadata() {
      this.props.dispatch(
        populateZidMetadataStore(this.props.match.params.conversation_id)
-@@ -45,20 +47,22 @@
+@@ -47,20 +49,22 @@
      const { match, location } = this.props
  
      const url = location.pathname.split('/')[3]
@@ -37,7 +37,7 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -67,7 +71,7 @@
+@@ -69,7 +73,7 @@
                  variant: url === 'share' ? 'links.activeNav' : 'links.nav'
                }}
                to={`${match.url}/share`}>
@@ -46,7 +46,7 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -77,7 +81,7 @@
+@@ -79,7 +83,7 @@
                }}
                data-test-id="moderate-comments"
                to={`${match.url}/comments`}>
@@ -55,7 +55,7 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -86,7 +90,7 @@
+@@ -88,7 +92,7 @@
                  variant: url === 'stats' ? 'links.activeNav' : 'links.nav'
                }}
                to={`${match.url}/stats`}>
@@ -64,7 +64,7 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -95,7 +99,7 @@
+@@ -97,7 +101,7 @@
                  variant: url === 'reports' ? 'links.activeNav' : 'links.nav'
                }}
                to={`${match.url}/reports`}>
@@ -73,7 +73,7 @@
              </Link>
            </Box>
          </Box>
-@@ -129,4 +133,5 @@
+@@ -131,4 +135,5 @@
    }
  }
  
