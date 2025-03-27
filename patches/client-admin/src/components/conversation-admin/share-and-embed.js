@@ -61,30 +61,6 @@ class ShareAndEmbedTranslated extends React.Component {
             </a>
           </p>
         </div>
-        <div>
-          <p>{t('distribute.embed')}</p>
-          <div>
-            <pre>
-              {'<div'}
-              {" class='polis'"}
-              {" data-conversation_id='" + match.params.conversation_id + "'>"}
-              {'</div>\n'}
-              {"<script async src='" + Url.urlPrefix + "embed.js'></script>"}
-            </pre>
-          </div>
-          <p>
-            
-            {t('distribute.desc')}{' '}
-            <Link to="/integrate">
-              {t('distribute.link')}
-            </Link>
-          </p>
-          <div>
-            {this.props.zid_metadata.parent_url
-              ? this.constructEmbeddedOnMarkup()
-              : ''}
-          </div>
-        </div>
       </div>
     )
   }

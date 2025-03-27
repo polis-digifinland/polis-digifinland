@@ -38,29 +38,35 @@
            <p>
              <a
                target="blank"
-@@ -58,7 +62,7 @@
+@@ -57,44 +61,24 @@
+             </a>
            </p>
          </div>
-         <div>
+-        <div>
 -          <p> Embed</p>
-+          <p>{t('distribute.embed')}</p>
-           <div>
-             <pre>
-               {'<div'}
-@@ -69,9 +73,10 @@
-             </pre>
-           </div>
-           <p>
+-          <div>
+-            <pre>
+-              {'<div'}
+-              {" class='polis'"}
+-              {" data-conversation_id='" + match.params.conversation_id + "'>"}
+-              {'</div>\n'}
+-              {"<script async src='" + Url.urlPrefix + "embed.js'></script>"}
+-            </pre>
+-          </div>
+-          <p>
 -            This embed code can only be used to embed a single conversation.{' '}
-+            
-+            {t('distribute.desc')}{' '}
-             <Link to="/integrate">
+-            <Link to="/integrate">
 -              I want to integrate pol.is on my entire site.
-+              {t('distribute.link')}
-             </Link>
-           </p>
-           <div>
-@@ -85,16 +90,19 @@
+-            </Link>
+-          </p>
+-          <div>
+-            {this.props.zid_metadata.parent_url
+-              ? this.constructEmbeddedOnMarkup()
+-              : ''}
+-          </div>
+-        </div>
+       </div>
+     )
    }
  }
  

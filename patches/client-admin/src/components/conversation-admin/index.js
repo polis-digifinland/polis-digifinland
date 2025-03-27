@@ -70,6 +70,15 @@ class ConversationAdminContainerTranslated extends React.Component {
           <Box sx={{ mb: [3] }}>
             <Link
               sx={{
+                variant: url === 'share' ? 'links.activeNav' : 'links.nav'
+              }}
+              to={`${match.url}/share`}>
+              {t('conv_nav.distribute')}
+            </Link>
+          </Box>
+          <Box sx={{ mb: [3] }}>
+            <Link
+              sx={{
                 variant: url === 'comments' ? 'links.activeNav' : 'links.nav'
               }}
               data-test-id="moderate-comments"
@@ -102,6 +111,11 @@ class ConversationAdminContainerTranslated extends React.Component {
               exact
               path={`${match.path}/`}
               component={ConversationConfig}
+            />
+            <Route
+              exact
+              path={`${match.path}/share`}
+              component={ShareAndEmbed}
             />
             <Route exact path={`${match.path}/reports`} component={Reports} />
             <Route
