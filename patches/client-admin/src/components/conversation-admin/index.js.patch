@@ -12,7 +12,7 @@
    loadZidMetadata() {
      this.props.dispatch(
        populateZidMetadataStore(this.props.match.params.conversation_id)
-@@ -47,20 +49,22 @@
+@@ -47,29 +49,22 @@
      const { match, location } = this.props
  
      const url = location.pathname.split('/')[3]
@@ -33,20 +33,20 @@
                sx={{ variant: url ? 'links.nav' : 'links.activeNav' }}
                to={`${match.url}`}>
 -              Configure
+-            </Link>
+-          </Box>
+-          <Box sx={{ mb: [3] }}>
+-            <Link
+-              sx={{
+-                variant: url === 'share' ? 'links.activeNav' : 'links.nav'
+-              }}
+-              to={`${match.url}/share`}>
+-              Distribute
 +              {t('conv_nav.configure')}
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -69,7 +73,7 @@
-                 variant: url === 'share' ? 'links.activeNav' : 'links.nav'
-               }}
-               to={`${match.url}/share`}>
--              Distribute
-+              {t('conv_nav.distribute')}
-             </Link>
-           </Box>
-           <Box sx={{ mb: [3] }}>
-@@ -79,7 +83,7 @@
+@@ -79,7 +74,7 @@
                }}
                data-test-id="moderate-comments"
                to={`${match.url}/comments`}>
@@ -55,7 +55,7 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -88,7 +92,7 @@
+@@ -88,7 +83,7 @@
                  variant: url === 'stats' ? 'links.activeNav' : 'links.nav'
                }}
                to={`${match.url}/stats`}>
@@ -64,7 +64,7 @@
              </Link>
            </Box>
            <Box sx={{ mb: [3] }}>
-@@ -97,7 +101,7 @@
+@@ -97,7 +92,7 @@
                  variant: url === 'reports' ? 'links.activeNav' : 'links.nav'
                }}
                to={`${match.url}/reports`}>
@@ -73,7 +73,19 @@
              </Link>
            </Box>
          </Box>
-@@ -131,4 +135,5 @@
+@@ -108,11 +103,6 @@
+               path={`${match.path}/`}
+               component={ConversationConfig}
+             />
+-            <Route
+-              exact
+-              path={`${match.path}/share`}
+-              component={ShareAndEmbed}
+-            />
+             <Route exact path={`${match.path}/reports`} component={Reports} />
+             <Route
+               path={`${match.path}/comments`}
+@@ -131,4 +121,5 @@
    }
  }
  

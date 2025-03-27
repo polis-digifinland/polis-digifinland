@@ -27,7 +27,6 @@ import ConversationAdminContainer from './components/conversation-admin/index'
 
 import Conversations from './components/conversations-and-account/conversations'
 import Account from './components/conversations-and-account/account'
-import Integrate from './components/conversations-and-account/integrate'
 
 import { withTranslation } from 'react-i18next';
 
@@ -185,11 +184,6 @@ class AppTranslated extends React.Component {
                         </Link>
                       </Box>
                       <Box sx={{ mb: [3] }}>
-                        <Link sx={{ variant: 'links.nav' }} to={`/integrate`}>
-                          {t('app.nav.integrate')}
-                        </Link>
-                      </Box>
-                      <Box sx={{ mb: [3] }}>
                         <Link sx={{ variant: 'links.nav' }} to={`/account`}>
                           {t('app.nav.account')}
                         </Link>
@@ -222,13 +216,6 @@ class AppTranslated extends React.Component {
                         exact
                         path="/account"
                         component={Account}
-                      />
-                      <PrivateRoute
-                        isLoading={this.isLoading()}
-                        authed={this.isAuthed()}
-                        exact
-                        path="/integrate"
-                        component={Integrate}
                       />
                     </Box>
                   </Flex>

@@ -1,17 +1,19 @@
 --- ./client-admin/src/app.js
 +++ ../patches/client-admin/src/app.js
-@@ -29,7 +29,10 @@
- import Account from './components/conversations-and-account/account'
- import Integrate from './components/conversations-and-account/integrate'
+@@ -27,9 +27,11 @@
  
-+import { withTranslation } from 'react-i18next';
+ import Conversations from './components/conversations-and-account/conversations'
+ import Account from './components/conversations-and-account/account'
+-import Integrate from './components/conversations-and-account/integrate'
 +
++import { withTranslation } from 'react-i18next';
+ 
  import InteriorHeader from './components/interior-header'
 +import Footer from './components/landers/lander-footer'
  
  const PrivateRoute = ({ component: Component, isLoading, authed, ...rest }) => {
    if (isLoading) {
-@@ -61,7 +64,7 @@
+@@ -61,7 +63,7 @@
  @connect((state) => {
    return state.user
  })
@@ -20,7 +22,7 @@
    constructor(props) {
      super(props)
      this.state = {
-@@ -128,6 +131,7 @@
+@@ -128,6 +130,7 @@
  
    render() {
      const { location } = this.props
@@ -28,18 +30,17 @@
      return (
        <>
          <Switch>
-@@ -177,17 +181,17 @@
+@@ -177,17 +180,12 @@
                      <Box sx={{ mr: [5], p: [4], flex: '0 0 auto' }}>
                        <Box sx={{ mb: [3] }}>
                          <Link sx={{ variant: 'links.nav' }} to={`/`}>
 -                          Conversations
-+                          {t('app.nav.conversations')}
-                         </Link>
-                       </Box>
-                       <Box sx={{ mb: [3] }}>
-                         <Link sx={{ variant: 'links.nav' }} to={`/integrate`}>
+-                        </Link>
+-                      </Box>
+-                      <Box sx={{ mb: [3] }}>
+-                        <Link sx={{ variant: 'links.nav' }} to={`/integrate`}>
 -                          Integrate
-+                          {t('app.nav.integrate')}
++                          {t('app.nav.conversations')}
                          </Link>
                        </Box>
                        <Box sx={{ mb: [3] }}>
@@ -49,7 +50,21 @@
                          </Link>
                        </Box>
                      </Box>
-@@ -240,12 +244,13 @@
+@@ -219,13 +217,6 @@
+                         path="/account"
+                         component={Account}
+                       />
+-                      <PrivateRoute
+-                        isLoading={this.isLoading()}
+-                        authed={this.isAuthed()}
+-                        exact
+-                        path="/integrate"
+-                        component={Integrate}
+-                      />
+                     </Box>
+                   </Flex>
+                 )
+@@ -240,12 +231,13 @@
              />
            </InteriorHeader>
          </Switch>
@@ -64,7 +79,7 @@
    dispatch: PropTypes.func,
    isLoggedIn: PropTypes.bool,
    location: PropTypes.shape({
-@@ -259,4 +264,6 @@
+@@ -259,4 +251,6 @@
    })
  }
  
