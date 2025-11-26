@@ -6,6 +6,7 @@ math/bin/run # patch1 change max heap memory for math worker
 server/src/email/senders.ts # patch2 enable sending with mailgun EU endpoint
 server/src/server.ts # patch3 1 comment out block that saves encrypted IPs to database when x-forwarded-for header is set in request | 2 force exempt=true to disable http->https redirect to enable working internal LB health checks and Pod readiness probes on GKE
 server/src/utils/constants.ts # patch4 hide social media opt in settings for conversation setup and set opt-in defaults as false
+server/src/utils/cookies.ts # add custom domain for cookies
 client-admin/src/components/conversation-admin/conversation-config.js # patch4 hide social media opt in settings for conversation setup and set opt-in defaults as false
 client-admin/src/components/landers/signin.js # patch5 1 hide facebook login/user creation on admin signin page | 2 add dev env warning before login form
 client-admin/src/components/landers/lander-footer.js # patch6 hide TOS link and replace privacy policy link on admin page footer patch8 add finnish and swedish translations

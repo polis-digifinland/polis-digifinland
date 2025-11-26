@@ -1,0 +1,28 @@
+--- ./server/src/utils/cookies.ts
++++ ../patches/server/src/utils/cookies.ts
+@@ -48,10 +48,24 @@
+ function cookieDomain(req: any) {
+   const origin = req?.headers?.origin || "";
+   const parsedOrigin = url.parse(origin);
+-  if (parsedOrigin.hostname === "localhost") {
++  const hostname = parsedOrigin.hostname;
++
++  if (!hostname) {
++    // Fallback if hostname is null or undefined
++    if (Config.domainOverride) {
++      return `.${Config.domainOverride}`;
++    }
++    return `.${Config.getServerHostname()}`;
++  }
++
++  if (hostname === "localhost") {
+     return "localhost";
+   }
+ 
++  if (hostname === "voxit.hel.fi") {
++      return "voxit.hel.fi";
++  }
++
+   if (Config.domainOverride) {
+     return `.${Config.domainOverride}`;
+   }

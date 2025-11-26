@@ -184,7 +184,7 @@ services:
         condition: always
         delay: 5s
         # max_attempts: 3
-        window: 120s              
+        window: 120s
 
 networks:
   polis-net:
