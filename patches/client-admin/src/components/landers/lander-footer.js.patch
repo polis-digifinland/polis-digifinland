@@ -1,6 +1,6 @@
 --- ./client-admin/src/components/landers/lander-footer.js
 +++ ../patches/client-admin/src/components/landers/lander-footer.js
-@@ -1,29 +1,42 @@
+@@ -1,29 +1,43 @@
 -/** @jsx jsx */
 -import { Component } from 'react'
 -import { Box, Link, Heading, jsx } from 'theme-ui'
