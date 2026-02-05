@@ -51,6 +51,7 @@
 +            <ul style={{ display: 'flex',flexDirection: 'column', listStyle: 'none',}}>
 +                <li style={{ margin: '10px'}}><a target="_blank" rel="noreferrer" style={{ color: '#FFF', border: 0 }} href="https://digifinland.fi/tietosuoja/">{t('footer.links.privacy')} 🡥</a></li>
 +                <li style={{ margin: '10px'}}><a target="_blank" rel="noreferrer" style={{ color: '#FFF', border: 0 }} href="https://digifinland.fi/toimintamme/polis-kansalaiskeskustelualusta/">{t('footer.links.info')} 🡥</a></li>
++                <li style={{ margin: '10px'}}><a target="_blank" rel="noreferrer" style={{ color: '#FFF', border: 0 }} href="https://digifinland.fi/saavutettavuusseloste-voxit-digifinland/">{t('footer.links.accessibility')} 🡥</a></li>
 +                <li style={{ margin: '10px'}}><a target="_blank" rel="noreferrer" style={{ color: '#FFF', border: 0 }} href="https://compdemocracy.org/Welcome/">The Computational Democracy Project 🡥</a></li>
 +                <li style={{ margin: '10px'}}><a target="_blank" rel="noreferrer" style={{ color: '#FFF', border: 0 }} href="https://github.com/polis-digifinland/polis-digifinland">{t('footer.links.source')} 🡥</a></li>
 +            </ul>
